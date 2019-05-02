@@ -4,6 +4,7 @@ import { PageFoundComponent } from './page-found/page-found.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PatientsComponent } from './content/patients/patients.component';
+import { HomeComponent } from './content/home/home.component';
 
 const routes: Routes = [
   { path: 'home', component: PageFoundComponent },
@@ -18,11 +19,12 @@ const routes: Routes = [
         path: 'patients',
         component: PatientsComponent,
       },
+      {
+        path: 'home',
+        component: HomeComponent,
+      },
     ]
-  },
-
-  
-
+  }, 
   {
     path: '',
     redirectTo: '/home',
