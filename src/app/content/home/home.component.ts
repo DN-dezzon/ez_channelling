@@ -9,8 +9,7 @@ export class HomeComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    document.body.className = 'gray-bg';
+  ngOnInit() { 
   }
 
 }
