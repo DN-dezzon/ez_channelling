@@ -5,6 +5,8 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PatientsComponent } from './content/patients/patients.component';
 import { HomeComponent } from './content/home/home.component';
+import { DoctorComponent } from './content/doctor/doctor.component';
+import { TransactionsComponent } from './content/transactions/transactions.component';
 
 const routes: Routes = [
   { path: 'home', component: PageFoundComponent },
@@ -22,6 +24,14 @@ const routes: Routes = [
       {
         path: 'home',
         component: HomeComponent,
+      },
+      {
+        path: 'doctors',
+        component: DoctorComponent,
+      },
+      {
+        path: 'transactions',
+        component: TransactionsComponent,
       },
     ]
   }, 

@@ -12,6 +12,8 @@ import { RightComponent } from './right/right.component';
 import { PageFoundComponent } from './page-found/page-found.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './content/home/home.component';
+import { DoctorComponent } from './content/doctor/doctor.component';
+import { TransactionsComponent } from './content/transactions/transactions.component';
 import * as $ from 'jquery';
 import { PatientsComponent } from './content/patients/patients.component';
 @NgModule({
@@ -26,7 +28,9 @@ import { PatientsComponent } from './content/patients/patients.component';
     PageFoundComponent,
     LoginComponent,
     HomeComponent,
-    PatientsComponent
+    PatientsComponent,
+    DoctorComponent,
+    TransactionsComponent
   ],
   imports: [
     BrowserModule,
