@@ -1,0 +1,36 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element"> <span>
+                        <img alt="image" class="img-circle" src="assets/img/logo.png"
+                            style="max-width:40%; max-height:40%;" />
+                    </span>
+
+
+                </div>
+                <div class="logo-element">
+                    EZ
+                    <br>
+                    Chan
+                </div>
+            </li>
+            <li id="home">
+                <a [routerLink]="['./home']"><i class="fa fa-home"></i> <span class="nav-label">Home</span></a>
+            </li>
+            <li id="transactions">
+                <a [routerLink]="['./transactions']"><i class="fa fa-money"></i> <span class="nav-label">Transactions</span></a>
+            </li>
+            <li id="doctors">
+                <a [routerLink]="['./doctors']"><i class="fa fa-user-md"></i> <span class="nav-label">Doctors</span></a>
+            </li>
+            <li id="patients">
+                <a [routerLink]="['./patients']"><i class="fa fa-user"></i> <span class="nav-label">Patients</span></a>
+            </li>
+            <li id="settings">
+                <a href="settings.html"><i class="fa fa-cogs"></i> <span class="nav-label">Settings</span></a>
+            </li>
+        </ul>
+
+    </div>
+</nav>

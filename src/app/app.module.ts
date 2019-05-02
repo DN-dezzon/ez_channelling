@@ -3,14 +3,32 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { TopComponent } from './top/top.component';
+import { LeftComponent } from './left/left.component';
+import { ContentComponent } from './content/content.component';
+import { FooterComponent } from './footer/footer.component';
+import { RightComponent } from './right/right.component';
+import { PageFoundComponent } from './page-found/page-found.component';
+import { LoginComponent } from './login/login.component';
+import * as $ from 'jquery';
+import { PatientsComponent } from './content/patients/patients.component';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PageNotFoundComponent,
+    TopComponent,
+    LeftComponent,
+    ContentComponent,
+    FooterComponent,
+    RightComponent,
+    PageFoundComponent,
+    LoginComponent,
+    PatientsComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
