@@ -11,6 +11,7 @@ import { FooterComponent } from './footer/footer.component';
 import { RightComponent } from './right/right.component';
 import { PageFoundComponent } from './page-found/page-found.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './content/home/home.component';
 import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
@@ -27,6 +28,7 @@ import { PatientsComponent } from './content/patients/patients.component';
     RightComponent,
     PageFoundComponent,
     LoginComponent,
+    RegisterComponent,
     HomeComponent,
     PatientsComponent,
     DoctorComponent,
