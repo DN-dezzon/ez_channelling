@@ -14,27 +14,113 @@
             <tr>
               <th></th>
               <th>Code</th>
-              <th>Name</th> 
+              <th>Name</th>  
               <th>Phone</th> 
+              <th></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let patient of patients; index as i">
+            <tr *ngFor="let patient of patients; index as i" (click)="rowSelection(patient, i,patient.code)">
               <td>{{i}}</td>
               <td>{{patient.code || '--'}}</td>
-              <td>{{patient.name || '--'}}</td> 
+              <td>{{patient.name || '--'}} 
+                  <a class="btn btn-xs btn-info" (click)="showPatientHistory()"><span class="glyphicon glyphicon-info-sign"></span>
+                  </a>
+              </td> 
               <td>{{patient.phone || '--'}}</td> 
               <td>
-                <button type="button" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-edit"></span>
+                <button type="button"  data-toggle="modal" class="btn btn-xs btn-warning" href="#newMember"><span class="glyphicon glyphicon-edit"></span>
                 </button>
               </td>
+              <td>
+                  <button type="button" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                </td>
             </tr>
           </tbody> 
         </table>
 
       </div>
     </div>
+  </div>
+  <div class="col-lg-6">
+    
+      <div class="table-responsive">
+          <table class="table table-hover issue-tracker" *ngIf="patientDetails.patientHistory" id="patient_history">
+              <tbody>
+              <tr>
+                  <td>
+                      <span class="label label-primary">Paid</span>
+                  </td>
+                  <td class="issue-info">
+                      <a href="#">
+                          No - 23
+                      </a>
+
+                      <small>
+                         Dr. Saroja Panagala
+                      </small>
+                      <small>
+                          Appoiment Date: 12.02.2015   
+                       </small>
+                  </td> 
+                  <td>
+                     Rs.1500.00
+                  </td>
+                  <td>
+                      Issued Date: 12.02.2015 10:00 am
+                  </td> 
+              </tr> 
+              <tr>
+                  <td>
+                      <span class="label label-warning">Pending</span>
+                  </td>
+                  <td class="issue-info">
+                      <a href="#">
+                          No - 13
+                      </a>
+
+                      <small>
+                         Dr. Saroja Panagala
+                      </small>
+                      <small>
+                          Appoiment Date: 12.02.2015   
+                       </small>
+                  </td> 
+                  <td>
+                     Rs.0.00
+                  </td>
+                  <td>
+                      Issued Date: 12.02.2015 10:00 am
+                  </td>  
+              </tr> 
+              <tr>
+                  <td>
+                      <span class="label label-danger">Canceled</span>
+                  </td>
+                  <td class="issue-info">
+                      <a href="#">
+                          No - 23
+                      </a>
+
+                      <small>
+                         Dr. Saroja Panagala
+                      </small>
+                      <small>
+                          Appoiment Date: 12.02.2015   
+                       </small>
+                  </td> 
+                  <td>
+                     Rs.1500.00
+                  </td>
+                  <td>
+                      Issued Date: 12.02.2015 10:00 am
+                  </td> 
+              </tr> 
+              </tbody>
+          </table>
+          </div>
   </div>
 </div>
 
@@ -46,66 +132,28 @@
     <div class="modal-content">
       <div class="modal-body">
         <div class="row">
-          <form role="form" method="post" enctype="multipart/form-data" method="post">
-
-            <div class="col-sm-6 b-r">
-
+          <form role="form" method="post" enctype="multipart/form-data" method="post"> 
+            <div class="col-sm-12"> 
               <div class="form-group"><label>Code</label> <input type="text" placeholder="Enter code"
-                  class="form-control" name="name" required></div>
-
-              <div class="form-group"><label>Name</label> <input type="text" placeholder="Enter name"
-                  class="form-control" name="name" required></div>
-
-              <div class="form-group"><label>Position</label>
-                <select class="select2_demo_3 form-control" style="width: 260px;" name="userType_id">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </div>
-
-              <div class="data_3 form-group">
-                <label>Member Since</label>
-                <div class="input-group date">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input name="member_since"
-                    type="text" class="form-control" value="">
+                  class="form-control"   required>
+                </div> 
+              <div class="form-group"><label>Patient's Name</label> <input type="text" placeholder="Enter patient name"
+                  class="form-control"  required>
                 </div>
-              </div>
+                <div class="form-group"><label>Patient's Mobile</label> <input type="text" placeholder="Enter patient mobile no"
+                  class="form-control"  required>
+                </div> 
 
-              <div class="data_3 form-group">
-                <label>Date of Birth</label>
-                <div class="input-group date">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input name="dob" type="text"
-                    class="form-control" value="01/01/2000">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6">
-              <div class="form-group"><label>NIC</label> <input name="nic" type="text" placeholder="Enter NIC number"
-                  class="form-control" data-mask="999999999V"></div>
-
-              <div class="form-group"><label>Phone</label> <input name="tel" type="text"
-                  placeholder="Enter phone number" class="form-control" data-mask="9999999999" required></div>
-
-              <div class="form-group"><label>Email</label> <input name="email" type="email" placeholder="Enter email"
-                  class="form-control" required></div>
-
-              <div class="form-group"><label>Address</label> <input name="adrs" type="text" placeholder="Enter address"
-                  class="form-control" required></div>
-
-              <div class="form-group"><label>Action</label>
+              <div class="form-group"> 
                 <br>
                 <div class="col-sm-12">
-                    <button class="col-sm-4 btn btn-xs btn-danger" type="submit"><strong>Delete</strong></button>
-                    <div class="col-sm-4"></div>
-                    <button class="col-sm-4 btn btn-xs btn-primary" type="submit"><strong>Save</strong></button>
+                    <button class="col-sm-2 btn btn-danger" type="submit"><strong>Delete</strong></button>
+                    <div class="col-sm-1"></div>
+                    <button class="col-sm-2 btn btn-primary" type="submit"><strong>Save</strong></button>
                 </div>
               </div>
-
             </div>
+ 
           </form>
         </div>
       </div>

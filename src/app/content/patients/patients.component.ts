@@ -7,6 +7,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 export class PatientsComponent implements OnInit { 
   public patients: any;
+  
+  private patientDetails = {
+    patientHistory:false,
+    code:"",
+    name:"",
+    contactNo:""
+  };
   constructor() { }
 
 
@@ -56,14 +63,22 @@ export class PatientsComponent implements OnInit {
         {
           "searchable": false,
           "orderable": false,
-          "targets": [4]
+          "targets": [4,5]
         }],
       "order": [[0, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
       "iDisplayLength": 5
     });
   }
+  showPatientHistory(){
+    this.patientDetails.patientHistory=false;  
+    this.patientDetails.patientHistory=true; 
+  }
 
+  rowSelection(patient, i, code){
+     this.patientDetails.code=patient.code;
+
+  }
   getPosOrRep(patient) {
     if (patient.code == patient.representative) {
       return patient.position;
