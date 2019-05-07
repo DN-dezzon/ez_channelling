@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DatabaseService } from 'src/app/database.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -15,24 +16,40 @@ export class PatientsComponent implements OnInit {
 
   ngOnInit() {
     this.initTable();
+    var myVar = setInterval(this.checkTable, 1000);
+  }
+
+  dataSet = false;
+
+  checkTable(){
+    alert(!this.dataSet && (this.patients.length == $('#editable tbody tr').length));
+    if(!this.dataSet && (this.patients.length == $('#editable tbody tr').length)){
+      this.dataSet = true;
+      this.initTable();
+      alert($('#editable tbody tr').length);
+    }
   }
 
   getPatients() {
     this.datatable.destroy();
-
+ 
     this.databaseService.getPatients().subscribe((data: []) => {
         this.patients = data;
+        this.dataSet = false;
+
+        setTimeout(() => {
+          if($('#editable tbody tr').length == this.patients.length ){
+            this.initTable();
+          }
+        }, 1000);
+        
       }, (err) => {
         console.log(err);
       }
+ 
     );
-    // this.databaseService.query("SELECT * FROM patient").subscribe((data: []) => {
-    //   this.patients = data;
-    // }, (err) => {
-    //   console.log(err);
-    // }
-    // );
   }
+
 
   savePatient() {
     this.databaseService.query("INSERT INTO patient VALUES(4,'testing','134123')").subscribe((data: []) => {
