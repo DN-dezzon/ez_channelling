@@ -19,12 +19,19 @@ export class PatientsComponent implements OnInit {
 
   getPatients() {
     this.datatable.destroy();
-    this.databaseService.query("SELECT * FROM patient").subscribe((data: []) => {
-      this.patients = data;
-    }, (err) => {
-      console.log(err);
-    }
+
+    this.databaseService.getPatients().subscribe((data: []) => {
+        this.patients = data;
+      }, (err) => {
+        console.log(err);
+      }
     );
+    // this.databaseService.query("SELECT * FROM patient").subscribe((data: []) => {
+    //   this.patients = data;
+    // }, (err) => {
+    //   console.log(err);
+    // }
+    // );
   }
 
   savePatient() {

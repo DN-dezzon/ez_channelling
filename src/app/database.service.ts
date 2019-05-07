@@ -5,11 +5,15 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DatabaseService {
-  apiUrl = 'http://localhost:8080/query';
+  apiUrl = 'http://localhost:8080';
 
   constructor(private httpClient: HttpClient) {}
 
   query(query: string){
-    return this.httpClient.post(this.apiUrl , {query:query} );
+    return this.httpClient.post(this.apiUrl + '/query', {query:query} );
+  }
+
+  getPatients(){
+    return this.httpClient.get(this.apiUrl + '/getPatients');
   }
 }
