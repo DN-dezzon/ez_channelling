@@ -15,6 +15,7 @@ import { HomeComponent } from './content/home/home.component';
 import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
 import * as $ from 'jquery';
+import { HttpClientModule } from '@angular/common/http';
 import { PatientsComponent } from './content/patients/patients.component';
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { PatientsComponent } from './content/patients/patients.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

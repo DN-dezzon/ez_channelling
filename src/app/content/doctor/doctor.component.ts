@@ -70,7 +70,6 @@ export class DoctorComponent implements OnInit {
 
     });
 
-
     /* initialize the calendar
      -----------------------------------------------------------------*/
     var date = new Date();
