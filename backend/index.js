@@ -26,9 +26,8 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
+});
 
-// listen (start app with node server.js) ======================================
 app.listen(8080);
 console.log("App listening on port 8080");
 
@@ -42,3 +41,12 @@ app.post('/query', function (req, res) {
     });
 });
 
+app.get('/getPatients', function (req, res) {
+    db.query("SELECT * FROM patient", (err, result) => {
+        if (err) {
+            res.send(500,err);
+        }else{
+            res.json(result);
+        }
+    });
+});

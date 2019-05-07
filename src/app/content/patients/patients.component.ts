@@ -18,15 +18,24 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatients() {
+    this.datatable.destroy();
     this.databaseService.query("SELECT * FROM patient").subscribe((data: []) => {
       this.patients = data;
-      
-      this.datatable.draw();
     }, (err) => {
       console.log(err);
     }
     );
   }
+
+  savePatient() {
+    this.databaseService.query("INSERT INTO patient VALUES(4,'testing','134123')").subscribe((data: []) => {
+      console.log(data);
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
 
   ngAfterViewInit() {
     (<any>$('.data_3 .input-group.date')).datepicker({
@@ -59,7 +68,7 @@ export class PatientsComponent implements OnInit {
         {
           "searchable": false,
           "orderable": false,
-          "targets": [3]
+          "targets": [4]
         }],
       "order": [[0, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
