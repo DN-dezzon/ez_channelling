@@ -8,10 +8,11 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createConnection ({
-    host: 'localhost',
-    user: 'root',
-    password: '123',
-    database: 'test'
+    host: 'remotemysql.com',
+    user: 'Rr6RfuQQAh',
+    password: '7cA4hntkbd',
+    database: 'Rr6RfuQQAh',
+    port: '3306'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
