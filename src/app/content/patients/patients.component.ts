@@ -1,4 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { PatientApiService } from './service/api.services';
+
+declare var $: any;
   
 @Component({
   selector: 'app-patients',
@@ -7,6 +10,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 export class PatientsComponent implements OnInit { 
   public patients: any;
+
+  private patientData: Array<any> = [];
   
   private patientDetails = {
     patientHistory:false,
@@ -14,7 +19,7 @@ export class PatientsComponent implements OnInit {
     name:"",
     contactNo:""
   };
-  constructor() { }
+  constructor(private _apiService: PatientApiService) { }
 
 
   ngOnInit() {
@@ -28,7 +33,6 @@ export class PatientsComponent implements OnInit {
       { 'code': '6', 'name': 'Avishka Jayaweera','phone': '0112243567'},
       { 'code': '7', 'name': 'Madhawa Dabare','phone': '0112243567'}, 
     ];
-
   }
 
   ngAfterViewInit() {
@@ -87,4 +91,7 @@ export class PatientsComponent implements OnInit {
     }
   }
 
+  getPData(){
+    
+  }
 }
