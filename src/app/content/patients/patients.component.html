@@ -10,9 +10,7 @@
       </div>
       <div class="ibox-content">
           <button (click)="getPatients()">getPatients</button>
-          <button (click)="initTable()">initTable</button>
-          <button (click)="savePatient()">savePatient</button>
-        <table *ngIf="patients?.length" class="table table-striped table-bordered table-hover " id="editable" width="100%">
+        <table  class="table table-striped table-bordered table-hover " id="editable" width="100%">
           <thead>
             <tr>
               <th></th>
@@ -22,8 +20,8 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr *ngFor="let patient of patients; index as i" >
+          <!-- <tbody>
+            <tr *ngFor="let patient of allPatients; index as i" >
               <td>{{i}}</td>
               <td>{{patient.idpatient || '--'}}</td>
               <td>{{patient.name || '--'}}</td>
@@ -33,7 +31,7 @@
                 </button>
               </td>
             </tr>
-          </tbody>
+          </tbody> -->
           <tfoot>
             <tr>
               <th></th>
