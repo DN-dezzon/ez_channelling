@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { TopComponent } from './top/top.component';
@@ -36,7 +36,8 @@ import { PatientsComponent } from './content/patients/patients.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

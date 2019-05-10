@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { DoctorService } from './doctor.service';
 
 @Component({
   selector: 'app-doctor',
@@ -6,25 +7,31 @@ import { Component, OnInit, ViewChild } from '@angular/core';
   styleUrls: ['./doctor.component.scss']
 })
 export class DoctorComponent implements OnInit {
-  public members: any;
-  constructor() { }
+  private datatable: any;
+  private doctors: any[];
+
+  private mode = "";
+
+  private doctor = {
+    iddoctor: -1,
+    name: "",
+    specialization: "",
+    base_hospital: "",
+    contactNo: "",
+    fee: 0.0,
+    description: "",
+  };
+
+  constructor(private doctorService: DoctorService) { }
 
 
   ngOnInit() {
-    this.members = [
-      { 'code': '1', 'name': 'Richard Wickramasinghe', 'position': 'external', 'representative': '5', 'nic': '123', 'phone': '0112243567', 'email': 'richard.wickramasinghe@gmail.com' },
-      { 'code': '2', 'name': 'Vajira Dabare', 'position': 'external', 'representative': '5', 'nic': '123', 'phone': '0112243567', 'email': 'richard.wickramasinghe@gmail.com' },
-      { 'code': '3', 'name': 'Chandana Jayaweera', 'position': 'external', 'representative': '5', 'nic': '', 'phone': '0112243567', 'email': 'richard.wickramasinghe@gmail.com' },
-      { 'code': '4', 'name': 'Ruwan Wickramsinghe', 'position': 'external', 'representative': '5', 'nic': '123', 'phone': '0112243567', 'email': 'richard.wickramasinghe@gmail.com' },
-      { 'code': '5', 'name': 'Nuwan Wickramasinghe', 'position': 'Animator', 'representative': '5', 'nic': '123', 'phone': '0112243567', 'email': 'richard.wickramasinghe@gmail.com' },
-      { 'code': '6', 'name': 'Madhawa Dabare', 'position': 'Chairman', 'representative': '6', 'nic': '123', 'phone': '0112243567', 'email': 'dabaremadhava@gmail.com' },
-      { 'code': '7', 'name': 'Avishka Jayaweera', 'position': 'Deputy Chairman', 'representative': '7', 'nic': '942761996V', 'phone': '0112243567', 'email': 'richard.wickramasinghe@gmail.com' },
-    ];
-
+    this.getDoctors();
   }
 
   ngAfterViewInit() {
-    this.drawTable();
+
+    this.initTable();
 
     (<any>$('.data_3 .input-group.date')).datepicker({
       startView: 2,
@@ -53,7 +60,7 @@ export class DoctorComponent implements OnInit {
      -----------------------------------------------------------------*/
 
 
-     (<any>$('#external-events div.external-event')).each(function () {
+    (<any>$('#external-events div.external-event')).each(function () {
 
       // store data so the calendar knows to render an event upon drop
       $(this).data('event', {
@@ -141,32 +148,160 @@ export class DoctorComponent implements OnInit {
     });
   }
 
-  drawTable() {
-    (<any>$('#editable')).DataTable({
+  clickNew() {
+    this.mode = 'new';
+    this.doctor.iddoctor = -1;
+    this.doctor.name = "";
+    this.doctor.specialization = "";
+    this.doctor.base_hospital = "";
+    this.doctor.contactNo = "";
+    this.doctor.fee = 0.0;
+    this.doctor.description = "";
+    (<any>$("#newDoctor")).modal();
+  }
 
+  getDoctors() {
+    //this.datatable.destroy();
+
+    this.doctorService.getDoctors().subscribe((data: any) => {
+      this.doctors = data;
+      this.addIndex(this.doctors);
+      this.datatable.clear();
+      this.datatable.rows.add(this.doctors);
+      this.datatable.draw();
+      this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      array[index].index = index + 1;
+    }
+  }
+
+  saveDoctor() {
+    (<any>$("#newDoctor")).modal("hide");
+    this.doctorService.saveDoctor(this.doctor).subscribe((data: any) => {
+      this.getDoctors();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  updateDoctor() {
+    (<any>$("#newDoctor")).modal("hide");
+    this.doctorService.updateDoctor(this.doctor).subscribe((data: any) => {
+      this.getDoctors();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  deleteDoctor() {
+    (<any>$("#newDoctor")).modal("hide");
+    this.doctorService.deleteDoctor(this.doctor).subscribe((data: any) => {
+      this.getDoctors();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  showUpdateModal(doctor: any) {
+    this.mode = 'update';
+    this.doctor = doctor;
+    (<any>$("#newDoctor")).modal();
+  }
+
+  initTable() {
+    this.datatable = (<any>$('#editable')).DataTable({
+      "pagingType": "full_numbers",
+      responsive: true,
+      columns: [
+        {
+          data: "index"
+        },
+        {
+          data: "iddoctor"
+        },
+        {
+          data: "name"
+        },
+        {
+          data: "specialization"
+        },
+        {
+          data: "base_hospital"
+        },
+        {
+          data: "contactNo"
+        },
+        {
+          data: "fee"
+        },
+        {
+          data: "description"
+        },
+        //create three buttons columns
+        {
+          defaultContent: `<button type="button" class="btn btn-xs btn-warning showUpdateModal"><span class="glyphicon glyphicon-edit"></span>
+          </button>`
+        }
+      ],
       "columnDefs": [
         {
           "searchable": false,
-          "visible": false,
+          sortable: false,
+          "class": "index",
           "targets": [0]
         },
         {
           "searchable": false,
           "orderable": false,
-          "targets": [7]
+          "targets": [4]
         }],
-      "order": [[0, 'asc']],
+      "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
       "iDisplayLength": 5
     });
+
+
   }
 
-  getPosOrRep(member) {
-    if (member.code == member.representative) {
-      return member.position;
-    } else {
-      return 'Ex - Rep: ' + this.members.find(x => x.code == member.representative).name;
-    }
+  resetTableListners() {
+
+    //store current class reference in _currClassRef variable for using in jquery click event handler
+    var _currClassRef = this;
+
+    //unbind previous event on tbody so that multiple events are not binded to the table whenever this function runs again
+    $('#editable tbody td').unbind();
+
+    //defined jquery click event
+    $('#editable tbody td').on('click', 'button', function () {
+      //the "this" in this function is "this" of jquery object not of component because we did not use an arrow function
+
+      //get row for data
+      var tr = $(this).closest('tr');
+      var row = _currClassRef.datatable.row(tr);
+      //this of jquery object
+      if ($(this).hasClass("showFButton")) {
+        //use function of current class using reference
+        // _currClassRef.showValue(row.data().FirstName);
+      }
+      else if ($(this).hasClass("showLButton")) {
+        //_currClassRef.showValue(row.data().LastName);
+      }
+      else if ($(this).hasClass("showUpdateModal")) {
+        _currClassRef.showUpdateModal(row.data());
+      }
+
+    })
   }
+
 
 }

@@ -9,7 +9,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./patients.component.scss']
 })
 export class PatientsComponent implements OnInit {
-  public allPatients: any[];
+  private datatable: any;
+  private allPatients: any[];
 
   constructor(private databaseService: DatabaseService) { }
 
@@ -23,7 +24,8 @@ export class PatientsComponent implements OnInit {
 
     this.databaseService.getPatients().subscribe((data: any) => {
       this.allPatients = data;
-
+      this.addIndex(this.allPatients);
+      console.log(this.allPatients);
       this.datatable.clear();
       this.datatable.rows.add(data);
       this.datatable.draw();
@@ -32,6 +34,12 @@ export class PatientsComponent implements OnInit {
       console.log(err);
     }
     );
+  }
+
+  addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      array[index].index = index + 1;
+    }
   }
 
 
@@ -58,7 +66,7 @@ export class PatientsComponent implements OnInit {
     });
   }
 
-  datatable: any;
+  
 
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
@@ -66,7 +74,7 @@ export class PatientsComponent implements OnInit {
       responsive: true,
       columns: [
         {
-          data: "idpatient"
+          data: "index"
         },
         {
           data: "idpatient"
@@ -86,7 +94,8 @@ export class PatientsComponent implements OnInit {
       "columnDefs": [
         {
           "searchable": false,
-          "visible": false,
+          sortable: false,
+          "class": "index",
           "targets": [0]
         },
         {
@@ -94,13 +103,16 @@ export class PatientsComponent implements OnInit {
           "orderable": false,
           "targets": [4]
         }],
-      "order": [[0, 'asc']],
+      "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
       "iDisplayLength": 5
     });
+
+
   }
 
   resetTableListners() {
+
     //store current class reference in _currClassRef variable for using in jquery click event handler
     var _currClassRef = this;
 
