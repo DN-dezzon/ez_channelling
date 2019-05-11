@@ -8,11 +8,16 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createConnection ({
-    host: 'remotemysql.com',
-    user: 'Rr6RfuQQAh',
-    password: '7cA4hntkbd',
-    database: 'Rr6RfuQQAh',
-    port: '3306'
+    // host: 'remotemysql.com',
+    // user: 'Rr6RfuQQAh',
+    // password: '7cA4hntkbd',
+    // database: 'Rr6RfuQQAh',
+    // port: '3306'
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'shanthi_medical',
+    port: '3307'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
@@ -41,6 +46,9 @@ app.post('/query', function (req, res) {
         }
     });
 });
+
+
+// doctor by madhava
 
 app.get('/getDoctors', function (req, res) {
     db.query("SELECT * FROM doctor ORDER BY iddoctor", (err, result) => {
@@ -84,6 +92,98 @@ app.post('/deleteDoctor', function (req, res) {
             res.send(500,err);
         }else{
             res.json(result.affectedRows);
+        }
+    });
+});
+
+
+// Patients by chathuri
+
+app.get('/getPatients', function (req, res) {
+    query ="SELECT * FROM patient ORDER BY idpatient";
+         db.query(query, (err, result) => {
+        if (err) {
+            res.send(500,err);
+        }else{
+            res.json(result);
+        }
+    });
+});
+
+
+app.post('/savePatient', function (req, res) {
+    query = "INSERT INTO patient(idpatient, name, contactNo) VALUES (?,?,?)";
+    values = [req.body.idpatient, req.body.name, req.body.contactNo];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500,err);
+        }else{
+            res.json(result.affectedRows);
+        }
+    });
+});
+app.post('/updatePatient', function (req, res) {
+    query = "UPDATE patient SET name = ?, contactNo = ? WHERE idpatient = ? ";
+    values = [req.body.name, req.body.contactNo, req.body.idpatient];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500,err);
+        }else{
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/deletePatient', function (req, res) {
+    query = "DELETE FROM patient  WHERE idpatient = ? ";
+    values = [req.body.idpatient];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500,err);
+        }else{
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.get('/getPatientHistory', function (req, res) {
+    query ="SELECT * From patient as p inner join appointment as a on p.idpatient=a.patient_idpatient inner join doctor_schedule as ds on ds.iddoctor_schedule=a.iddoctor_schedule inner join doctor as d on d.iddoctor=ds.doctor_iddoctor where p.idpatient=?";
+    // values = [req.body.idpatient];
+    values =1;
+    db.query(query, values,(err, result) => { 
+        if (err) {
+            res.send(500,err);
+        }else{ 
+            res.json(result);
+        }
+    });
+});
+
+
+//Home 
+
+app.get('/getPatientbyId', function (req, res) {
+    query ="SELECT * From patient  where idpatient=?";
+    // values = [req.body.idpatient]; 
+    values=1;
+    db.query(query, values,(err, result) => { 
+        if (err) {
+            res.send(500,err);
+        }else{ 
+            res.json(result);
+        }
+    });
+});
+
+app.get('/getDoctortbyId', function (req, res) {
+    query ="SELECT * From doctor  where iddoctor=?";
+    // values = [req.body.idpatient]; 
+    values=1;
+    db.query(query, values,(err, result) => { 
+        if (err) {
+            res.send(500,err);
+        }else{ 
+            res.json(result);
         }
     });
 });

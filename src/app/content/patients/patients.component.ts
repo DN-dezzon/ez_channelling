@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DatabaseService } from 'src/app/database.service';
+import { PatientService } from './patient.service';
 import { Observable } from 'rxjs';
 
 
@@ -10,45 +10,42 @@ import { Observable } from 'rxjs';
 })
 export class PatientsComponent implements OnInit {
   private datatable: any;
-  private allPatients: any[];
+  private datatable_history: any;
+  private patients: any[];
+  private all_patientHistory: any[];
 
-  constructor(private databaseService: DatabaseService) { }
+  private mode = "";
+
+  private patient = {
+    idpatient: -1,
+    name: "",
+    contactNo: "",
+  };
+
+  private patientHistory = {
+    number: "",
+    name: "",
+    issued_datetime: "",
+    fee: "",
+    datee: "",
+    timee: "",
+    payment_status: ""
+  };
+
+
+
+
+  private patient_ui = {
+    patientHistory: false
+  }
+  constructor(private patientService: PatientService) { }
 
   ngOnInit() {
-    this.initTable();
+    this.getPatients();
   }
-
-
-  getPatients() {
-    //this.datatable.destroy();
-
-    this.databaseService.getPatients().subscribe((data: any) => {
-      this.allPatients = data;
-      this.addIndex(this.allPatients);
-      console.log(this.allPatients);
-      this.datatable.clear();
-      this.datatable.rows.add(data);
-      this.datatable.draw();
-      this.resetTableListners();
-    }, (err) => {
-      console.log(err);
-    }
-    );
-  }
-
-  addIndex(array: any[]) {
-    for (let index = 0; index < array.length; index++) {
-      array[index].index = index + 1;
-    }
-  }
-
-
-  savePatient() {
-
-  }
-
 
   ngAfterViewInit() {
+    this.initTable();
     (<any>$('.data_3 .input-group.date')).datepicker({
       startView: 2,
       todayBtn: "linked",
@@ -65,9 +62,6 @@ export class PatientsComponent implements OnInit {
       $('.custom-dropdown').parent().css('z-index', 99999);
     });
   }
-
-  
-
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
       "pagingType": "full_numbers",
@@ -80,14 +74,15 @@ export class PatientsComponent implements OnInit {
           data: "idpatient"
         },
         {
-          data: "name"
+          data: "name",
         },
         {
           data: "contactNo"
         },
         //create three buttons columns
         {
-          defaultContent: `<button type="button" class="btn btn-xs btn-warning showIdButton"><span class="glyphicon glyphicon-edit"></span>
+          defaultContent: `<button type="button" class="btn btn-xs btn-warning showUpdateModal"><span class="glyphicon glyphicon-edit"></span>
+          </button>   <button type="button" class="btn btn-xs btn-info showHistory"><span class="glyphicon glyphicon-info-sign"></span>
           </button>`
         }
       ],
@@ -111,6 +106,75 @@ export class PatientsComponent implements OnInit {
 
   }
 
+  addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      console.log(array[index].index);
+      array[index].index = index + 1;
+    }
+  }
+
+  // Load ptient to main table
+  getPatients() {
+    this.patientService.getPatients().subscribe((data: any) => {
+
+      this.patients = data;
+      this.addIndex(this.patients);
+      this.datatable.clear();
+      this.datatable.rows.add(this.patients);
+      this.datatable.draw();
+      this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  // Save new patient
+  savePatient() {
+    (<any>$("#newMember")).modal("hide");
+    this.patientService.savePatient(this.patient).subscribe((data: any) => {
+      this.getPatients();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+
+  updateDoctor() {
+    (<any>$("#newMember")).modal("hide");
+    this.patientService.updatePatient(this.patient).subscribe((data: any) => {
+      this.getPatients();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  deleteDoctor() {
+    (<any>$("#newMember")).modal("hide");
+    this.patientService.deletePatient(this.patient).subscribe((data: any) => {
+      this.getPatients();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  clickNew() {
+    this.mode = 'new';
+    this.patient.idpatient = -1;
+    this.patient.name = "";
+    this.patient.contactNo = "";
+    (<any>$("#newMember")).modal();
+  }
+  showUpdateModal(patient: any) {
+    this.mode = 'update';
+    this.patient = patient;
+    (<any>$("#newMember")).modal();
+  }
+
+
   resetTableListners() {
 
     //store current class reference in _currClassRef variable for using in jquery click event handler
@@ -129,13 +193,12 @@ export class PatientsComponent implements OnInit {
       //this of jquery object
       if ($(this).hasClass("showFButton")) {
         //use function of current class using reference
-        _currClassRef.showValue(row.data().FirstName);
-      }
-      else if ($(this).hasClass("showLButton")) {
-        _currClassRef.showValue(row.data().LastName);
-      }
-      else if ($(this).hasClass("showIdButton")) {
-        _currClassRef.showValue(row.data().idpatient);
+        // _currClassRef.showValue(row.data().FirstName);
+      } else if ($(this).hasClass("showUpdateModal")) {
+        _currClassRef.showUpdateModal(row.data());
+      } else if ($(this).hasClass("showHistory")) {
+        _currClassRef.showHistoryTable(row.data());
+
       }
 
     })
@@ -143,6 +206,29 @@ export class PatientsComponent implements OnInit {
 
   showValue(value) {
     alert(value)
+  }
+
+
+  // Patient history mamagement
+  showHistoryTable(patient: any) {
+    this.patient_ui.patientHistory = true; 
+    this.getPatientHistory(patient);
+  } 
+  // load patient history table
+  getPatientHistory(patient: any) {
+    this.patientService.getPatientHistory(patient).subscribe((data: any) => {
+
+      this.all_patientHistory = data;
+
+      this.addIndex(this.all_patientHistory);
+      this.datatable_history.clear();
+      this.datatable_history.rows.add(this.all_patientHistory);
+      this.datatable_history.draw();
+      // this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
   }
 
 }
