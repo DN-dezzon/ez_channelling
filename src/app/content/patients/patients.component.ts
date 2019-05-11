@@ -1,43 +1,54 @@
-import { Component, OnInit } from '@angular/core';
-import { PatientApiService } from './service/api.services';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatabaseService } from 'src/app/database.service';
+import { Observable } from 'rxjs';
 
-declare var $: any;
-  
+
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.scss']
 })
-export class PatientsComponent implements OnInit { 
-  public patients: any;
+export class PatientsComponent implements OnInit {
+  private datatable: any;
+  private allPatients: any[];
 
-  private patientData: Array<any> = [];
-  
-  private patientDetails = {
-    patientHistory:false,
-    code:"",
-    name:"",
-    contactNo:""
-  };
-  constructor(private _apiService: PatientApiService) { }
-
+  constructor(private databaseService: DatabaseService) { }
 
   ngOnInit() {
-  
-    this.patients = [
-      { 'code': '1', 'name': 'Richard Wickramasinghe','phone': '0112243567'},
-      { 'code': '2', 'name': 'Vajira Dabare','phone': '0112243567'},
-      { 'code': '3', 'name': 'Richard Wickramasinghe','phone': '0112243567'},
-      { 'code': '4', 'name': 'Chandana Jayaweera','phone': '0112243567'},
-      { 'code': '5', 'name': 'Nuwan Wickramasinghe','phone': '0112243567'},
-      { 'code': '6', 'name': 'Avishka Jayaweera','phone': '0112243567'},
-      { 'code': '7', 'name': 'Madhawa Dabare','phone': '0112243567'}, 
-    ];
+    this.initTable();
   }
 
-  ngAfterViewInit() {
-    this.drawTable();
 
+  getPatients() {
+    //this.datatable.destroy();
+
+    this.databaseService.getPatients().subscribe((data: any) => {
+      this.allPatients = data;
+      this.addIndex(this.allPatients);
+      console.log(this.allPatients);
+      this.datatable.clear();
+      this.datatable.rows.add(data);
+      this.datatable.draw();
+      this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      array[index].index = index + 1;
+    }
+  }
+
+
+  savePatient() {
+
+  }
+
+
+  ngAfterViewInit() {
     (<any>$('.data_3 .input-group.date')).datepicker({
       startView: 2,
       todayBtn: "linked",
@@ -54,44 +65,84 @@ export class PatientsComponent implements OnInit {
       $('.custom-dropdown').parent().css('z-index', 99999);
     });
   }
-  
-  drawTable() {
-    (<any>$('#editable')).DataTable({
 
+  
+
+  initTable() {
+    this.datatable = (<any>$('#editable')).DataTable({
+      "pagingType": "full_numbers",
+      responsive: true,
+      columns: [
+        {
+          data: "index"
+        },
+        {
+          data: "idpatient"
+        },
+        {
+          data: "name"
+        },
+        {
+          data: "contactNo"
+        },
+        //create three buttons columns
+        {
+          defaultContent: `<button type="button" class="btn btn-xs btn-warning showIdButton"><span class="glyphicon glyphicon-edit"></span>
+          </button>`
+        }
+      ],
       "columnDefs": [
         {
           "searchable": false,
-          "visible": false,
+          sortable: false,
+          "class": "index",
           "targets": [0]
         },
         {
           "searchable": false,
           "orderable": false,
-          "targets": [4,5]
+          "targets": [4]
         }],
-      "order": [[0, 'asc']],
+      "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
       "iDisplayLength": 5
     });
-  }
-  showPatientHistory(){
-    this.patientDetails.patientHistory=false;  
-    this.patientDetails.patientHistory=true; 
-  }
 
-  rowSelection(patient, i, code){
-     this.patientDetails.code=patient.code;
 
   }
-  getPosOrRep(patient) {
-    if (patient.code == patient.representative) {
-      return patient.position;
-    } else {
-      return 'Ex - Rep: ' + this.patients.find(x => x.code == patient.representative).name;
-    }
+
+  resetTableListners() {
+
+    //store current class reference in _currClassRef variable for using in jquery click event handler
+    var _currClassRef = this;
+
+    //unbind previous event on tbody so that multiple events are not binded to the table whenever this function runs again
+    $('#editable tbody td').unbind();
+
+    //defined jquery click event
+    $('#editable tbody td').on('click', 'button', function () {
+      //the "this" in this function is "this" of jquery object not of component because we did not use an arrow function
+
+      //get row for data
+      var tr = $(this).closest('tr');
+      var row = _currClassRef.datatable.row(tr);
+      //this of jquery object
+      if ($(this).hasClass("showFButton")) {
+        //use function of current class using reference
+        _currClassRef.showValue(row.data().FirstName);
+      }
+      else if ($(this).hasClass("showLButton")) {
+        _currClassRef.showValue(row.data().LastName);
+      }
+      else if ($(this).hasClass("showIdButton")) {
+        _currClassRef.showValue(row.data().idpatient);
+      }
+
+    })
   }
 
-  getPData(){
-    
+  showValue(value) {
+    alert(value)
   }
+
 }

@@ -1,65 +1,108 @@
-<div class="row">
-  <div class="col-lg-12">
-    <div class="ibox">
-      <div class="ibox-title">
-        <h5>Patients</h5>
-        <div class="ibox-tools">
-          <a type="button" data-toggle="modal" href="#newMember" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>
-            New</a>
+<div class="row animated fadeInDown">
+
+  <div class="tabs-container">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#tab-1">Doctor details</a></li>
+      <li class=""><a data-toggle="tab" href="#tab-2">Dates</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="tab-1" class="tab-pane active">
+        <div class="panel-body">
+
+          <div class="ibox">
+            <div class="ibox-title">
+              <h5>Doctors</h5>
+              <div class="ibox-tools">
+                <button class="btn btn-xs btn-primary" (click)="clickNew()"><i class="fa fa-plus"></i>New</button>
+              </div>
+            </div>
+            <div class="ibox-content">
+              <table class="table table-striped table-bordered table-hover " id="editable" width="100%">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Base Hospital</th>
+                    <th>Phone</th>
+                    <th>Fee</th>
+                    <th>Description</th>
+                    <th></th>
+                  </tr>
+                </thead>
+
+                <tfoot>
+                  <tr>
+                    <th></th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Base Hospital</th>
+                    <th>Phone</th>
+                    <th>Fee</th>
+                    <th>Description</th>
+                    <th></th>
+                  </tr>
+                </tfoot>
+              </table>
+
+            </div>
+          </div>
+
         </div>
       </div>
-      <div class="ibox-content">
-        <table *ngIf="members.length" class="table table-striped table-bordered table-hover " id="editable" width="100%">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Position or Representative</th>
-              <th>NIC</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let member of members; index as i">
-              <td>{{i}}</td>
-              <td>{{member.code || '--'}}</td>
-              <td>{{member.name || '--'}}</td>
-              <td>{{getPosOrRep(member) || '--'}}</td>
-              <td>{{member.nic || '--'}}</td>
-              <td>{{member.phone || '--'}}</td>
-              <td>{{member.email || '--'}}</td>
-              <td>
-                <button type="button" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-edit"></span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th></th>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Position or Representative</th>
-              <th>NIC</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th></th>
-            </tr>
-          </tfoot>
-        </table>
+      <div id="tab-2" class="tab-pane">
+        <!-- <div class="panel-body">
+          <div class="ibox float-e-margins">
+            <div class="ibox-title">
 
+              <div class="col-sm-6">
+                  <label>Select doctor :</label>
+                <select class="select2_demo_3 form-control" style="width: 260px;" name="userType_id">
+                  <option *ngFor="let member of members; index as i">{{ member.name }}</option>
+                </select>
+              </div>
+
+              <div id='external-events' class="col-sm-2">
+                <div class='external-event navy-bg'>Mark Comming</div>
+              </div>
+            </div>
+            <div class="ibox-content">
+
+
+              <div id="calendar" class="col-sm-9"></div>
+
+              <div class="col-sm-3">
+                <table *ngIf="members.length" class="table table-striped table-bordered table-hover " id="editable"
+                  width="100%">
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let member of members; index as i">
+                      <td>{{member.code || '--'}}</td>
+                      <td>{{member.name || '--'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div> -->
       </div>
     </div>
+
+
   </div>
+
 </div>
 
-
-
-
-<div id="newMember" class="modal fade" aria-hidden="true">
+<div id="newDoctor" class="modal fade" aria-hidden="true">
   <div class="modal-dialog modal-">
     <div class="modal-content">
       <div class="modal-body">
@@ -68,58 +111,49 @@
 
             <div class="col-sm-6 b-r">
 
-              <div class="form-group"><label>Code</label> <input type="text" placeholder="Enter code"
-                  class="form-control" name="name" required></div>
+              <div class="form-group"><label>Code</label> <input type="number" min="0" placeholder="Enter code"
+                  [(ngModel)]="doctor.iddoctor" class="form-control" [ngModelOptions]="{standalone: true}" required>
+              </div>
 
               <div class="form-group"><label>Name</label> <input type="text" placeholder="Enter name"
-                  class="form-control" name="name" required></div>
+                  [(ngModel)]="doctor.name" class="form-control" [ngModelOptions]="{standalone: true}" required></div>
 
-              <div class="form-group"><label>Position</label>
-                <select class="select2_demo_3 form-control" style="width: 260px;" name="userType_id">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </div>
+              <div class="form-group"><label>Specialization</label> <input type="text" placeholder="Specialization"
+                  [(ngModel)]="doctor.specialization" class="form-control" [ngModelOptions]="{standalone: true}"
+                  required></div>
 
-              <div class="data_3 form-group">
-                <label>Member Since</label>
-                <div class="input-group date">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input name="member_since"
-                    type="text" class="form-control" value="">
-                </div>
-              </div>
+              <div class="form-group"><label>Base Hospital</label> <input type="text" placeholder="Base Hospital"
+                  [(ngModel)]="doctor.base_hospital" class="form-control" [ngModelOptions]="{standalone: true}"
+                  required></div>
 
-              <div class="data_3 form-group">
-                <label>Date of Birth</label>
-                <div class="input-group date">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input name="dob" type="text"
-                    class="form-control" value="01/01/2000">
-                </div>
-              </div>
             </div>
 
             <div class="col-sm-6">
-              <div class="form-group"><label>NIC</label> <input name="nic" type="text" placeholder="Enter NIC number"
-                  class="form-control" data-mask="999999999V"></div>
+              <div class="form-group"><label>Phone</label> <input type="text" placeholder="Phone"
+                  [(ngModel)]="doctor.contactNo" class="form-control" [ngModelOptions]="{standalone: true}" required>
+              </div>
 
-              <div class="form-group"><label>Phone</label> <input name="tel" type="text"
-                  placeholder="Enter phone number" class="form-control" data-mask="9999999999" required></div>
+              <div class="form-group"><label>Fee Rs.</label> <input type="number" min="0" placeholder="Fee"
+                  [(ngModel)]="doctor.fee" class="form-control" [ngModelOptions]="{standalone: true}" required></div>
 
-              <div class="form-group"><label>Email</label> <input name="email" type="email" placeholder="Enter email"
-                  class="form-control" required></div>
+              <div class="form-group"><label>Description</label> <input type="text" placeholder="Description"
+                  [(ngModel)]="doctor.description" class="form-control" [ngModelOptions]="{standalone: true}"></div>
 
-              <div class="form-group"><label>Address</label> <input name="adrs" type="text" placeholder="Enter address"
-                  class="form-control" required></div>
 
               <div class="form-group"><label>Action</label>
                 <br>
                 <div class="col-sm-12">
-                    <button class="col-sm-4 btn btn-xs btn-danger" type="submit"><strong>Delete</strong></button>
-                    <div class="col-sm-4"></div>
-                    <button class="col-sm-4 btn btn-xs btn-primary" type="submit"><strong>Save</strong></button>
+                  <div class="col-sm-4">
+                    <button *ngIf="mode == 'update'" class="btn btn-xs btn-danger" 
+                    (click)="deleteDoctor()"><strong>Delete</strong></button>
+                  </div>
+                  <div class=" col-sm-4"></div>
+                  <div class="col-sm-4">
+                    <button *ngIf="mode == 'new'" class="btn btn-xs btn-primary"
+                      (click)="saveDoctor()"><strong>Save</strong></button>
+                    <button *ngIf="mode == 'update'" class="btn btn-xs btn-primary"
+                      (click)="updateDoctor()"><strong>Update</strong></button>
+                  </div>
                 </div>
               </div>
 

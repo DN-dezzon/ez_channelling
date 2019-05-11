@@ -1,7 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  apiUrl : 'http://localhost:8080'
 };
-
-export const appConfig = {
-  appRoot: 'http://localhost:3000'
-};
+ 
