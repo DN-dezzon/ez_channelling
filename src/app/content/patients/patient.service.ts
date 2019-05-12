@@ -25,6 +25,6 @@ export class PatientService {
     return this.httpClient.post(environment.apiUrl + '/deletePatient',patient);
   }
   getPatientHistory(patient: any){ 
-    return this.httpClient.get(environment.apiUrl + '/getPatientHistory',patient);
+    return this.httpClient.post(environment.apiUrl + '/getPatientHistory',patient);
   }
 }

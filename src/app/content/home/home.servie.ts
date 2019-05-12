@@ -21,4 +21,7 @@ export class HomeService {
   getDoctorById(pid : any){
     return this.httpClient.get(environment.apiUrl + '/getDoctortbyId',pid);
   }
+  getAppointMentNumber(doctor : any){
+    return this.httpClient.get(environment.apiUrl + '/getAppointMentNumber',doctor);
+  }
 }

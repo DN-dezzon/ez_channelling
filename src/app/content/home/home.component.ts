@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   
     private mode = "";
     private doctor = {
+      iddoctor_schedule:"",
       iddoctor: -1,
       name: "",
       specialization: "",
@@ -23,6 +24,7 @@ export class HomeComponent implements OnInit {
       contactNo: "",
       fee: 0.0,
       description: "",
+      datee:""
     };
 
     private patients: any[]; 
@@ -43,9 +45,18 @@ export class HomeComponent implements OnInit {
   constructor(private homeService: HomeService) { }
 
   ngOnInit() { 
+
+    $('#channeling_date').datepicker({
+      todayBtn: "linked",
+      keyboardNavigation: false,
+      forceParse: false,
+      calendarWeeks: true,
+      autoclose: true
+  });
     this.getDoctors();
     this.getPatients();
     this.createDropDown(); 
+
   }
 
   searchPatientName(value) {
@@ -56,6 +67,10 @@ export class HomeComponent implements OnInit {
     this.doctor.iddoctor=value;
     this.getDoctorById(this.doctor.iddoctor);
   }
+  searchAppointment(value) { 
+    alert(value); 
+  }
+
 
   getDoctors() {
     //this.datatable.destroy();
@@ -114,6 +129,21 @@ export class HomeComponent implements OnInit {
           this.doctor.fee=this.doctor_data[index].fee;
           this.patient_data[index].index = index + 1; 
         }
+      }, (err) => {
+        console.log(err);
+      }
+      );
+    }
+
+    getAppointmentNumber(doctor:any) { 
+     
+      this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
+        this.doctors = data;
+        this.addIndex(this.doctors);
+        this.datatable.clear();
+        this.datatable.rows.add(this.doctors);
+        this.datatable.draw(); 
+       
       }, (err) => {
         console.log(err);
       }

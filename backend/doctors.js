@@ -8,16 +8,16 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createConnection ({
-    // host: 'remotemysql.com',
-    // user: 'Rr6RfuQQAh',
-    // password: '7cA4hntkbd',
-    // database: 'Rr6RfuQQAh',
-    // port: '3306'
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'shanthi_medical',
-    port: '3307'
+    host: 'remotemysql.com',
+    user: 'Rr6RfuQQAh',
+    password: '7cA4hntkbd',
+    database: 'Rr6RfuQQAh',
+    port: '3306'
+    // host: 'localhost',
+    // user: 'root',
+    // password: '',
+    // database: 'shanthi_medical',
+    // port: '3307'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
@@ -146,10 +146,10 @@ app.post('/deletePatient', function (req, res) {
     });
 });
 
-app.get('/getPatientHistory', function (req, res) {
+app.post('/getPatientHistory', function (req, res) {
     query ="SELECT * From patient as p inner join appointment as a on p.idpatient=a.patient_idpatient inner join doctor_schedule as ds on ds.iddoctor_schedule=a.iddoctor_schedule inner join doctor as d on d.iddoctor=ds.doctor_iddoctor where p.idpatient=?";
-    // values = [req.body.idpatient];
-    values =1;
+    values = [req.body.idpatient];
+    // values =1;
     db.query(query, values,(err, result) => { 
         if (err) {
             res.send(500,err);
@@ -179,6 +179,18 @@ app.get('/getDoctortbyId', function (req, res) {
     query ="SELECT * From doctor  where iddoctor=?";
     // values = [req.body.idpatient]; 
     values=1;
+    db.query(query, values,(err, result) => { 
+        if (err) {
+            res.send(500,err);
+        }else{ 
+            res.json(result);
+        }
+    });
+});
+app.get('/getAppointMentNumber', function (req, res) {
+    query ="SELECT count(number) FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=?";
+    // values = [req.body.iddoctor_schedule, req.body.datee];
+    values=2,2019-05-20;
     db.query(query, values,(err, result) => { 
         if (err) {
             res.send(500,err);

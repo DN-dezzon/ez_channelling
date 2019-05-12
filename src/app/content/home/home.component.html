@@ -89,13 +89,12 @@
                     </select>  
                     <!-- <input type="text" class="form-control" id="doctorId" placeholder="Enter doctor name"> -->
                   </div>
-                </div>
-
+                </div> 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-3 control-label">Channeling Date</label>
-                  <div class="col-sm-9">
+                  <div class="col-sm-9">  
                     <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input name="dob" type="text"
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input  #searchAppointment  (change)="searchAppointment(searchAppointment.value)" id="channeling_date" name="dob" type="text"
                         class="form-control" value="01/01/2019">
                     </div>
                   </div>
