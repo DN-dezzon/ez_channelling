@@ -24,7 +24,8 @@ export class HomeComponent implements OnInit {
       contactNo: "",
       fee: 0.0,
       description: "",
-      datee:""
+      datee:"",
+      number:""
     };
 
     private patients: any[]; 
@@ -46,7 +47,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() { 
 
-    $('#channeling_date').datepicker({
+    $('#channeling_date').datepicker({ 
       todayBtn: "linked",
       keyboardNavigation: false,
       forceParse: false,
@@ -63,12 +64,14 @@ export class HomeComponent implements OnInit {
     this.patient.idpatient=value;
     this.getPatientById(this.patient.idpatient);
   }
-  searchDoctorFee(value) { 
+  searchDoctorFee(value) {  
     this.doctor.iddoctor=value;
-    this.getDoctorById(this.doctor.iddoctor);
+    this.getDoctorById(this.doctor);
   }
   searchAppointment(value) { 
-    alert(value); 
+    this.doctor.datee='2019-05-16';
+    // this.getDoctorById(this.doctor); 
+    this.getAppointmentNumber(this.doctor);
   }
 
 
@@ -119,15 +122,11 @@ export class HomeComponent implements OnInit {
   }
 
      // Load doctor to dropdown
-     getDoctorById(doctor:any) {
-      this.homeService.getDoctorById(doctor).subscribe((data: any) => {
-  
-        this.doctor_data = data;
-        this.addIndex(this.doctor_data);
-        for (let index = 0; index < this.doctor_data.length; index++) {
-          console.log(this.doctor_data[index].name);
-          this.doctor.fee=this.doctor_data[index].fee;
-          this.patient_data[index].index = index + 1; 
+     getDoctorById(did:any) {
+      this.homeService.getDoctorById(did).subscribe((data: any) => { 
+        this.doctor_data = data; 
+        for (let index = 0; index < this.doctor_data.length; index++) { 
+          this.doctor.fee=this.doctor_data[index].fee; 
         }
       }, (err) => {
         console.log(err);
@@ -139,10 +138,9 @@ export class HomeComponent implements OnInit {
      
       this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
         this.doctors = data;
-        this.addIndex(this.doctors);
-        this.datatable.clear();
-        this.datatable.rows.add(this.doctors);
-        this.datatable.draw(); 
+        for (let index = 0; index < this.doctor_data.length; index++) { 
+          this.doctor.number=this.doctor_data[index].number; 
+        }
        
       }, (err) => {
         console.log(err);

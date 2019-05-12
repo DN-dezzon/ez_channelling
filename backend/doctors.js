@@ -175,10 +175,10 @@ app.get('/getPatientbyId', function (req, res) {
     });
 });
 
-app.get('/getDoctortbyId', function (req, res) {
+app.post('/getDoctortbyId', function (req, res) {
     query ="SELECT * From doctor  where iddoctor=?";
-    // values = [req.body.idpatient]; 
-    values=1;
+    values = [req.body.iddoctor]; 
+    // values=1;
     db.query(query, values,(err, result) => { 
         if (err) {
             res.send(500,err);
@@ -187,10 +187,9 @@ app.get('/getDoctortbyId', function (req, res) {
         }
     });
 });
-app.get('/getAppointMentNumber', function (req, res) {
+app.post('/getAppointMentNumber', function (req, res) {
     query ="SELECT count(number) FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=?";
-    // values = [req.body.iddoctor_schedule, req.body.datee];
-    values=2,2019-05-20;
+    values = [req.body.iddoctor, req.body.datee]; 
     db.query(query, values,(err, result) => { 
         if (err) {
             res.send(500,err);
