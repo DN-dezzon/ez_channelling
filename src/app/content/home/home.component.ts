@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
     });
     this.getDoctors();
     this.getPatients();
-    this.createDropDown();
+    
 
   }
 
@@ -144,7 +144,6 @@ export class HomeComponent implements OnInit {
 
         this.element.hide();
         this._createAutocomplete();
-        this._createShowAllButton();
       },
 
       _createAutocomplete: function () {
@@ -218,14 +217,14 @@ export class HomeComponent implements OnInit {
 
         // Remove invalid value
         this.input
-          .val("")
-          .attr("title", value + " didn't match any item")
+          //.val("")
+          .attr("title", value + " is a new doctor")
           .tooltip("open");
-        this.element.val("");
+        //this.element.val("");
         this._delay(function () {
           this.input.tooltip("close").attr("title", "");
         }, 2500);
-        this.input.autocomplete("instance").term = "";
+        //this.input.autocomplete("instance").term = "";
       },
 
       _destroy: function () {
@@ -241,6 +240,6 @@ export class HomeComponent implements OnInit {
 
   }
   ngAfterViewInit() {
-
+    this.createDropDown();
   }
 }
