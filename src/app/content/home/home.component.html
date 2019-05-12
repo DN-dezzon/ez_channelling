@@ -82,7 +82,7 @@
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-3 control-label">Doctor's Name</label>
                   <div class="col-sm-9">
-                    <select  #searchFee (change)="searchDoctorFee(searchFee.value)" class="form-control m-b" [(ngModel)]="OptionsSelect" [ngModelOptions]="{standalone: true}">
+                    <select id="combobox" #searchFee (change)="searchDoctorFee(searchFee.value)" class="form-control m-b" [(ngModel)]="OptionsSelect" [ngModelOptions]="{standalone: true}">
                       <option  value="{{doctor.iddoctor }}" *ngFor="let doctor of doctors" >
                         {{doctor.name}}
                       </option>
