@@ -7,7 +7,7 @@ var methodOverride = require('method-override'); // simulate DELETE and PUT (exp
 var mysql = require('mysql');
 
 // configuration =================
-const db = mysql.createConnection ({
+const db = mysql.createConnection({
     host: 'remotemysql.com',
     user: 'Rr6RfuQQAh',
     password: '7cA4hntkbd',
@@ -23,7 +23,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(methodOverride());
 
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -35,8 +35,8 @@ console.log("App listening on port 8080");
 app.post('/query', function (req, res) {
     db.query(req.body.query, (err, result) => {
         if (err) {
-            res.send(500,err);
-        }else{
+            res.send(500, err);
+        } else {
             res.json(result);
         }
     });
@@ -45,8 +45,8 @@ app.post('/query', function (req, res) {
 app.get('/getDoctors', function (req, res) {
     db.query("SELECT * FROM doctor ORDER BY iddoctor", (err, result) => {
         if (err) {
-            res.send(500,err);
-        }else{
+            res.send(500, err);
+        } else {
             res.json(result);
         }
     });
@@ -57,8 +57,8 @@ app.post('/saveDoctor', function (req, res) {
     values = [req.body.iddoctor, req.body.name, req.body.contactNo, req.body.fee, req.body.base_hospital, req.body.specialization, req.body.description];
     db.query(query, values, (err, result) => {
         if (err) {
-            res.send(500,err);
-        }else{
+            res.send(500, err);
+        } else {
             res.json(result.affectedRows);
         }
     });
@@ -69,8 +69,8 @@ app.post('/updateDoctor', function (req, res) {
     values = [req.body.name, req.body.contactNo, req.body.fee, req.body.base_hospital, req.body.specialization, req.body.description, req.body.iddoctor];
     db.query(query, values, (err, result) => {
         if (err) {
-            res.send(500,err);
-        }else{
+            res.send(500, err);
+        } else {
             res.json(result.affectedRows);
         }
     });
@@ -81,9 +81,22 @@ app.post('/deleteDoctor', function (req, res) {
     values = [req.body.iddoctor];
     db.query(query, values, (err, result) => {
         if (err) {
-            res.send(500,err);
-        }else{
+            res.send(500, err);
+        } else {
             res.json(result.affectedRows);
+        }
+    });
+});
+
+app.get('/getNextDoctorId', function (req, res) {
+    db.query("SELECT MAX(iddoctor) + 1 AS iddoctor FROM doctor;", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].iddoctor == null) {
+                result[0].iddoctor = 0;
+            }
+            res.json(result[0]);
         }
     });
 });

@@ -32,30 +32,92 @@ export class DoctorComponent implements OnInit {
   ngAfterViewInit() {
 
     this.initTable();
+    this.initSelect();
+    this.initCalendar();
 
-    (<any>$('.data_3 .input-group.date')).datepicker({
-      startView: 2,
-      todayBtn: "linked",
-      keyboardNavigation: false,
-      forceParse: false,
-      autoclose: true
-    });
+  }
 
-    (<any>$(".select2_demo_3")).select2({
-      dropdownCssClass: 'custom-dropdown'
-    });
+  clickNew() {
+    this.mode = 'new';
+    this.getNextDoctorId();
+    this.doctor.name = "";
+    this.doctor.specialization = "";
+    this.doctor.base_hospital = "";
+    this.doctor.contactNo = "";
+    this.doctor.fee = 0.0;
+    this.doctor.description = "";
+    (<any>$("#newDoctor")).modal();
+  }
 
-    (<any>$(".select2_demo_3")).on('select2:open', function (e) {
-      $('.custom-dropdown').parent().css('z-index', 99999);
-    });
+  getDoctors() {
+    //this.datatable.destroy();
 
+    this.doctorService.getDoctors().subscribe((data: any) => {
+      this.doctors = data;
+      this.addIndex(this.doctors);
+      this.datatable.clear();
+      this.datatable.rows.add(this.doctors);
+      this.datatable.draw();
+      this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
 
+  getNextDoctorId() {
+    this.doctorService.getNextDoctorId().subscribe((data: any) => {
+      this.doctor.iddoctor = data.iddoctor;
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
 
-    (<any>$('.i-checks')).iCheck({
-      checkboxClass: 'icheckbox_square-green',
-      radioClass: 'iradio_square-green'
-    });
+  addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      array[index].index = index + 1;
+    }
+  }
 
+  saveDoctor() {
+    (<any>$("#newDoctor")).modal("hide");
+    this.doctorService.saveDoctor(this.doctor).subscribe((data: any) => {
+      this.getDoctors();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  updateDoctor() {
+    (<any>$("#newDoctor")).modal("hide");
+    this.doctorService.updateDoctor(this.doctor).subscribe((data: any) => {
+      this.getDoctors();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  deleteDoctor() {
+    (<any>$("#newDoctor")).modal("hide");
+    this.doctorService.deleteDoctor(this.doctor).subscribe((data: any) => {
+      this.getDoctors();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  showUpdateModal(doctor: any) {
+    this.mode = 'update';
+    this.doctor = doctor;
+    (<any>$("#newDoctor")).modal();
+  }
+  
+
+  initCalendar() {
     /* initialize the external events
      -----------------------------------------------------------------*/
 
@@ -93,6 +155,7 @@ export class DoctorComponent implements OnInit {
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
       drop: function () {
+        console.log($(this));
         // is the "remove after drop" checkbox checked?
         if ($('#drop-remove').is(':checked')) {
           // if so, remove the element from the "Draggable Events" list
@@ -144,83 +207,102 @@ export class DoctorComponent implements OnInit {
           end: new Date(y, m, 29),
           url: 'http://google.com/'
         }
-      ]
+      ],
+      eventClick: function (info) {
+        console.log(info);
+      },
+      dateClick: function (info) {
+        console.log(info);
+      },
+      navLinks: true,
+      navLinkDayClick: function (date, jsEvent) {
+        console.log('day', date.toISOString());
+        console.log('coords', jsEvent.pageX, jsEvent.pageY);
+      }
     });
   }
 
-  clickNew() {
-    this.mode = 'new';
-    this.doctor.iddoctor = -1;
-    this.doctor.name = "";
-    this.doctor.specialization = "";
-    this.doctor.base_hospital = "";
-    this.doctor.contactNo = "";
-    this.doctor.fee = 0.0;
-    this.doctor.description = "";
-    (<any>$("#newDoctor")).modal();
-  }
 
-  getDoctors() {
-    //this.datatable.destroy();
+  // initCalendar(){
+  //   var calendarEl = document.getElementById('calendar');
 
-    this.doctorService.getDoctors().subscribe((data: any) => {
-      this.doctors = data;
-      this.addIndex(this.doctors);
-      this.datatable.clear();
-      this.datatable.rows.add(this.doctors);
-      this.datatable.draw();
-      this.resetTableListners();
-    }, (err) => {
-      console.log(err);
-    }
-    );
-  }
+  //   var calendar = new Calendar(calendarEl, {
+  //     schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+  //     plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list', 'resourceTimeline' ],
+  //     now: '2019-04-07',
+  //     editable: true, // enable draggable events
+  //     aspectRatio: 1.8,
+  //     scrollTime: '00:00', // undo default 6am scrollTime
+  //     header: {
+  //       left: 'today prev,next',
+  //       center: 'title',
+  //       right: 'resourceTimelineDay,resourceTimelineThreeDays,timeGridWeek,dayGridMonth,listWeek'
+  //     },
+  //     defaultView: 'resourceTimelineDay',
+  //     views: {
+  //       resourceTimelineThreeDays: {
+  //         type: 'resourceTimeline',
+  //         duration: { days: 3 },
+  //         buttonText: '3 days'
+  //       }
+  //     },
+  //     resourceLabelText: 'Rooms',
+  //     resources: [
+  //       { id: 'a', title: 'Auditorium A' },
+  //       { id: 'b', title: 'Auditorium B', eventColor: 'green' },
+  //       { id: 'c', title: 'Auditorium C', eventColor: 'orange' },
+  //       { id: 'd', title: 'Auditorium D', children: [
+  //         { id: 'd1', title: 'Room D1' },
+  //         { id: 'd2', title: 'Room D2' }
+  //       ] },
+  //       { id: 'e', title: 'Auditorium E' },
+  //       { id: 'f', title: 'Auditorium F', eventColor: 'red' },
+  //       { id: 'g', title: 'Auditorium G' },
+  //       { id: 'h', title: 'Auditorium H' },
+  //       { id: 'i', title: 'Auditorium I' },
+  //       { id: 'j', title: 'Auditorium J' },
+  //       { id: 'k', title: 'Auditorium K' },
+  //       { id: 'l', title: 'Auditorium L' },
+  //       { id: 'm', title: 'Auditorium M' },
+  //       { id: 'n', title: 'Auditorium N' },
+  //       { id: 'o', title: 'Auditorium O' },
+  //       { id: 'p', title: 'Auditorium P' },
+  //       { id: 'q', title: 'Auditorium Q' },
+  //       { id: 'r', title: 'Auditorium R' },
+  //       { id: 's', title: 'Auditorium S' },
+  //       { id: 't', title: 'Auditorium T' },
+  //       { id: 'u', title: 'Auditorium U' },
+  //       { id: 'v', title: 'Auditorium V' },
+  //       { id: 'w', title: 'Auditorium W' },
+  //       { id: 'x', title: 'Auditorium X' },
+  //       { id: 'y', title: 'Auditorium Y' },
+  //       { id: 'z', title: 'Auditorium Z' }
+  //     ],
+  //     events: [
+  //       { id: '1', resourceId: 'b', start: '2019-04-07T02:00:00', end: '2019-04-07T07:00:00', title: 'event 1' },
+  //       { id: '2', resourceId: 'c', start: '2019-04-07T05:00:00', end: '2019-04-07T22:00:00', title: 'event 2' },
+  //       { id: '3', resourceId: 'd', start: '2019-04-06', end: '2019-04-08', title: 'event 3' },
+  //       { id: '4', resourceId: 'e', start: '2019-04-07T03:00:00', end: '2019-04-07T08:00:00', title: 'event 4' },
+  //       { id: '5', resourceId: 'f', start: '2019-04-07T00:30:00', end: '2019-04-07T02:30:00', title: 'event 5' }
+  //     ]
+  //   });
 
-  addIndex(array: any[]) {
-    for (let index = 0; index < array.length; index++) {
-      array[index].index = index + 1;
-    }
-  }
+  //   calendar.render();
+  // }
 
-  saveDoctor() {
-    (<any>$("#newDoctor")).modal("hide");
-    this.doctorService.saveDoctor(this.doctor).subscribe((data: any) => {
-      this.getDoctors();
-    }, (err) => {
-      console.log(err);
-    }
-    );
-  }
+  initSelect() {
+    (<any>$(".select2_demo_3")).select2({
+      dropdownCssClass: 'custom-dropdown'
+    });
 
-  updateDoctor() {
-    (<any>$("#newDoctor")).modal("hide");
-    this.doctorService.updateDoctor(this.doctor).subscribe((data: any) => {
-      this.getDoctors();
-    }, (err) => {
-      console.log(err);
-    }
-    );
-  }
+    (<any>$(".select2_demo_3")).on('select2:open', function (e) {
+      $('.custom-dropdown').parent().css('z-index', 99999);
+    });
 
-  deleteDoctor() {
-    (<any>$("#newDoctor")).modal("hide");
-    this.doctorService.deleteDoctor(this.doctor).subscribe((data: any) => {
-      this.getDoctors();
-    }, (err) => {
-      console.log(err);
-    }
-    );
-  }
-
-  showUpdateModal(doctor: any) {
-    this.mode = 'update';
-    this.doctor = doctor;
-    (<any>$("#newDoctor")).modal();
   }
 
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
-      "pagingType": "full_numbers",
       responsive: true,
       columns: [
         {
