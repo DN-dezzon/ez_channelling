@@ -12,6 +12,7 @@ export class HomeComponent implements OnInit {
     elementRef: ElementRef;
     private datatable: any;
     private doctors: any[];
+    private doctor_appointments:any[];
     private OptionsSelect: -1;
   
     private mode = "";
@@ -25,9 +26,13 @@ export class HomeComponent implements OnInit {
       fee: 0.0,
       description: "",
       datee:"",
-      number:""
+      number:""  
     };
 
+    private doctor_appointment = { 
+      count:""
+      
+    };
     private patients: any[]; 
     private patient_data: any[]; 
     private doctor_data: any[]; 
@@ -45,7 +50,7 @@ export class HomeComponent implements OnInit {
     };
   constructor(private homeService: HomeService) { }
 
-  ngOnInit() { 
+  ngOnInit() {
 
     $('#channeling_date').datepicker({ 
       todayBtn: "linked",
@@ -53,15 +58,14 @@ export class HomeComponent implements OnInit {
       forceParse: false,
       calendarWeeks: true,
       autoclose: true
-  });
+    });
     this.getDoctors();
-    this.getPatients();
-    this.createDropDown(); 
+    this.getPatients(); 
 
   }
 
   searchPatientName(value) {
-    this.patient.idpatient=value;
+    this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
   searchDoctorFee(value) {  
@@ -69,51 +73,40 @@ export class HomeComponent implements OnInit {
     this.getDoctorById(this.doctor);
   }
   searchAppointment(value) { 
-    this.doctor.datee='2019-05-16';
+    this.doctor.datee='2019-05-12';
     // this.getDoctorById(this.doctor); 
     this.getAppointmentNumber(this.doctor);
   }
 
 
   getDoctors() {
-    //this.datatable.destroy();
-   
     this.homeService.getDoctors().subscribe((data: any) => {
       this.doctors = data;
-      this.addIndex(this.doctors);
-      this.datatable.clear();
-      this.datatable.rows.add(this.doctors);
-      this.datatable.draw(); 
-     
+
     }, (err) => {
       console.log(err);
     }
     );
   }
-   // Load ptient to dropdown
-   getPatients() {
+  // Load ptient to dropdown
+  getPatients() {
     this.homeService.getPatients().subscribe((data: any) => {
 
       this.patients = data;
-      this.addIndex(this.patients);
-      this.datatable.clear();
-      this.datatable.rows.add(this.patients);
-      this.datatable.draw(); 
     }, (err) => {
       console.log(err);
     }
     );
   }
-   // Load ptient to dropdown
-   getPatientById(patient:any) {
+  // Load ptient to dropdown
+  getPatientById(patient: any) {
     this.homeService.getPatientById(patient).subscribe((data: any) => {
 
       this.patient_data = data;
-      this.addIndex(this.patient_data);
       for (let index = 0; index < this.patient_data.length; index++) {
         console.log(this.patient_data[index].name);
-        this.patient.name=this.patient_data[index].name;
-        this.patient_data[index].index = index + 1; 
+        this.patient.name = this.patient_data[index].name;
+        this.patient_data[index].index = index + 1;
       }
     }, (err) => {
       console.log(err);
@@ -137,131 +130,126 @@ export class HomeComponent implements OnInit {
     getAppointmentNumber(doctor:any) { 
      
       this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
-        this.doctors = data;
-        for (let index = 0; index < this.doctor_data.length; index++) { 
-          this.doctor.number=this.doctor_data[index].number; 
+        this.doctor_appointments = data;
+        for (let index = 0; index < this.doctor_appointments.length; index++) { 
+          console.log(this.doctor_appointments[index].count);
+          console.log(this.doctor_appointments[0]);
+          this.doctor.number=this.doctor_appointments[index].count; 
         }
        
       }, (err) => {
         console.log(err);
-      }
-      );
-    }
+      });
+    }  
 
+   
+  createDropDown() {
 
-  addIndex(array: any[]) {
-    for (let index = 0; index < array.length; index++) {
-      array[index].index = index + 1;
-    }
-  }
- 
-  createDropDown(){
-    $( function() {
-      $.widget( "custom.combobox", {
-        _create: function() {
-          this.wrapper = $( "<span>" )
-            // .addClass( "custom-combobox" )
-            .insertAfter( this.element );
-   
-          this.element.hide();
-          this._createAutocomplete();
-          this._createShowAllButton();
-        },
-   
-        _createAutocomplete: function() {
-          var selected = this.element.children( ":selected" ),
-            value = selected.val() ? selected.text() : "";
-   
-          this.input = $( "<input>" )
-            .appendTo( this.wrapper )
-            .val( value )
-            .attr( "title", "" )
-            .addClass( "form-control m-b" )
-            .autocomplete({
-              delay: 0,
-              minLength: 0,
-              source: $.proxy( this, "_source" )
-            })
-            .tooltip({
-              classes: {
-                "ui-tooltip": "ui-state-highlight"
-              }
-            });
-   
-          this._on( this.input, {
-            autocompleteselect: function( event, ui ) {
-              ui.item.option.selected = true;
-              this._trigger( "select", event, {
-                item: ui.item.option
-              });
-            },
-   
-            autocompletechange: "_removeIfInvalid"
-          });
-        },
-    
-   
-        _source: function( request, response ) {
-          var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-          response( this.element.children( "option" ).map(function() {
-            var text = $( this ).text();
-            if ( this.value && ( !request.term || matcher.test(text) ) )
-              return {
-                label: text,
-                value: text,
-                option: this
-              };
-          }) );
-        },
-   
-        _removeIfInvalid: function( event, ui ) {
-   
-          // Selected an item, nothing to do
-          if ( ui.item ) {
-            return;
-          }
-   
-          // Search for a match (case-insensitive)
-          var value = this.input.val(),
-            valueLowerCase = value.toLowerCase(),
-            valid = false;
-          this.element.children( "option" ).each(function() {
-            if ( $( this ).text().toLowerCase() === valueLowerCase ) {
-              this.selected = valid = true;
-              return false;
+    $.widget("custom.combobox", {
+      _create: function () {
+        this.wrapper = $("<span>")
+          // .addClass( "custom-combobox" )
+          .insertAfter(this.element);
+
+        this.element.hide();
+        this._createAutocomplete();
+        this._createShowAllButton();
+      },
+
+      _createAutocomplete: function () {
+        var selected = this.element.children(":selected"),
+          value = selected.val() ? selected.text() : "";
+
+        this.input = $("<input>")
+          .appendTo(this.wrapper)
+          .val(value)
+          .attr("title", "")
+          .addClass("form-control m-b")
+          .autocomplete({
+            delay: 0,
+            minLength: 0,
+            source: $.proxy(this, "_source")
+          })
+          .tooltip({
+            classes: {
+              "ui-tooltip": "ui-state-highlight"
             }
           });
-   
-          // Found a match, nothing to do
-          if ( valid ) {
-            return;
-          }
-   
-          // Remove invalid value
-          this.input
-            .val( "" )
-            .attr( "title", value + " didn't match any item" )
-            .tooltip( "open" );
-          this.element.val( "" );
-          this._delay(function() {
-            this.input.tooltip( "close" ).attr( "title", "" );
-          }, 2500 );
-          this.input.autocomplete( "instance" ).term = "";
-        },
-   
-        _destroy: function() {
-          this.wrapper.remove();
-          this.element.show();
+
+        this._on(this.input, {
+          autocompleteselect: function (event, ui) {
+            ui.item.option.selected = true;
+            this._trigger("select", event, {
+              item: ui.item.option
+            });
+          },
+
+          autocompletechange: "_removeIfInvalid"
+        });
+      },
+
+
+      _source: function (request, response) {
+        var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+        response(this.element.children("option").map(function () {
+          var text = $(this).text();
+          if (this.value && (!request.term || matcher.test(text)))
+            return {
+              label: text,
+              value: text,
+              option: this
+            };
+        }));
+      },
+
+      _removeIfInvalid: function (event, ui) {
+
+        // Selected an item, nothing to do
+        if (ui.item) {
+          return;
         }
-      });
-   
-      $( "#combobox" ).combobox();
-      $( "#toggle" ).on( "click", function() {
-        $( "#combobox" ).toggle();
-      });
-    } );
+
+        // Search for a match (case-insensitive)
+        var value = this.input.val(),
+          valueLowerCase = value.toLowerCase(),
+          valid = false;
+        this.element.children("option").each(function () {
+          if ($(this).text().toLowerCase() === valueLowerCase) {
+            this.selected = valid = true;
+            return false;
+          }
+        });
+
+        // Found a match, nothing to do
+        if (valid) {
+          return;
+        }
+
+        // Remove invalid value
+        this.input
+          .val("")
+          .attr("title", value + " is a new doctor")
+          .tooltip("open");
+        this.element.val("");
+        this._delay(function () {
+          this.input.tooltip("close").attr("title", "");
+        }, 2500);
+        this.input.autocomplete("instance").term = "";
+      },
+
+      _destroy: function () {
+        this.wrapper.remove();
+        this.element.show();
+      }
+    });
+
+    $("#combobox").combobox();
+    $("#toggle").on("click", function () {
+      $("#combobox").toggle();
+    });
+
   }
   ngAfterViewInit() {
-  
+    this.createDropDown();
   }
 }
