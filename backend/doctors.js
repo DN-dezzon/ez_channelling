@@ -8,16 +8,16 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createConnection ({
-    host: 'remotemysql.com',
-    user: 'Rr6RfuQQAh',
-    password: '7cA4hntkbd',
-    database: 'Rr6RfuQQAh',
-    port: '3306'
-    // host: 'localhost',
-    // user: 'root',
-    // password: '',
-    // database: 'shanthi_medical',
-    // port: '3307'
+    // host: 'remotemysql.com',
+    // user: 'Rr6RfuQQAh',
+    // password: '7cA4hntkbd',
+    // database: 'Rr6RfuQQAh',
+    // port: '3306'
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'shanthi_medical',
+    port: '3307'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
@@ -195,6 +195,26 @@ app.post('/getAppointMentNumber', function (req, res) {
             res.send(500,err);
         }else{ 
             res.json(result);
+        }
+    });
+});
+app.post('/saveAppointment', function (req, res) {
+    
+    // Register customer if not exist
+    query = "INSERT INTO patient(idpatient, name, contactNo) VALUES (?,?,?)";
+    //    Make an appointment
+    query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
+
+    // Make a payment 
+    query2 = "INSERT INTO patient_invoice(amount, id_appointment,issued_datetime) VALUES (?,?,?)";
+
+
+    values = [req.body.idpatient, req.body.name, req.body.contactNo];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500,err);
+        }else{
+            res.json(result.affectedRows);
         }
     });
 });

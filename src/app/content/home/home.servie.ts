@@ -24,4 +24,8 @@ export class HomeService {
   getAppointMentNumber(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getAppointMentNumber',doctor);
   }
+  saveAppointment(patient:any, doctor : any){
+    alert(patient.idpatient+" "+ doctor.iddoctor);
+    return this.httpClient.post(environment.apiUrl + '/saveAppointment',patient,doctor);
+  } 
 }

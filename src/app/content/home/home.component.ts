@@ -64,8 +64,9 @@ export class HomeComponent implements OnInit {
 
   }
 
-  searchPatientName(value) {
-    this.patient.idpatient = value;
+  searchPatientName() {
+    alert("adsdasdas")
+    // this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
   searchDoctorFee(value) {  
@@ -106,6 +107,7 @@ export class HomeComponent implements OnInit {
       for (let index = 0; index < this.patient_data.length; index++) {
         console.log(this.patient_data[index].name);
         this.patient.name = this.patient_data[index].name;
+        this.patient.idpatient = this.patient_data[index].idpatient;
         this.patient_data[index].index = index + 1;
       }
     }, (err) => {
@@ -120,6 +122,7 @@ export class HomeComponent implements OnInit {
         this.doctor_data = data; 
         for (let index = 0; index < this.doctor_data.length; index++) { 
           this.doctor.fee=this.doctor_data[index].fee; 
+          this.doctor.iddoctor=this.doctor_data[index].iddoctor; 
         }
       }, (err) => {
         console.log(err);
@@ -131,10 +134,9 @@ export class HomeComponent implements OnInit {
      
       this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
         this.doctor_appointments = data;
-        for (let index = 0; index < this.doctor_appointments.length; index++) { 
-          console.log(this.doctor_appointments[index].count);
-          console.log(this.doctor_appointments[0]);
-          this.doctor.number=this.doctor_appointments[index].count; 
+        for (let index = 0; index < this.doctor_appointments.length; index++) {  
+          this.doctor.number=this.doctor_appointments[index].count+1; 
+          this.doctor.iddoctor=this.doctor_appointments[index].iddoctor; 
         }
        
       }, (err) => {
@@ -159,7 +161,7 @@ export class HomeComponent implements OnInit {
         var selected = this.element.children(":selected"),
           value = selected.val() ? selected.text() : "";
 
-        this.input = $("<input>")
+        this.input = $("<input >")
           .appendTo(this.wrapper)
           .val(value)
           .attr("title", "")
@@ -251,4 +253,17 @@ export class HomeComponent implements OnInit {
   ngAfterViewInit() {
     this.createDropDown();
   }
+
+
+  makeAppointment(){ 
+    alert(this.patient.idpatient+" "+ this.doctor.iddoctor_schedule);
+    this.homeService.saveAppointment(this.patient,this.doctor).subscribe((data: any) => {
+      // this.getPatients();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+ 
+
 }
