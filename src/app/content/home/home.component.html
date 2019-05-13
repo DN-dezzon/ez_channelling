@@ -58,8 +58,8 @@
                         <div class="col-xs-7 content no-top-border">
                           <p class="m-b-xs"><strong>Dr. {{doctor.name}}</strong></p>
       
-                          <p>Rs. {{doctor.fee}}</p>
-                          <h4>50 Appointments</h4>
+                          <p>Charging Fee Rs. {{doctor.fee}}</p>
+                          <h4><span class="label label-warning">{{doctor.totalAppointment}} Appointments</span></h4>
                         </div>
                       </div>
                 </div> 
@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-xs-8 text-right">
                   <span>Patients visits</span>
-                  <h2 class="font-bold">23</h2>
+                  <h2 class="font-bold">{{doctor.todayPatientVisits}}</h2>
                 </div>
               </div>
             </div>
@@ -91,8 +91,8 @@
                       <i class="fa fa-user-md fa-5x"></i>
                     </div>
                     <div class="col-xs-8 text-right">
-                      <span> Doctor vistis </span>
-                      <h2 class="font-bold">3</h2>
+                      <span> Doctor visits </span>
+                      <h2 class="font-bold">{{doctor.tablelength}} </h2>
                     </div>
                   </div>
                 </div>

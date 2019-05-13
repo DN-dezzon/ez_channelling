@@ -31,4 +31,7 @@ export class HomeService {
   getTodaySchedule(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getTodaySchedule',doctor);
   }
+  getPatientCount(doctor : any){ 
+    return this.httpClient.post(environment.apiUrl + '/getTodaySchedule',doctor);
+  }
 }

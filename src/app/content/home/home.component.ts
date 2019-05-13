@@ -11,44 +11,47 @@ declare var $: any;
   providers: [DatePipe]
 })
 export class HomeComponent implements OnInit {
-    elementRef: ElementRef;
-    private datatable: any;
-    private doctors: any[];
-    private doctor_appointments:any[];
-    private todaySchedule:any[];
-    private OptionsSelect: -1;
-    private patients: any[]; 
-    private patient_data: any[]; 
-    private doctor_data: any[]; 
+  elementRef: ElementRef;
+  private datatable: any;
+  private doctors: any[];
+  private doctor_appointments: any[];
+  private todaySchedule: any[];
+  private OptionsSelect: -1;
+  private patients: any[];
+  private patient_data: any[];
+  private doctor_data: any[];
 
-    private mode = "";
-    private doctor = {
-      iddoctor_schedule:"",
-      iddoctor: -1,
-      name: "",
-      specialization: "",
-      base_hospital: "",
-      contactNo: "",
-      fee: 0.0,
-      description: "",
-      datee:"",
-      number:"" , 
-      timee:"",
-      tablelength:""
-    }; 
+  private mode = "";
+  private doctor = {
+    doctor_iddoctor: "",
+    iddoctor_schedule: "",
+    iddoctor: -1,
+    name: "",
+    specialization: "",
+    base_hospital: "",
+    contactNo: "",
+    fee: 0.0,
+    description: "",
+    datee: "",
+    number: "",
+    timee: "",
+    tablelength: "",
+    totalAppointment: "",
+    todayPatientVisits:0
+  };
 
-    private patient = {
-      idpatient: -1,
-      name: "",
-      contactNo: "",
-    }; 
-    myDate = new Date();
-  constructor(private homeService: HomeService,private datePipe: DatePipe) {
-    
-   }
+  private patient = {
+    idpatient: -1,
+    name: "",
+    contactNo: "",
+  };
+  myDate = new Date();
+  constructor(private homeService: HomeService, private datePipe: DatePipe) {
 
-  ngOnInit() { 
-    $('#channeling_date').datepicker({ 
+  }
+
+  ngOnInit() {
+    $('#channeling_date').datepicker({
       todayBtn: "linked",
       keyboardNavigation: false,
       forceParse: false,
@@ -56,24 +59,24 @@ export class HomeComponent implements OnInit {
       autoclose: true
     });
     this.getDoctors();
-    this.getPatients();  
+    this.getPatients();
   }
 
-  searchPatientName() { 
+  searchPatientName() {
     // this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
-  searchDoctorFee(value) {  
-    this.doctor.iddoctor=value;
+  searchDoctorFee(value) {
+    this.doctor.iddoctor = value;
     this.getDoctorById(this.doctor);
   }
-  searchAppointment(value) { 
-    this.doctor.datee='2019-05-20';
+  searchAppointment(value) {
+    this.doctor.datee = '2019-05-13';
     // this.getDoctorById(this.doctor); 
     this.getAppointmentNumber(this.doctor);
   }
-  activatePrint(value) { 
-    
+  activatePrint(value) {
+
   }
 
 
@@ -113,35 +116,35 @@ export class HomeComponent implements OnInit {
     );
   }
 
-     // Load doctor to dropdown
-     getDoctorById(did:any) {
-      this.homeService.getDoctorById(did).subscribe((data: any) => { 
-        this.doctor_data = data; 
-        for (let index = 0; index < this.doctor_data.length; index++) { 
-          this.doctor.fee=this.doctor_data[index].fee; 
-          this.doctor.iddoctor=this.doctor_data[index].iddoctor; 
-        }
-      }, (err) => {
-        console.log(err);
+  // Load doctor to dropdown
+  getDoctorById(did: any) {
+    this.homeService.getDoctorById(did).subscribe((data: any) => {
+      this.doctor_data = data;
+      for (let index = 0; index < this.doctor_data.length; index++) {
+        this.doctor.fee = this.doctor_data[index].fee;
+        this.doctor.iddoctor = this.doctor_data[index].iddoctor;
       }
-      );
+    }, (err) => {
+      console.log(err);
     }
+    );
+  }
 
-    getAppointmentNumber(doctor:any) { 
-     
-      this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
-        this.doctor_appointments = data;
-        for (let index = 0; index < this.doctor_appointments.length; index++) {  
-          this.doctor.number=this.doctor_appointments[index].count+1; 
-          this.doctor.iddoctor=this.doctor_appointments[index].iddoctor; 
-        }
-       
-      }, (err) => {
-        console.log(err);
-      });
-    }  
+  getAppointmentNumber(doctor: any) {
 
-   
+    this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
+      this.doctor_appointments = data;
+      for (let index = 0; index < this.doctor_appointments.length; index++) {
+        this.doctor.number = this.doctor_appointments[index].count + 1;
+        this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
+      }
+
+    }, (err) => {
+      console.log(err);
+    });
+  }
+
+
   createDropDown() {
 
     $.widget("custom.combobox", {
@@ -253,9 +256,9 @@ export class HomeComponent implements OnInit {
   }
 
 
-  makeAppointment(){ 
-    alert(this.patient.idpatient+" "+ this.doctor.iddoctor_schedule);
-    this.homeService.saveAppointment(this.patient,this.doctor).subscribe((data: any) => {
+  makeAppointment() {
+    alert(this.patient.idpatient + " " + this.doctor.iddoctor_schedule);
+    this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();
     }, (err) => {
       console.log(err);
@@ -268,21 +271,41 @@ export class HomeComponent implements OnInit {
       array[index].index = index + 1;
     }
   }
-loadTodaySchedule(){
-  
-  this.doctor.datee=this.datePipe.transform(this.myDate, 'yyyy-MM-dd');
-  this.homeService.getTodaySchedule(this.doctor).subscribe((data: any) => { 
-    this.todaySchedule = data;
-this.doctor.tablelength=data.length; 
-    this.addIndex(this.todaySchedule);
-    this.datatable.clear();
-    this.datatable.rows.add(this.todaySchedule);
-    this.datatable.draw();
-    // this.resetTableListners();
-  }, (err) => {
-    console.log(err);
-  } 
-  );
-}
+  loadTodaySchedule() {
+
+    this.doctor.datee = this.datePipe.transform(this.myDate, 'yyyy-MM-dd');
+
+    this.homeService.getTodaySchedule(this.doctor).subscribe((data: any) => {
+      this.todaySchedule = data;
+      this.doctor.tablelength = data.length;
+      console.log(this.todaySchedule);
+      for (let index = 0; index < this.todaySchedule.length; index++) {
+        this.doctor.iddoctor = this.todaySchedule[index].iddoctor; 
+        this.homeService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
+          this.doctor_appointments = data;
+          this.doctor.totalAppointment="";
+        
+          for (let index = 0; index < this.doctor_appointments.length; index++) { 
+            this.doctor.totalAppointment = this.doctor_appointments[index].count; 
+            this.doctor.todayPatientVisits= Number(this.doctor.todayPatientVisits)+Number(this.doctor_appointments[index].count)
+          }
+          this.todaySchedule[index].totalAppointment=this.doctor.totalAppointment;
+          // console.log( this.doctor.todayPatientVisits);
+        }, (err) => {
+          console.log(err);
+        })
+ 
+        this.todaySchedule[index].index = index + 1;
+      }
+      // this.addIndex(this.todaySchedule);
+      this.datatable.clear();
+      this.datatable.rows.add(this.todaySchedule);
+      this.datatable.draw();
+      // this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
 
 }
