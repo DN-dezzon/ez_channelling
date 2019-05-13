@@ -1,13 +1,3 @@
-
-
-.items{
-    overflow-x: scroll;
-    width: auto;
-    height: 85vh;
-    white-space: nowrap;
-}
-.item{
-    display: inline-block;
-    width: 100%;
-    vertical-align: top; /* here */
- }
+.popover {
+    z-index: 215000000 !important;
+  }

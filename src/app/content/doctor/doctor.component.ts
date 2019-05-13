@@ -8,10 +8,11 @@ import { DoctorService } from './doctor.service';
 })
 export class DoctorComponent implements OnInit {
   private datatable: any;
-  private fullCalendar:any;
+  private fullCalendar: any;
   private doctors: any[];
   private events: any[];
   private mode = "";
+  private selectedDoc = "";
 
   private doctor = {
     iddoctor: -1,
@@ -36,6 +37,19 @@ export class DoctorComponent implements OnInit {
     this.initSelect();
     this.initCalendar();
 
+    (<any>$('#data_1 .input-group.date')).datepicker({
+      todayBtn: "linked",
+      keyboardNavigation: false,
+      forceParse: false,
+      calendarWeeks: true,
+      autoclose: true
+    });
+
+    (<any>$('input[name="daterange"]')).daterangepicker();
+
+
+    // (<any>$('.clockpicker')).clockpicker({ autoclose: true });
+
   }
 
   clickNew() {
@@ -51,8 +65,6 @@ export class DoctorComponent implements OnInit {
   }
 
   getDoctors() {
-    //this.datatable.destroy();
-
     this.doctorService.getDoctors().subscribe((data: any) => {
       this.doctors = data;
       this.addIndex(this.doctors);
@@ -60,6 +72,7 @@ export class DoctorComponent implements OnInit {
       this.datatable.rows.add(this.doctors);
       this.datatable.draw();
       this.resetTableListners();
+      this.selectedDoc = "";
     }, (err) => {
       console.log(err);
     }
@@ -104,6 +117,7 @@ export class DoctorComponent implements OnInit {
   deleteDoctor() {
     (<any>$("#newDoctor")).modal("hide");
     this.doctorService.deleteDoctor(this.doctor).subscribe((data: any) => {
+      this.selectedDoc = "";
       this.getDoctors();
     }, (err) => {
       console.log(err);
@@ -116,7 +130,7 @@ export class DoctorComponent implements OnInit {
     this.doctor = doctor;
     (<any>$("#newDoctor")).modal();
   }
-  
+
 
   initCalendar() {
     this.fullCalendar = (<any>$('#calendar')).fullCalendar({
@@ -135,8 +149,16 @@ export class DoctorComponent implements OnInit {
     });
   }
 
+  clickNewSchedule() {
+    this.mode = 'newSchedule';
+    (<any>$("#newSchedule")).modal();
+  }
 
-  addEvents(){
+  showUpdateScheduleModal(schedule: any) {
+
+  }
+
+  addEvents() {
 
     var date = new Date();
     var d = date.getDate();
@@ -193,6 +215,8 @@ export class DoctorComponent implements OnInit {
   }
 
   initSelect() {
+    var _this = this;
+
     (<any>$(".select2_demo_3")).select2({
       dropdownCssClass: 'custom-dropdown'
     });
@@ -201,6 +225,13 @@ export class DoctorComponent implements OnInit {
       $('.custom-dropdown').parent().css('z-index', 99999);
     });
 
+    (<any>$(".select2_demo_3")).on('select2:select', function (e) {
+      _this.docSelected(e.params.data.id);
+    });
+  }
+
+  docSelected(id) {
+    this.selectedDoc = id;
   }
 
   initTable() {
