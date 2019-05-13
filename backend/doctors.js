@@ -8,6 +8,7 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createPool({
+    connectionLimit : 100,
     host: 'remotemysql.com',
     user: 'Rr6RfuQQAh',
     password: '7cA4hntkbd',

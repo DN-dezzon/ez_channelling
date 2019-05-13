@@ -31,6 +31,8 @@ export class DoctorComponent implements OnInit {
     this.getDoctors();
   }
 
+  
+  
   ngAfterViewInit() {
 
     this.initTable();
@@ -49,7 +51,6 @@ export class DoctorComponent implements OnInit {
 
 
     // (<any>$('.clockpicker')).clockpicker({ autoclose: true });
-
   }
 
   clickNew() {
