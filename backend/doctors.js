@@ -8,16 +8,16 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createConnection({
-    // host: 'remotemysql.com',
-    // user: 'Rr6RfuQQAh',
-    // password: '7cA4hntkbd',
-    // database: 'Rr6RfuQQAh',
-    // port: '3306'
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'shanthi_medical',
-    port: '3307'
+    host: 'remotemysql.com',
+    user: 'Rr6RfuQQAh',
+    password: '7cA4hntkbd',
+    database: 'Rr6RfuQQAh',
+    port: '3306'
+    // host: 'localhost',
+    // user: 'root',
+    // password: '',
+    // database: 'shanthi_medical',
+    // port: '3307'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
