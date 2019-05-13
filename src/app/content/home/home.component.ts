@@ -44,6 +44,8 @@ export class HomeComponent implements OnInit {
     idpatient: -1,
     name: "",
     contactNo: "",
+    amount:"",
+    monthly_income:""
   };
   myDate = new Date();
   constructor(private homeService: HomeService, private datePipe: DatePipe) {
@@ -253,6 +255,8 @@ export class HomeComponent implements OnInit {
   ngAfterViewInit() {
     this.createDropDown();
     this.loadTodaySchedule();
+    this.getTodayPatientIncome();
+    this.getTodayPatientMonthlyIncome();
   }
 
 
@@ -277,8 +281,7 @@ export class HomeComponent implements OnInit {
 
     this.homeService.getTodaySchedule(this.doctor).subscribe((data: any) => {
       this.todaySchedule = data;
-      this.doctor.tablelength = data.length;
-      console.log(this.todaySchedule);
+      this.doctor.tablelength = data.length; 
       for (let index = 0; index < this.todaySchedule.length; index++) {
         this.doctor.iddoctor = this.todaySchedule[index].iddoctor; 
         this.homeService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
@@ -296,11 +299,8 @@ export class HomeComponent implements OnInit {
         })
  
         this.todaySchedule[index].index = index + 1;
-      }
-      // this.addIndex(this.todaySchedule);
-      this.datatable.clear();
-      this.datatable.rows.add(this.todaySchedule);
-      this.datatable.draw();
+      } 
+      
       // this.resetTableListners();
     }, (err) => {
       console.log(err);
@@ -308,4 +308,33 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  getTodayPatientIncome() {
+
+    this.homeService.getPatientIncome().subscribe((data: any) => {
+      this.patient_data = data;
+     
+      for (let index = 0; index < this.patient_data.length; index++) {
+        console.log(this.patient_data[index].amount);
+        this.patient.amount = this.patient_data[index].sum;
+        console.log(   this.patient.amount )
+      }
+
+    }, (err) => {
+      console.log(err);
+    });
+  }
+  getTodayPatientMonthlyIncome() {
+
+    this.homeService.getPatientIncomeMonthly().subscribe((data: any) => {
+      this.patient_data = data;
+     
+      for (let index = 0; index < this.patient_data.length; index++) {
+        console.log(this.patient_data[index].amount);
+        this.patient.monthly_income = this.patient_data[index].monthlytot; 
+      }
+
+    }, (err) => {
+      console.log(err);
+    });
+  }
 }
