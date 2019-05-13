@@ -188,7 +188,7 @@ app.post('/getDoctortbyId', function (req, res) {
     });
 });
 app.post('/getAppointMentNumber', function (req, res) {
-    query ="SELECT count(number) as count FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.date=?";
+    query ="SELECT count(number) as count FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=?";
     values = [req.body.iddoctor, req.body.datee]; 
     db.query(query, values,(err, result) => { 
         if (err) {
@@ -215,6 +215,18 @@ app.post('/saveAppointment', function (req, res) {
             res.send(500,err);
         }else{
             res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/getTodaySchedule', function (req, res) {
+    query ="SELECT * FROM doctor_schedule ds inner join doctor d on ds.doctor_iddoctor=d.iddoctor where ds.datee=?";
+    values = [req.body.datee]; 
+    db.query(query, values,(err, result) => { 
+        if (err) {
+            res.send(500,err);
+        }else{ 
+            res.json(result);
         }
     });
 });

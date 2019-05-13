@@ -1,4 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { HomeService } from './home.servie';
 import { Observable } from 'rxjs';
 
@@ -6,15 +7,20 @@ declare var $: any;
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  providers: [DatePipe]
 })
 export class HomeComponent implements OnInit {
     elementRef: ElementRef;
     private datatable: any;
     private doctors: any[];
     private doctor_appointments:any[];
+    private todaySchedule:any[];
     private OptionsSelect: -1;
-  
+    private patients: any[]; 
+    private patient_data: any[]; 
+    private doctor_data: any[]; 
+
     private mode = "";
     private doctor = {
       iddoctor_schedule:"",
@@ -26,32 +32,22 @@ export class HomeComponent implements OnInit {
       fee: 0.0,
       description: "",
       datee:"",
-      number:""  
-    };
-
-    private doctor_appointment = { 
-      count:""
-      
-    };
-    private patients: any[]; 
-    private patient_data: any[]; 
-    private doctor_data: any[]; 
+      number:"" , 
+      timee:"",
+      tablelength:""
+    }; 
 
     private patient = {
       idpatient: -1,
       name: "",
       contactNo: "",
-    };
+    }; 
+    myDate = new Date();
+  constructor(private homeService: HomeService,private datePipe: DatePipe) {
+    
+   }
 
-    private patientData = {
-      idpatient: -1,
-      name: "",
-      contactNo: "",
-    };
-  constructor(private homeService: HomeService) { }
-
-  ngOnInit() {
-
+  ngOnInit() { 
     $('#channeling_date').datepicker({ 
       todayBtn: "linked",
       keyboardNavigation: false,
@@ -60,12 +56,10 @@ export class HomeComponent implements OnInit {
       autoclose: true
     });
     this.getDoctors();
-    this.getPatients(); 
-
+    this.getPatients();  
   }
 
-  searchPatientName() {
-    alert("adsdasdas")
+  searchPatientName() { 
     // this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
@@ -74,9 +68,12 @@ export class HomeComponent implements OnInit {
     this.getDoctorById(this.doctor);
   }
   searchAppointment(value) { 
-    this.doctor.datee='2019-05-12';
+    this.doctor.datee='2019-05-20';
     // this.getDoctorById(this.doctor); 
     this.getAppointmentNumber(this.doctor);
+  }
+  activatePrint(value) { 
+    
   }
 
 
@@ -252,6 +249,7 @@ export class HomeComponent implements OnInit {
   }
   ngAfterViewInit() {
     this.createDropDown();
+    this.loadTodaySchedule();
   }
 
 
@@ -264,6 +262,27 @@ export class HomeComponent implements OnInit {
     }
     );
   }
- 
+  addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      console.log(array[index].index);
+      array[index].index = index + 1;
+    }
+  }
+loadTodaySchedule(){
+  
+  this.doctor.datee=this.datePipe.transform(this.myDate, 'yyyy-MM-dd');
+  this.homeService.getTodaySchedule(this.doctor).subscribe((data: any) => { 
+    this.todaySchedule = data;
+this.doctor.tablelength=data.length; 
+    this.addIndex(this.todaySchedule);
+    this.datatable.clear();
+    this.datatable.rows.add(this.todaySchedule);
+    this.datatable.draw();
+    // this.resetTableListners();
+  }, (err) => {
+    console.log(err);
+  } 
+  );
+}
 
 }

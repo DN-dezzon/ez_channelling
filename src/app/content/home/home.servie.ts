@@ -28,4 +28,7 @@ export class HomeService {
     alert(patient.idpatient+" "+ doctor.iddoctor);
     return this.httpClient.post(environment.apiUrl + '/saveAppointment',patient,doctor);
   } 
+  getTodaySchedule(doctor : any){ 
+    return this.httpClient.post(environment.apiUrl + '/getTodaySchedule',doctor);
+  }
 }

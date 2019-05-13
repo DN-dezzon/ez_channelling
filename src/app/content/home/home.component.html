@@ -19,7 +19,7 @@
           <div class="widget style1 lazur-bg">
               <div class="row">
                 <div class="col-xs-4 text-center">
-                  <i class="fa fa-euro fa-5x"></i>
+                  <i class="fa fa-dollar fa-5x"></i>
                 </div>
                 <div class="col-xs-8 text-right">
                   <span> Monthly income </span>
@@ -34,7 +34,7 @@
         <div class="wrapper wrapper-content">
           <div class="ibox float-e-margins">
             <div class="ibox-title">
-              <h5>15-12-2019</h5>
+              <h5>{{myDate | date:'yyyy-MM-dd'}}</h5>
               <div class="ibox-tools">
                 <a class="collapse-link">
                   <i class="fa fa-chevron-up"></i>
@@ -42,44 +42,27 @@
               </div>
             </div>
             <div class="ibox-content ibox-heading">
-              <h3>Today</h3>
-              <small><i class="fa fa-user-md"></i> 2 doctors are coming today. Check your schedule to see
+              <h3>{{myDate | date:'EEEE'}}</h3>
+              <small><i class="fa fa-user-md"></i> {{doctor.tablelength}} doctors are coming today. Check your schedule to see
                 detail.</small>
             </div>
             <div class="ibox-content inspinia-timeline">
-
-              <div class="timeline-item">
-                <div class="row">
-                  <div class="col-xs-3 date">
-                    <i class="fa fa-briefcase"></i>
-                    6:00 pm
-                    <br />
-                    <small class="text-navy">2 hour ago</small>
-                  </div>
-                  <div class="col-xs-7 content no-top-border">
-                    <p class="m-b-xs"><strong>Dr. Saroja Panagala</strong></p>
-
-                    <p>Issued 50 appointments</p>
-                    <h4>12 Ongoing</h4>
-                  </div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="row">
-                  <div class="col-xs-3 date">
-                    <i class="fa fa-briefcase"></i>
-                    7:00 pm
-                    <br />
-                    <small class="text-navy">3 hour ago</small>
-                  </div>
-                  <div class="col-xs-7 content no-top-border">
-                    <p class="m-b-xs"><strong>Dr. Lalani Wijerathne</strong></p>
-
-                    <p>Issued 40 appointments</p>
-                    <h4>Not Started</h4>
-                  </div>
-                </div>
-              </div>
+                <div class="timeline-item" *ngFor="let doctor of todaySchedule; index as i">
+                    <div class="row">
+                        <div class="col-xs-3 date">
+                          <i class="fa fa-briefcase"></i>
+                          {{doctor.timee}}
+                          <br />
+                          <small class="text-navy">2 hour ago</small>
+                        </div>
+                        <div class="col-xs-7 content no-top-border">
+                          <p class="m-b-xs"><strong>Dr. {{doctor.name}}</strong></p>
+      
+                          <p>Rs. {{doctor.fee}}</p>
+                          <h4>50 Appointments</h4>
+                        </div>
+                      </div>
+                </div> 
             </div>
           </div>
         </div>
@@ -87,6 +70,35 @@
     </div>
   </div>
   <div class="col-lg-6">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="widget style1 yellow-bg">
+              <div class="row">
+                <div class="col-xs-4 text-center">
+                  <i class="fa fa-user fa-5x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                  <span>Patients visits</span>
+                  <h2 class="font-bold">23</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="widget style1 lazur-bg">
+                  <div class="row">
+                    <div class="col-xs-4 text-center">
+                      <i class="fa fa-user-md fa-5x"></i>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                      <span> Doctor vistis </span>
+                      <h2 class="font-bold">3</h2>
+                    </div>
+                  </div>
+                </div>
+          </div>
+    </div>
+    <div class="row">
     <div class="col-lg-12">
       <div class="wrapper wrapper-content">
         <div class="row">
@@ -119,7 +131,7 @@
                     <div class="col-sm-9">
                       <select #searchFee (change)="searchDoctorFee(searchFee.value)" class="form-control m-b"
                         [(ngModel)]="OptionsSelect" [ngModelOptions]="{standalone: true}">
-                        <option value="{{doctor.iddoctor }}" *ngFor="let doctor of doctors">
+                        <option value="{{doctor.iddoctor}}" *ngFor="let doctor of doctors">
                           {{doctor.name}}
                         </option>
                       </select>
@@ -169,22 +181,25 @@
                   <div class="hr-line-dashed"></div>
                   <div class="form-group"><label class="col-sm-3 control-label">Payment status</label>
                     <div class="col-sm-9">
-                      <select class="form-control m-b" name="account">
-                        <option>Paid</option>
-                        <option>Not paid</option>
-                        <option>Cancelled</option>
+                      <select #paymentStatus (change)="activatePrint(paymentStatus.value)" class="form-control m-b" name="account">
+                          <option value="Pending">Not paid</option>
+                        <option value="Paid">Paid</option> 
+                        <option value="Cancelled">Cancelled</option>
                       </select>
                     </div>
                   </div>
                   <div class="hr-line-dashed"></div>
                   <div class="form-group">
-                    <div class="col-sm-2 col-sm-offset-4">
+                    <div class="col-sm-2 col-sm-offset-2">
                       <button class="btn btn-white" type="submit">Clear All</button>
                     </div>
-                    <div class="col-sm-2 ">
+                    <div class="col-sm-4">
                       <button class="btn btn-primary" (click)="makeAppointment()" type="submit">Make
                         Appointment</button>
                     </div>
+                    <div class="col-sm-2 ">
+                        <button class="btn btn-primary" href="#invoice"  data-toggle="modal"  type="submit">Print Invoice</button>
+                      </div>
                   </div>
                 </form>
               </div>
@@ -193,6 +208,76 @@
         </div>
       </div>
     </div>
-
+  </div>
   </div>
 </div>
+<div id="invoice" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <div class="modal-body">
+            <div class=" ">
+                <div class="ibox-content ">
+                        <div class="row"> 
+                            <div class="col-sm-12 text-center">
+                                <h3>Shanthi Medical Home</h3>
+                                <address> 
+                                    No. 600/10<br>
+                                    Katana<br>
+                                    <abbr title="Phone">P:</abbr>  (031) 2256525
+                                </address>
+                            </div>
+                        </div>
+                        <div class="row"> 
+                            <div class="col-sm-12 text-right">
+                                <h4>Invoice No.</h4>
+                                <h4 class="text-navy">INV-000567F7-00</h4> 
+                                <p>
+                                    <span><strong>Invoice Date:</strong> May 18, 2014</span><br/> 
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive m-t">
+                            <table class="table invoice-table"> 
+                                <tbody>
+                                <tr>
+                                    <td>Doctor Name :</td> 
+                                    <td style="text-align: left">Dr. Chathuri Mahanayake </td>  
+                                </tr>
+                                <tr>
+                                    <td>Appointment :</td>
+                                    <td style="text-align: left"><div><strong>26</strong></div></td> 
+                                </tr>
+                                <tr>
+                                    <td>Appointment Date :</td>
+                                    <td style="text-align: left"><div><strong>2019-05-23</strong></div></td> 
+                                </tr>
+                                <tr>
+                                    <td>Patient :</td>
+                                    <td style="text-align: left">Mr. Madhava Dabare</td> 
+                                </tr> 
+
+                                </tbody>
+                            </table>
+                        </div><!-- /table-responsive -->
+
+                        <table class="table invoice-total">
+                            <tbody> 
+                            <tr>
+                                <td><strong></strong></td>
+                                <td> </td>
+                            </tr>
+                            <tr>
+                                <td><strong>FEE (Rs.) :</strong></td>
+                                <td>2500.00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div style="font-size: 11px"><small>**Not Refund. Goverment taxes are included</small>
+                            
+                        </div>
+                    </div>
+        </div>
+      </div>
+    </div>
+  </div>
