@@ -8,7 +8,7 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createPool({
-    connectionLimit : 100,
+    connectionLimit : 2,
     host: 'remotemysql.com',
     user: 'Rr6RfuQQAh',
     password: '7cA4hntkbd',
@@ -98,6 +98,16 @@ app.get('/getNextDoctorId', function (req, res) {
                 result[0].iddoctor = 1;
             }
             res.json(result[0]);
+        }
+    });
+});
+
+app.get('/getDoctorSchedules', function (req, res) {
+    db.query("SELECT * FROM doctor_schedule_new ORDER BY datee ASC", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
         }
     });
 });
