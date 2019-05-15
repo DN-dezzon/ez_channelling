@@ -6,15 +6,15 @@ import { DoctorService } from './doctor.service';
   templateUrl: './doctor.component.html',
   styleUrls: ['./doctor.component.scss']
 })
-export class DoctorComponent implements OnInit {
-  private datatable: any;
-  private fullCalendar: any;
-  private doctors: any[];
-  private events: any[];
-  private mode = "";
-  private selectedDoc = "";
 
-  private doctor = {
+export class DoctorComponent implements OnInit {
+  datatable: any;
+  fullCalendar: any;
+  doctors: any[];
+  events: any[];
+  mode = "";
+
+  doctor = {
     iddoctor: -1,
     name: "",
     specialization: "",
@@ -24,6 +24,15 @@ export class DoctorComponent implements OnInit {
     description: "",
   };
 
+  schedule = {
+    iddoctor_schedule: -1,
+    doctor: this.doctor,
+    datee: "",//2012-12-30-----01/01/2015 - 01/31/2015
+    doctor_in: "00:00:00",//23:11:22
+    doctor_out: "00:00:00",
+    repetive: "true",
+  }
+
   constructor(private doctorService: DoctorService) { }
 
 
@@ -31,38 +40,30 @@ export class DoctorComponent implements OnInit {
     this.getDoctors();
   }
 
-  
-  
+
+
   ngAfterViewInit() {
 
     this.initTable();
     this.initSelect();
-    this.initCalendar();
-
-    (<any>$('#data_1 .input-group.date')).datepicker({
-      todayBtn: "linked",
-      keyboardNavigation: false,
-      forceParse: false,
-      calendarWeeks: true,
-      autoclose: true
-    });
-
-    (<any>$('input[name="daterange"]')).daterangepicker();
-
-
-    // (<any>$('.clockpicker')).clockpicker({ autoclose: true });
+    this.initDatepickers();
   }
 
   clickNew() {
     this.mode = 'new';
+    this.clearDoctor();
     this.getNextDoctorId();
+    (<any>$("#newDoctor")).modal();
+  }
+
+  clearDoctor() {
+    this.doctor.iddoctor = -1;
     this.doctor.name = "";
     this.doctor.specialization = "";
     this.doctor.base_hospital = "";
     this.doctor.contactNo = "";
     this.doctor.fee = 0.0;
     this.doctor.description = "";
-    (<any>$("#newDoctor")).modal();
   }
 
   getDoctors() {
@@ -73,7 +74,6 @@ export class DoctorComponent implements OnInit {
       this.datatable.rows.add(this.doctors);
       this.datatable.draw();
       this.resetTableListners();
-      this.selectedDoc = "";
     }, (err) => {
       console.log(err);
     }
@@ -118,7 +118,6 @@ export class DoctorComponent implements OnInit {
   deleteDoctor() {
     (<any>$("#newDoctor")).modal("hide");
     this.doctorService.deleteDoctor(this.doctor).subscribe((data: any) => {
-      this.selectedDoc = "";
       this.getDoctors();
     }, (err) => {
       console.log(err);
@@ -134,20 +133,22 @@ export class DoctorComponent implements OnInit {
 
 
   initCalendar() {
-    this.fullCalendar = (<any>$('#calendar')).fullCalendar({
-      defaultView: 'month',
-      height: "auto",
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-      },
-      editable: false,
-      events: this.events,
-      eventClick: function (info) {
-        console.log(info);
-      }
-    });
+    if (!this.fullCalendar) {
+      this.fullCalendar = (<any>$('#calendar')).fullCalendar({
+        defaultView: 'month',
+        height: "auto",
+        header: {
+          left: '',
+          center: 'title',
+          right: 'prev,next today'
+        },
+        editable: false,
+        events: this.events,
+        eventClick: function (info) {
+          console.log(info);
+        }
+      });
+    }
   }
 
   clickNewSchedule() {
@@ -215,6 +216,16 @@ export class DoctorComponent implements OnInit {
     this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.events);
   }
 
+  saveSchedule() {
+    if (this.schedule.repetive == 'true') {
+      this.schedule.datee = (<HTMLInputElement>document.getElementById("selectDateRangeDoctor")).value;
+    } else {
+      this.schedule.datee = (<HTMLInputElement>document.getElementById("selectDateDoctor")).value;
+    }
+
+    console.log(this.schedule);
+  }
+
   initSelect() {
     var _this = this;
 
@@ -231,8 +242,22 @@ export class DoctorComponent implements OnInit {
     });
   }
 
-  docSelected(id) {
-    this.selectedDoc = id;
+  docSelected(index) {
+    if (index == "") {
+      this.clearDoctor();
+    } else {
+      this.doctor.iddoctor = this.doctors[index].iddoctor;
+      this.doctor.name = this.doctors[index].name;
+      this.doctor.specialization = this.doctors[index].specialization;
+      this.doctor.base_hospital = this.doctors[index].base_hospital;
+      this.doctor.contactNo = this.doctors[index].contactNo;
+      this.doctor.fee = this.doctors[index].fee;
+      this.doctor.description = this.doctors[index].description;
+    }
+
+    this.initCalendar();
+
+
   }
 
   initTable() {
@@ -288,6 +313,22 @@ export class DoctorComponent implements OnInit {
 
 
   }
+
+  initDatepickers() {
+
+    (<any>$('#selectDateDoctor')).datepicker({
+      todayBtn: "linked",
+      keyboardNavigation: false,
+      forceParse: false,
+      calendarWeeks: true,
+      autoclose: true,
+      onSelect: function (date) {
+        alert(date);
+      }
+    });
+    (<any>$('#selectDateRangeDoctor')).daterangepicker();
+  }
+
 
   resetTableListners() {
 
