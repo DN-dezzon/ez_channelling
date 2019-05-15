@@ -37,15 +37,15 @@ export class HomeComponent implements OnInit {
     timee: "",
     tablelength: "",
     totalAppointment: "",
-    todayPatientVisits:0
+    todayPatientVisits: 0
   };
 
   private patient = {
     idpatient: -1,
     name: "",
     contactNo: "",
-    amount:"",
-    monthly_income:""
+    amount: "",
+    monthly_income: ""
   };
   myDate = new Date();
   constructor(private homeService: HomeService, private datePipe: DatePipe) {
@@ -146,8 +146,17 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  selectPatientMobileNo(mobileNo){
+    console.log(mobileNo);
+  }
+
+  selectNewPatientMobileNo(mobileNo){
+    console.log(mobileNo);
+  }
 
   createDropDown() {
+
+    var _this = this;
 
     $.widget("custom.combobox", {
       _create: function () {
@@ -209,6 +218,7 @@ export class HomeComponent implements OnInit {
 
         // Selected an item, nothing to do
         if (ui.item) {
+          _this.selectPatientMobileNo(this.input.val().trim());
           return;
         }
 
@@ -234,6 +244,7 @@ export class HomeComponent implements OnInit {
           .attr("title", value + " is a new doctor")
           .tooltip("open");
         //this.element.val("");
+        _this.selectNewPatientMobileNo(value.trim());
         this._delay(function () {
           this.input.tooltip("close").attr("title", "");
         }, 2500);
@@ -281,26 +292,26 @@ export class HomeComponent implements OnInit {
 
     this.homeService.getTodaySchedule(this.doctor).subscribe((data: any) => {
       this.todaySchedule = data;
-      this.doctor.tablelength = data.length; 
+      this.doctor.tablelength = data.length;
       for (let index = 0; index < this.todaySchedule.length; index++) {
-        this.doctor.iddoctor = this.todaySchedule[index].iddoctor; 
+        this.doctor.iddoctor = this.todaySchedule[index].iddoctor;
         this.homeService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
           this.doctor_appointments = data;
-          this.doctor.totalAppointment="";
-        
-          for (let index = 0; index < this.doctor_appointments.length; index++) { 
-            this.doctor.totalAppointment = this.doctor_appointments[index].count; 
-            this.doctor.todayPatientVisits= Number(this.doctor.todayPatientVisits)+Number(this.doctor_appointments[index].count)
+          this.doctor.totalAppointment = "";
+
+          for (let index = 0; index < this.doctor_appointments.length; index++) {
+            this.doctor.totalAppointment = this.doctor_appointments[index].count;
+            this.doctor.todayPatientVisits = Number(this.doctor.todayPatientVisits) + Number(this.doctor_appointments[index].count)
           }
-          this.todaySchedule[index].totalAppointment=this.doctor.totalAppointment;
+          this.todaySchedule[index].totalAppointment = this.doctor.totalAppointment;
           // console.log( this.doctor.todayPatientVisits);
         }, (err) => {
           console.log(err);
         })
- 
+
         this.todaySchedule[index].index = index + 1;
-      } 
-      
+      }
+
       // this.resetTableListners();
     }, (err) => {
       console.log(err);
@@ -312,11 +323,11 @@ export class HomeComponent implements OnInit {
 
     this.homeService.getPatientIncome().subscribe((data: any) => {
       this.patient_data = data;
-     
+
       for (let index = 0; index < this.patient_data.length; index++) {
         console.log(this.patient_data[index].amount);
         this.patient.amount = this.patient_data[index].sum;
-        console.log(   this.patient.amount )
+        console.log(this.patient.amount)
       }
 
     }, (err) => {
@@ -327,10 +338,10 @@ export class HomeComponent implements OnInit {
 
     this.homeService.getPatientIncomeMonthly().subscribe((data: any) => {
       this.patient_data = data;
-     
+
       for (let index = 0; index < this.patient_data.length; index++) {
         console.log(this.patient_data[index].amount);
-        this.patient.monthly_income = this.patient_data[index].monthlytot; 
+        this.patient.monthly_income = this.patient_data[index].monthlytot;
       }
 
     }, (err) => {
