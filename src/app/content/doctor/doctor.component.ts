@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DoctorService } from './doctor.service';
 
 declare let swal: any;
+declare let toastr:any;
 @Component({
   selector: 'app-doctor',
   templateUrl: './doctor.component.html',
@@ -54,6 +55,7 @@ export class DoctorComponent implements OnInit {
     this.initTable();
     this.initSelect();
     this.initDatepickers();
+    this.initToasterNotifications();
   }
 
   clickNew() {
@@ -85,7 +87,7 @@ export class DoctorComponent implements OnInit {
       this.datatable.clear();
       this.datatable.rows.add(this.doctors);
       this.datatable.draw();
-      console.log(err);
+      toastr.error('While fetching doctor details', 'Data fetch error');
     }
     );
   }
@@ -93,6 +95,11 @@ export class DoctorComponent implements OnInit {
   datesTabSelected() {
     this.clearDoctor();
     this.clearSchedule();
+    this.doctorSchedules = [];
+    if (this.fullCalendar) {
+      this.fullCalendar.fullCalendar('getCalendar').removeEvents();
+      this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
+    }
     setTimeout(this.initCalendar, 10);
   }
 
@@ -101,7 +108,7 @@ export class DoctorComponent implements OnInit {
       this.doctor.iddoctor = data.iddoctor;
       (<any>$("#newDoctor")).modal();
     }, (err) => {
-      console.log(err);
+      toastr.error('While fetching doctor details', 'Data fetch error');
     }
     );
   }
@@ -111,7 +118,7 @@ export class DoctorComponent implements OnInit {
       this.schedule.iddoctor_schedule = data.iddoctor_schedule;
       (<any>$("#newSchedule")).modal();
     }, (err) => {
-      console.log(err);
+      toastr.error('While fetching schedules', 'Data fetch error');
     }
     );
   }
@@ -126,8 +133,9 @@ export class DoctorComponent implements OnInit {
     (<any>$("#newDoctor")).modal("hide");
     this.doctorService.saveDoctor(this.doctor).subscribe((data: any) => {
       this.getDoctors();
+      toastr.success("Success", "New doctor inserted");
     }, (err) => {
-      console.log(err);
+      toastr.error('While saving doctor', 'Data save error');
     }
     );
   }
@@ -136,8 +144,9 @@ export class DoctorComponent implements OnInit {
     (<any>$("#newDoctor")).modal("hide");
     this.doctorService.updateDoctor(this.doctor).subscribe((data: any) => {
       this.getDoctors();
+      toastr.success("Success", "Updated doctor details");
     }, (err) => {
-      console.log(err);
+      toastr.error('While updating doctor', 'Data update error');
     }
     );
   }
@@ -157,8 +166,9 @@ export class DoctorComponent implements OnInit {
           _this.doctorService.deleteDoctor(_this.doctor).subscribe((data: any) => {
             _this.getDoctors();
             (<any>$("#newDoctor")).modal("hide");
+            toastr.success("Success", "Deleted doctor");
           }, (err) => {
-            console.log(err);
+            toastr.error('While deleting doctor', 'Data deletion error');
           }
           );
         } else {
@@ -221,13 +231,12 @@ export class DoctorComponent implements OnInit {
   }
 
 
-  getSchedulePatients(){
+  getSchedulePatients() {
     this.schedulePatients = [];
     this.doctorService.getPatientsBySchedule(this.schedule).subscribe((data: any) => {
       this.schedulePatients = data;
-      console.log(data);
     }, (err) => {
-      console.log(err);
+      toastr.error('While getting patient details', 'Data fetching error');
     }
     );
   }
@@ -314,22 +323,13 @@ export class DoctorComponent implements OnInit {
       this.schedule.daterange = (<HTMLInputElement>document.getElementById("selectDateDoctor")).value;
     }
     if (!this.schedule.daterange && this.schedule.repetive == 'true') {
-      swal({
-        title: "Please select a date range",
-        confirmButtonColor: '#FF8800'
-      });
+      toastr.warning('Please select a date range', 'Date not selected');
     } else if (!this.schedule.daterange && this.schedule.repetive == 'false') {
-      swal({
-        title: "Please select a date",
-        confirmButtonColor: '#FF8800'
-      });
+      toastr.warning('Please select a date', 'Date not selected');
     } else {
       let datee = this.schedule.daterange.split("/");
       if (datee.length != 3) {
-        swal({
-          title: "Date invalid",
-          confirmButtonColor: '#FF8800'
-        });
+        toastr.warning('Please select a valid date', 'Date invalid');
       } else {
         this.schedule.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
 
@@ -339,11 +339,9 @@ export class DoctorComponent implements OnInit {
           (<any>$("#newSchedule")).modal('hide');
           this.getSchedules();
           this.clearSchedule();
+          toastr.success("Success", "Updated schedule");
         }, (err) => {
-          swal({
-            title: "Error",
-            confirmButtonColor: '#DD6B55'
-          });
+          toastr.error('While updating schedule', 'Data update error');
         }
         );
       }
@@ -366,11 +364,9 @@ export class DoctorComponent implements OnInit {
             (<any>$("#newSchedule")).modal('hide');
             _this.getSchedules();
             _this.clearSchedule();
+            toastr.success("Success", "Deleted schedule");
           }, (err) => {
-            swal({
-              title: "Error",
-              confirmButtonColor: '#DD6B55'
-            });
+            toastr.error('While deleting schedule', 'Data deletion error');
           }
           );
         } else {
@@ -382,7 +378,7 @@ export class DoctorComponent implements OnInit {
   getSchedules() {
     this.doctorSchedules = [];
     if (this.fullCalendar) {
-      this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
+      this.fullCalendar.fullCalendar('getCalendar').removeEvents();
     }
     this.doctorService.getAllDoctorScheduleByDoctor(this.doctor).subscribe((data: any) => {
       this.doctorSchedules = data;
@@ -392,7 +388,7 @@ export class DoctorComponent implements OnInit {
         this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
       }
     }, (err) => {
-      console.log(err);
+      toastr.error('While fetching schedules', 'Data fetch error');
     }
     );
   }
@@ -404,23 +400,14 @@ export class DoctorComponent implements OnInit {
       this.schedule.daterange = (<HTMLInputElement>document.getElementById("selectDateDoctor")).value;
     }
     if (!this.schedule.daterange && this.schedule.repetive == 'true') {
-      swal({
-        title: "Please select a date range",
-        confirmButtonColor: '#FF8800'
-      });
+      toastr.warning('Please select a date range', 'Date not selected');
     } else if (!this.schedule.daterange && this.schedule.repetive == 'false') {
-      swal({
-        title: "Please select a date",
-        confirmButtonColor: '#FF8800'
-      });
+      toastr.warning('Please select a date', 'Date not selected');
     } else {
       let datee = this.schedule.daterange.split("/");
       console.log(datee.length);
       if (datee.length != 3) {
-        swal({
-          title: "Date invalid",
-          confirmButtonColor: '#FF8800'
-        });
+        toastr.warning('Please select a valid date', 'Date invalid');
       } else {
         this.schedule.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
 
@@ -430,11 +417,9 @@ export class DoctorComponent implements OnInit {
           (<any>$("#newSchedule")).modal('hide');
           this.getSchedules();
           this.clearSchedule();
+          toastr.success("Success", "Inserted schedule");
         }, (err) => {
-          swal({
-            title: "Error",
-            confirmButtonColor: '#DD6B55'
-          });
+          toastr.error('While inserting schedule', 'Data insert error');
         }
         );
       }
@@ -472,8 +457,7 @@ export class DoctorComponent implements OnInit {
 
     this.initCalendar();
     this.getSchedules();
-    //setTimeout(this.initCalendar, 10);
-
+    this.clearSchedule();
   }
 
   initTable() {
@@ -572,5 +556,22 @@ export class DoctorComponent implements OnInit {
     })
   }
 
-
+  initToasterNotifications(){
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "progressBar": true,
+      "preventDuplicates": false,
+      "positionClass": "toast-top-right",
+      "onclick": null,
+      "showDuration": "400",
+      "hideDuration": "1000",
+      "timeOut": "7000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+  }
 }
