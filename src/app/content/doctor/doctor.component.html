@@ -75,7 +75,7 @@
                 </option>
               </select>
               <div id="calendar" class="col-sm-8"></div>
-              <input type="text" id="globalScheduleSelected" (change)="scheduleSelected()" hidden disabled>
+              <input type="text" id="globalScheduleSelected" (change)="scheduleSelected($event)" hidden disabled>
 
               <div [hidden]="schedule.iddoctor_schedule == -1" class="col-sm-3">
 
@@ -84,7 +84,7 @@
                     <span class="badge badge-info">{{schedule.out_h + ':' + schedule.out_m + ' ' + schedule.out_d}}</span>
                   
   
-                  <button type="button" class="btn btn-xs btn-warning pull-right" (click)="showUpdateScheduleModal()">
+                  <button type="button" class="btn btn-xs btn-warning pull-right" (click)="showUpdateScheduleModal($event)">
                     <span class="glyphicon glyphicon-edit"></span>
                   </button>
 
