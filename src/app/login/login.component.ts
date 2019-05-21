@@ -54,7 +54,8 @@ export class LoginComponent implements OnInit {
         this.databaseService.user.designation = this.user.designation;
         this.databaseService.user.type = this.user.type;
         this.router.navigateByUrl('/home/home');
-        toastr.info("", "Welcome " + this.user.name + " to EZ Channelling system");
+        toastr.clear();
+        toastr.info("Have a nice day :)", "Welcome " + this.user.name);
       } else {
         toastr.error("Username and password mismatch", "Login failed");
         this.clearUser();
