@@ -9,7 +9,7 @@ import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
 
 const routes: Routes = [
-  { path: 'home', component: PageFoundComponent },
+  //{ path: 'home', component: PageFoundComponent },
 
   { path: 'login', component: LoginComponent },
 
@@ -37,7 +37,7 @@ const routes: Routes = [
   }, 
   {
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/login',
     pathMatch: 'full'
   },
   { path: '**', component: PageNotFoundComponent }

@@ -6,12 +6,25 @@
                     <span>
                         <img alt="image" class="img-circle" src="assets/img/logo.png"
                             style="max-width:40%; max-height:40%;" />
+
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs">
+                                    <strong class="font-bold">
+                                        {{user.name}}
+                                    </strong>
+                                </span> <span class="text-muted text-xs block">
+                                    {{user.designation}}<b class="caret"></b>
+                                </span>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a [routerLink]="['/login']">Logout</a></li>
+                        </ul>
                     </span>
                 </div>
+
                 <div class="logo-element">
-                    EZ
-                    <br>
-                    Chan
+                    EZ+
                 </div>
             </li>
             <li id="homeNav" (click)="clickLink('#homeNav')">
@@ -22,15 +35,15 @@
                     <span class="nav-label">Transactions</span></a>
             </li>
             <li id="doctorsNav" (click)="clickLink('#doctorsNav')">
-                <a [routerLink]="['./doctors']"><i class="fa fa-user-md"></i> 
+                <a [routerLink]="['./doctors']"><i class="fa fa-user-md"></i>
                     <span class="nav-label">Doctors</span></a>
             </li>
             <li id="patientsNav" (click)="clickLink('#patientsNav')">
-                <a [routerLink]="['./patients']"><i class="fa fa-user"></i> 
+                <a [routerLink]="['./patients']"><i class="fa fa-user"></i>
                     <span class="nav-label">Patients</span></a>
             </li>
             <li id="settingsNav" (click)="clickLink('#settingsNav')">
-                <a href="settings.html"><i class="fa fa-cogs"></i> 
+                <a href="settings.html"><i class="fa fa-cogs"></i>
                     <span class="nav-label">Settings</span></a>
             </li>
         </ul>

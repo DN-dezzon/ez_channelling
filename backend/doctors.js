@@ -8,7 +8,7 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createPool({
-    connectionLimit : 2,
+    connectionLimit: 2,
     host: 'remotemysql.com',
     user: 'Rr6RfuQQAh',
     password: '7cA4hntkbd',
@@ -106,7 +106,7 @@ app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
     values = [req.body.iddoctor];
     //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
     query = "SELECT * , unix_timestamp(doctor_in) as start , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
-    let time; 
+    let time;
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -177,7 +177,18 @@ app.get('/getNextDoctorScheduleId', function (req, res) {
 app.post('/getPatientsBySchedule', function (req, res) {
     values = [req.body.iddoctor_schedule];
     query = "SELECT * FROM appointment LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
-    let time; 
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+app.post('/getUser', function (req, res) {
+    values = [req.body.uname, req.body.passwd];
+    query = "SELECT * FROM user LEFT JOIN user_type ON user.iduser_type = user_type.iduser_type WHERE user.uname = ? AND user.passwd = ?";
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);

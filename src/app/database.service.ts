@@ -6,6 +6,14 @@ import { environment } from 'src/environments/environment.prod';
   providedIn: 'root'
 })
 export class DatabaseService {
+
+  user = {
+    iduser: "",
+    name: "",
+    designation: "",
+    type: "",
+  };
+
   constructor(private httpClient: HttpClient) {}
 
   query(query: string){
