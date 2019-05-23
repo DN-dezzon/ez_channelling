@@ -202,6 +202,7 @@ app.post('/saveAppointment', function (req, res) {
 
     // Register customer if not exist
     query = "INSERT INTO patient(idpatient, name, contactNo) VALUES (?,?,?)";
+    
     //    Make an appointment
     query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
 

@@ -16,17 +16,17 @@
         </div>
       </div>
       <div class="col-lg-6">
-          <div class="widget style1 lazur-bg">
-              <div class="row">
-                <div class="col-xs-4 text-center">
-                  <i class="fa fa-dollar fa-5x"></i>
-                </div>
-                <div class="col-xs-8 text-right">
-                  <span> Monthly income </span>
-                  <h2 class="font-bold">Rs. {{patient.monthly_income}}</h2>
-                </div>
-              </div>
+        <div class="widget style1 lazur-bg">
+          <div class="row">
+            <div class="col-xs-4 text-center">
+              <i class="fa fa-dollar fa-5x"></i>
             </div>
+            <div class="col-xs-8 text-right">
+              <span> Monthly income </span>
+              <h2 class="font-bold">Rs. {{patient.monthly_income}}</h2>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -43,26 +43,27 @@
             </div>
             <div class="ibox-content ibox-heading">
               <h3>{{myDate | date:'EEEE'}}</h3>
-              <small><i class="fa fa-user-md"></i> {{doctor.tablelength}} doctors are coming today. Check your schedule to see
+              <small><i class="fa fa-user-md"></i> {{doctor.tablelength}} doctors are coming today. Check your schedule
+                to see
                 detail.</small>
             </div>
             <div class="ibox-content inspinia-timeline">
-                <div class="timeline-item" *ngFor="let doctor of todaySchedule; index as i">
-                    <div class="row">
-                        <div class="col-xs-3 date">
-                          <i class="fa fa-briefcase"></i>
-                          {{doctor.timee}}
-                          <br />
-                          <small class="text-navy">2 hour ago</small>
-                        </div>
-                        <div class="col-xs-7 content no-top-border">
-                          <p class="m-b-xs"><strong>Dr. {{doctor.name}}</strong></p>
-      
-                          <p>Charging Fee Rs. {{doctor.fee}}</p>
-                          <h4><span class="label label-warning">{{doctor.totalAppointment}} Appointments</span></h4>
-                        </div>
-                      </div>
-                </div> 
+              <div class="timeline-item" *ngFor="let doctor of todaySchedule; index as i">
+                <div class="row">
+                  <div class="col-xs-3 date">
+                    <i class="fa fa-briefcase"></i>
+                    {{doctor.timee}}
+                    <br />
+                    <small class="text-navy">2 hour ago</small>
+                  </div>
+                  <div class="col-xs-7 content no-top-border">
+                    <p class="m-b-xs"><strong>Dr. {{doctor.name}}</strong></p>
+
+                    <p>Charging Fee Rs. {{doctor.fee}}</p>
+                    <h4><span class="label label-warning">{{doctor.totalAppointment}} Appointments</span></h4>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -71,137 +72,139 @@
   </div>
   <div class="col-lg-6">
     <div class="row">
-        <div class="col-lg-6">
-            <div class="widget style1 yellow-bg">
-              <div class="row">
-                <div class="col-xs-4 text-center">
-                  <i class="fa fa-user fa-5x"></i>
-                </div>
-                <div class="col-xs-8 text-right">
-                  <span>Patients visits</span>
-                  <h2 class="font-bold">{{doctor.todayPatientVisits}}</h2>
-                </div>
-              </div>
+      <div class="col-lg-6">
+        <div class="widget style1 yellow-bg">
+          <div class="row">
+            <div class="col-xs-4 text-center">
+              <i class="fa fa-user fa-5x"></i>
+            </div>
+            <div class="col-xs-8 text-right">
+              <span>Patients visits</span>
+              <h2 class="font-bold">{{doctor.todayPatientVisits}}</h2>
             </div>
           </div>
-          <div class="col-lg-6">
-              <div class="widget style1 lazur-bg">
-                  <div class="row">
-                    <div class="col-xs-4 text-center">
-                      <i class="fa fa-user-md fa-5x"></i>
-                    </div>
-                    <div class="col-xs-8 text-right">
-                      <span> Doctor visits </span>
-                      <h2 class="font-bold">{{doctor.tablelength}} </h2>
-                    </div>
-                  </div>
-                </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="widget style1 lazur-bg">
+          <div class="row">
+            <div class="col-xs-4 text-center">
+              <i class="fa fa-user-md fa-5x"></i>
+            </div>
+            <div class="col-xs-8 text-right">
+              <span> Doctor visits </span>
+              <h2 class="font-bold">{{doctor.tablelength}} </h2>
+            </div>
           </div>
+        </div>
+      </div>
     </div>
     <div class="row">
-    <div class="col-lg-12">
-      <div class="wrapper wrapper-content">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-              <div class="ibox-title">
-                <h5>EZ Channelling <small>Enter patient's details for issue appointments.</small></h5>
-                <div class="ibox-tools">
-                  <a class="collapse-link">
-                    <i class="fa fa-chevron-up"></i>
-                  </a>
+      <div class="col-lg-12">
+        <div class="wrapper wrapper-content">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <h5>EZ Channelling <small>Enter patient's details for issue appointments.</small></h5>
+                  <div class="ibox-tools">
+                    <a class="collapse-link">
+                      <i class="fa fa-chevron-up"></i>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <div class="ibox-content">
-                <form method="get" class="form-horizontal">
-                  <div class="form-group">
-                    <div class="col-sm-6">
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="input-group">
-                        <input type="text" placeholder="Search Appointment " class="input form-control">
-                        <span class="input-group-btn">
-                          <button type="button" class="btn btn btn-white"> <i class="fa fa-search"></i></button>
-                        </span>
+                <div class="ibox-content">
+                  <form method="get" class="form-horizontal">
+                    <div class="form-group">
+                      <div class="col-sm-6">
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="input-group">
+                          <input type="text" placeholder="Search Appointment " class="input form-control">
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn btn-white"> <i class="fa fa-search"></i></button>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group"><label class="col-sm-3 control-label">Doctor's Name</label>
-                    <div class="col-sm-9">
-                      <select #searchFee (change)="searchDoctorFee(searchFee.value)" class="form-control m-b"
-                        [(ngModel)]="OptionsSelect" [ngModelOptions]="{standalone: true}">
-                        <option value="{{doctor.iddoctor}}" *ngFor="let doctor of doctors">
-                          {{doctor.name}}
-                        </option>
-                      </select>
-                      <!-- <input type="text" class="form-control" id="doctorId" placeholder="Enter doctor name"> -->
-                    </div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group"><label class="col-sm-3 control-label">Channeling Date</label>
-                    <div class="col-sm-9">
-                      <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-                          (click)="searchAppointment(channeling_date.value)" #channeling_date id="channeling_date"
-                          name="dob" type="text" class="form-control" value="01/01/2019">
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">Doctor's Name</label>
+                      <div class="col-sm-9">
+                        <select #searchFee (change)="searchDoctorFee(searchFee.value)" class="form-control m-b"
+                          [(ngModel)]="OptionsSelect" [ngModelOptions]="{standalone: true}">
+                          <option value="{{doctor.iddoctor}}" *ngFor="let doctor of doctors">
+                            {{doctor.name}}
+                          </option>
+                        </select>
+                        <!-- <input type="text" class="form-control" id="doctorId" placeholder="Enter doctor name"> -->
                       </div>
                     </div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group"><label class="col-sm-3 control-label">Chennelling Fee</label>
-                    <div class="col-sm-4">
-                      <div class="input-group m-b"><span class="input-group-addon">Rs.</span> <input type="text"
-                          [(ngModel)]=doctor.fee class="form-control" [ngModelOptions]="{standalone: true}" disabled=""
-                          class="form-control"> <span class="input-group-addon">.00</span></div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">Channeling Date</label>
+                      <div class="col-sm-9">
+                        <div class="input-group date">
+                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
+                            (click)="searchAppointment(channeling_date.value)" #channeling_date id="channeling_date"
+                            name="dob" type="text" class="form-control" value="01/01/2019">
+                        </div>
+                      </div>
                     </div>
-                    <label class="col-sm-3 control-label">Appointment No</label>
-                    <div class="col-sm-2"><input type="text" value="001" disabled="" [(ngModel)]=doctor.number
-                        class="form-control" [ngModelOptions]="{standalone: true}" class="form-control"></div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">Chennelling Fee</label>
+                      <div class="col-sm-4">
+                        <div class="input-group m-b"><span class="input-group-addon">Rs.</span> <input type="text"
+                            [(ngModel)]=doctor.fee class="form-control" [ngModelOptions]="{standalone: true}"
+                            disabled="" class="form-control"> <span class="input-group-addon">.00</span></div>
+                      </div>
+                      <label class="col-sm-3 control-label">Appointment No</label>
+                      <div class="col-sm-2"><input type="text" value="001" disabled="" [(ngModel)]=doctor.number
+                          class="form-control" [ngModelOptions]="{standalone: true}" class="form-control"></div>
 
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group"><label class="col-sm-3 control-label">Patient's Mobile</label>
-                    <div class="col-sm-9">
-                      <select #combobox (click)="searchPatientName(combobox.value)" id="combobox"
-                        class="form-control m-b" [(ngModel)]="OptionsSelect2" [ngModelOptions]="{standalone: true}">
-                        <option *ngFor="let patient of patients" value="{{ patient.idpatient }}">
-                          {{patient.contactNo}}
-                        </option>
-                      </select>
-                      <!-- <span class="help-block m-b-none">A block of help text that breaks onto a new line and may extend beyond one line.</span> -->
                     </div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group"><label class="col-sm-3 control-label">Patient's Name</label>
-                    <div class="col-sm-9"><input [(ngModel)]=patient.name class="form-control"
-                        [ngModelOptions]="{standalone: true}" type="text" class="form-control"
-                        placeholder="Enter patient name"></div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group"><label class="col-sm-3 control-label">Payment status</label>
-                    <div class="col-sm-9">
-                      <select #paymentStatus (change)="activatePrint(paymentStatus.value)" class="form-control m-b" name="account">
-                          <option value="Pending">Not paid</option>
-                        <option value="Paid">Paid</option> 
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-                  <div class="form-group">
-                    <div class="col-sm-2 col-sm-offset-2">
-                      <button class="btn btn-white" type="submit">Clear All</button>
-                    </div>
-                    <div class="col-sm-4">
-                      <button class="btn btn-primary" (click)="makeAppointment()" type="submit">Make
-                        Appointment</button>
-                    </div>
-                    <div class="col-sm-2 ">
-                        <button class="btn btn-primary" href="#invoice"  data-toggle="modal"  type="submit">Print Invoice</button>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">Patient's Mobile</label>
+                      <div class="col-sm-9">
+                        <select #combobox (click)="searchPatientName(combobox.value)" id="combobox"
+                          class="form-control m-b" [(ngModel)]="OptionsSelect2" [ngModelOptions]="{standalone: true}">
+                          <option *ngFor="let patient of patients" value="{{ patient.idpatient }}">
+                            {{patient.contactNo}}
+                          </option>
+                        </select>
                       </div>
-                  </div>
-                </form>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">Patient's Name</label>
+                      <div class="col-sm-9"><input [(ngModel)]=patient.name class="form-control"
+                          [ngModelOptions]="{standalone: true}" type="text" class="form-control"
+                          placeholder="Enter patient name"></div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group"><label class="col-sm-3 control-label">Payment status</label>
+                      <div class="col-sm-9">
+                        <select #paymentStatus (change)="activatePrint(paymentStatus.value)" class="form-control m-b"
+                          name="account">
+                          <option value="Pending">Not paid</option>
+                          <option value="Paid">Paid</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                      <div class="col-sm-2 col-sm-offset-2">
+                        <button class="btn btn-white" type="submit">Clear All</button>
+                      </div>
+                      <div class="col-sm-4">
+                        <button class="btn btn-primary" (click)="makeAppointment()" type="submit">Make
+                          Appointment</button>
+                      </div>
+                      <div class="col-sm-2 ">
+                        <button class="btn btn-primary" href="#invoice" data-toggle="modal" type="submit">Print
+                          Invoice</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -209,74 +212,77 @@
       </div>
     </div>
   </div>
-  </div>
 </div>
 <div id="invoice" class="modal fade" aria-hidden="true">
-    <div class="modal-dialog ">
-      <div class="modal-content">
-        <div class="modal-body">
-            <div class=" ">
-                <div class="ibox-content ">
-                        <div class="row"> 
-                            <div class="col-sm-12 text-center">
-                                <h3>Shanthi Medical Home</h3>
-                                <address> 
-                                    No. 600/10<br>
-                                    Katana<br>
-                                    <abbr title="Phone">P:</abbr>  (031) 2256525
-                                </address>
-                            </div>
-                        </div>
-                        <div class="row"> 
-                            <div class="col-sm-12 text-right">
-                                <h4>Invoice No.</h4>
-                                <h4 class="text-navy">INV-000567F7-00</h4> 
-                                <p>
-                                    <span><strong>Invoice Date:</strong> May 18, 2014</span><br/> 
-                                </p>
-                            </div>
-                        </div>
+  <div class="modal-dialog ">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class=" ">
+          <div class="ibox-content ">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <h3>Shanthi Medical Home</h3>
+                <address>
+                  No. 600/10<br>
+                  Katana<br>
+                  <abbr title="Phone">P:</abbr> (031) 2256525
+                </address>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 text-right">
+                <h4>Invoice No.</h4>
+                <h4 class="text-navy">INV-000567F7-00</h4>
+                <p>
+                  <span><strong>Invoice Date:</strong> May 18, 2014</span><br />
+                </p>
+              </div>
+            </div>
 
-                        <div class="table-responsive m-t">
-                            <table class="table invoice-table"> 
-                                <tbody>
-                                <tr>
-                                    <td>Doctor Name :</td> 
-                                    <td style="text-align: left">Dr. Chathuri Mahanayake </td>  
-                                </tr>
-                                <tr>
-                                    <td>Appointment :</td>
-                                    <td style="text-align: left"><div><strong>26</strong></div></td> 
-                                </tr>
-                                <tr>
-                                    <td>Appointment Date :</td>
-                                    <td style="text-align: left"><div><strong>2019-05-23</strong></div></td> 
-                                </tr>
-                                <tr>
-                                    <td>Patient :</td>
-                                    <td style="text-align: left">Mr. Madhava Dabare</td> 
-                                </tr> 
+            <div class="table-responsive m-t">
+              <table class="table invoice-table">
+                <tbody>
+                  <tr>
+                    <td>Doctor Name :</td>
+                    <td style="text-align: left">Dr. Chathuri Mahanayake </td>
+                  </tr>
+                  <tr>
+                    <td>Appointment :</td>
+                    <td style="text-align: left">
+                      <div><strong>26</strong></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Appointment Date :</td>
+                    <td style="text-align: left">
+                      <div><strong>2019-05-23</strong></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Patient :</td>
+                    <td style="text-align: left">Mr. Madhava Dabare</td>
+                  </tr>
 
-                                </tbody>
-                            </table>
-                        </div><!-- /table-responsive -->
+                </tbody>
+              </table>
+            </div><!-- /table-responsive -->
 
-                        <table class="table invoice-total">
-                            <tbody> 
-                            <tr>
-                                <td><strong></strong></td>
-                                <td> </td>
-                            </tr>
-                            <tr>
-                                <td><strong>FEE (Rs.) :</strong></td>
-                                <td>2500.00</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <div style="font-size: 11px"><small>**Not Refund. Goverment taxes are included</small>
-                            
-                        </div>
-                    </div>
+            <table class="table invoice-total">
+              <tbody>
+                <tr>
+                  <td><strong></strong></td>
+                  <td> </td>
+                </tr>
+                <tr>
+                  <td><strong>FEE (Rs.) :</strong></td>
+                  <td>2500.00</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="font-size: 11px"><small>**Not Refund. Goverment taxes are included</small>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>

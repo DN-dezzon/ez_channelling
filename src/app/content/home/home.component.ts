@@ -3,12 +3,14 @@ import { DatePipe } from '@angular/common';
 import { HomeService } from './home.servie';
 import { Observable } from 'rxjs';
 
+
 declare var $: any;
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
+  
 })
 export class HomeComponent implements OnInit {
   elementRef: ElementRef;
@@ -59,7 +61,8 @@ export class HomeComponent implements OnInit {
       forceParse: false,
       calendarWeeks: true,
       autoclose: true
-    });
+    });  
+    
     this.getDoctors();
     this.getPatients();
   }
@@ -261,7 +264,7 @@ export class HomeComponent implements OnInit {
 
 
   makeAppointment() {
-    alert(this.patient.idpatient + " " + this.doctor.iddoctor_schedule);
+    alert(this.patient.name + " " + this.doctor.iddoctor_schedule);
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();
     }, (err) => {
