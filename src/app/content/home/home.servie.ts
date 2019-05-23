@@ -18,6 +18,9 @@ export class HomeService {
   getPatientById(pid : any){
     return this.httpClient.get(environment.apiUrl + '/getPatientbyId',pid);
   }
+  getPatientByContactNo(patient:any){
+    return this.httpClient.post(environment.apiUrl + '/getPatientByContactNo',patient);
+  }
   getDoctorById(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getDoctortbyId',doctor);
   }

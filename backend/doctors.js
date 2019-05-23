@@ -256,3 +256,15 @@ app.get('/getPatientIncomeMonthly', function (req, res) {
         }
     });
 });
+
+app.post('/getPatientByContactNo', function (req, res) {
+    query = "SELECT * From patient  where contactNo=?";
+    values = [req.body.contactNo];  
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});

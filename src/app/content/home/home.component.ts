@@ -150,6 +150,19 @@ export class HomeComponent implements OnInit {
   }
 
   selectPatientMobileNo(mobileNo){
+    this.patient.contactNo=mobileNo;
+    this.homeService.getPatientByContactNo(this.patient).subscribe((data: any) => {
+
+      this.patient_data = data;
+      for (let index = 0; index < this.patient_data.length; index++) {
+        console.log(this.patient_data[index].name);
+        this.patient.name = this.patient_data[index].name;
+        this.patient.idpatient = this.patient_data[index].idpatient; 
+      }
+    }, (err) => {
+      console.log(err);
+    }
+    );
     console.log(mobileNo);
   }
 
