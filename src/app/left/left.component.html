@@ -14,22 +14,22 @@
                     Chan
                 </div>
             </li>
-            <li id="home">
+            <li id="homeNav" (click)="clickLink('#homeNav')">
                 <a [routerLink]="['./home']"><i class="fa fa-home"></i> <span class="nav-label">Home</span></a>
             </li>
-            <li id="transactions">
+            <li id="transactionsNav" (click)="clickLink('#transactionsNav')">
                 <a [routerLink]="['./transactions']"><i class="fa fa-money"></i>
                     <span class="nav-label">Transactions</span></a>
             </li>
-            <li id="doctors">
+            <li id="doctorsNav" (click)="clickLink('#doctorsNav')">
                 <a [routerLink]="['./doctors']"><i class="fa fa-user-md"></i> 
                     <span class="nav-label">Doctors</span></a>
             </li>
-            <li id="patients">
+            <li id="patientsNav" (click)="clickLink('#patientsNav')">
                 <a [routerLink]="['./patients']"><i class="fa fa-user"></i> 
                     <span class="nav-label">Patients</span></a>
             </li>
-            <li id="settings">
+            <li id="settingsNav" (click)="clickLink('#settingsNav')">
                 <a href="settings.html"><i class="fa fa-cogs"></i> 
                     <span class="nav-label">Settings</span></a>
             </li>

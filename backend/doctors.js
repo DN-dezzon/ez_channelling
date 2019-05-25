@@ -280,3 +280,15 @@ app.post('/getPatientByContactNo', function (req, res) {
         }
     });
 });
+app.get('/getNextDoctorId', function (req, res) {
+    db.query("SELECT MAX(iddoctor) + 1 AS iddoctor FROM doctor;", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].iddoctor == null) {
+                result[0].iddoctor = 0;
+            }
+            res.json(result[0]);
+        }
+    });
+});

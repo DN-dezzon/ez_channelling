@@ -24,4 +24,8 @@ export class DoctorService {
   deleteDoctor(doctor : any){
     return this.httpClient.post(environment.apiUrl + '/deleteDoctor',doctor);
   }
+
+  getNextDoctorId(){
+    return this.httpClient.get(environment.apiUrl + '/getNextDoctorId');
+  }
 }

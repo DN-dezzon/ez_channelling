@@ -8,8 +8,9 @@ import { DoctorService } from './doctor.service';
 })
 export class DoctorComponent implements OnInit {
   private datatable: any;
+  private fullCalendar:any;
   private doctors: any[];
-
+  private events: any[];
   private mode = "";
 
   private doctor = {
@@ -32,125 +33,14 @@ export class DoctorComponent implements OnInit {
   ngAfterViewInit() {
 
     this.initTable();
+    this.initSelect();
+    this.initCalendar();
 
-    (<any>$('.data_3 .input-group.date')).datepicker({
-      startView: 2,
-      todayBtn: "linked",
-      keyboardNavigation: false,
-      forceParse: false,
-      autoclose: true
-    });
-
-    (<any>$(".select2_demo_3")).select2({
-      dropdownCssClass: 'custom-dropdown'
-    });
-
-    (<any>$(".select2_demo_3")).on('select2:open', function (e) {
-      $('.custom-dropdown').parent().css('z-index', 99999);
-    });
-
-
-
-    (<any>$('.i-checks')).iCheck({
-      checkboxClass: 'icheckbox_square-green',
-      radioClass: 'iradio_square-green'
-    });
-
-    /* initialize the external events
-     -----------------------------------------------------------------*/
-
-
-    (<any>$('#external-events div.external-event')).each(function () {
-
-      // store data so the calendar knows to render an event upon drop
-      $(this).data('event', {
-        title: $.trim($(this).text()), // use the element's text as the event title
-        stick: true // maintain when user navigates (see docs on the renderEvent method)
-      });
-
-      // make the event draggable using jQuery UI
-      (<any>$(this)).draggable({
-        zIndex: 1111999,
-        revert: true,      // will cause the event to go back to its
-        revertDuration: 0  //  original position after the drag
-      });
-
-    });
-
-    /* initialize the calendar
-     -----------------------------------------------------------------*/
-    var date = new Date();
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
-
-    (<any>$('#calendar')).fullCalendar({
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-      },
-      editable: true,
-      droppable: true, // this allows things to be dropped onto the calendar
-      drop: function () {
-        // is the "remove after drop" checkbox checked?
-        if ($('#drop-remove').is(':checked')) {
-          // if so, remove the element from the "Draggable Events" list
-          $(this).remove();
-        }
-      },
-      events: [
-        {
-          title: 'All Day Event',
-          start: new Date(y, m, 1)
-        },
-        {
-          title: 'Long Event',
-          start: new Date(y, m, d - 5),
-          end: new Date(y, m, d - 2)
-        },
-        {
-          id: 999,
-          title: 'Repeating Event',
-          start: new Date(y, m, d - 3, 16, 0),
-          allDay: false
-        },
-        {
-          id: 999,
-          title: 'Repeating Event',
-          start: new Date(y, m, d + 4, 16, 0),
-          allDay: false
-        },
-        {
-          title: 'Meeting',
-          start: new Date(y, m, d, 10, 30),
-          allDay: false
-        },
-        {
-          title: 'Lunch',
-          start: new Date(y, m, d, 12, 0),
-          end: new Date(y, m, d, 14, 0),
-          allDay: false
-        },
-        {
-          title: 'Birthday Party',
-          start: new Date(y, m, d + 1, 19, 0),
-          end: new Date(y, m, d + 1, 22, 30),
-          allDay: false
-        },
-        {
-          title: 'Click for Google',
-          start: new Date(y, m, 28),
-          end: new Date(y, m, 29),
-          url: 'http://google.com/'
-        }
-      ]
-    });
   }
 
   clickNew() {
     this.mode = 'new';
-    this.doctor.iddoctor = -1;
+    this.getNextDoctorId();
     this.doctor.name = "";
     this.doctor.specialization = "";
     this.doctor.base_hospital = "";
@@ -170,6 +60,15 @@ export class DoctorComponent implements OnInit {
       this.datatable.rows.add(this.doctors);
       this.datatable.draw();
       this.resetTableListners();
+    }, (err) => {
+      console.log(err);
+    }
+    );
+  }
+
+  getNextDoctorId() {
+    this.doctorService.getNextDoctorId().subscribe((data: any) => {
+      this.doctor.iddoctor = data.iddoctor;
     }, (err) => {
       console.log(err);
     }
@@ -217,10 +116,95 @@ export class DoctorComponent implements OnInit {
     this.doctor = doctor;
     (<any>$("#newDoctor")).modal();
   }
+  
+
+  initCalendar() {
+    this.fullCalendar = (<any>$('#calendar')).fullCalendar({
+      defaultView: 'month',
+      height: "auto",
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      editable: false,
+      events: this.events,
+      eventClick: function (info) {
+        console.log(info);
+      }
+    });
+  }
+
+
+  addEvents(){
+
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    this.events = [
+      {
+        title: 'All Day Event',
+        start: new Date(y, m, 1)
+      },
+      {
+        title: 'Long Event',
+        start: new Date(y, m, d - 5),
+        end: new Date(y, m, d - 2)
+      },
+      {
+        id: 999,
+        title: 'Repeating Event',
+        start: new Date(y, m, d - 3, 16, 0),
+        allDay: false
+      },
+      {
+        id: 999,
+        title: 'Repeating Event',
+        start: new Date(y, m, d + 4, 16, 0),
+        allDay: false
+      },
+      {
+        title: 'Meeting',
+        start: new Date(y, m, d, 10, 30),
+        allDay: false
+      },
+      {
+        title: 'Lunch',
+        start: new Date(y, m, d, 12, 0),
+        end: new Date(y, m, d, 14, 0),
+        allDay: false
+      },
+      {
+        title: 'Birthday Party',
+        start: new Date(y, m, d + 1, 19, 0),
+        end: new Date(y, m, d + 1, 22, 30),
+        allDay: false
+      },
+      {
+        title: 'Click for Google',
+        start: new Date(y, m, 28),
+        end: new Date(y, m, 29),
+        url: 'http://google.com/'
+      }
+    ];
+    this.fullCalendar.fullCalendar('getCalendar').removeEvents();
+    this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.events);
+  }
+
+  initSelect() {
+    (<any>$(".select2_demo_3")).select2({
+      dropdownCssClass: 'custom-dropdown'
+    });
+
+    (<any>$(".select2_demo_3")).on('select2:open', function (e) {
+      $('.custom-dropdown').parent().css('z-index', 99999);
+    });
+
+  }
 
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
-      "pagingType": "full_numbers",
       responsive: true,
       columns: [
         {
