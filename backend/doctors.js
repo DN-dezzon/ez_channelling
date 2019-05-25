@@ -201,7 +201,7 @@ app.post('/getAppointMentNumber', function (req, res) {
 });
 
 app.post('/getScheduleIdId', function (req, res) {
-    query ="SELECT DISTINCT d.iddoctor_schedule  FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=? and a.payment_status!='Cancelled'";
+    query = "SELECT DISTINCT d.iddoctor_schedule  FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=? and a.payment_status!='Cancelled'";
     values = [req.body.iddoctor, req.body.datee];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -215,7 +215,7 @@ app.post('/saveAppointment', function (req, res) {
 
     // Register customer if not exist
     query = "INSERT INTO patient(idpatient, name, contactNo) VALUES (?,?,?)";
-    
+
     //    Make an appointment
     query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
 
@@ -245,8 +245,8 @@ app.post('/getTodaySchedule', function (req, res) {
     });
 });
 
-app.get('/getPatientIncome', function (req, res) { 
-    query = "SELECT sum(amount) as sum FROM patient_invoice where DATE(issued_datetime) = CURDATE()"; 
+app.get('/getPatientIncome', function (req, res) {
+    query = "SELECT sum(amount) as sum FROM patient_invoice where DATE(issued_datetime) = CURDATE()";
     db.query(query, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -256,12 +256,12 @@ app.get('/getPatientIncome', function (req, res) {
     });
 });
 
-app.get('/getPatientIncomeMonthly', function (req, res) { 
+app.get('/getPatientIncomeMonthly', function (req, res) {
     var d = new Date();
     var n = d.getMonth();
     query = "SELECT sum(amount) as monthlytot FROM patient_invoice where MONTH(issued_datetime)=?";
-    values=n+1;
-    db.query(query,values, (err, result) => {
+    values = n + 1;
+    db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
@@ -272,7 +272,7 @@ app.get('/getPatientIncomeMonthly', function (req, res) {
 
 app.post('/getPatientByContactNo', function (req, res) {
     query = "SELECT * From patient  where contactNo=?";
-    values = [req.body.contactNo];  
+    values = [req.body.contactNo];
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -386,6 +386,38 @@ app.post('/getUser', function (req, res) {
             res.send(500, err);
         } else {
             res.json(result);
+        }
+    });
+});
+
+app.get('/getChannellingFee', function (req, res) {
+    db.query("SELECT valuee as fee FROM configuration WHERE keyy = 'fee'", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.post('/updateChannellingFee', function (req, res) {
+    values = [req.body.fee];
+    db.query("UPDATE configuration SET valuee = ? WHERE keyy = 'fee'", values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/updateUser', function (req, res) {
+    values = [req.body.name, req.body.uname, req.body.passwd, req.body.iduser];
+    db.query("UPDATE user SET name = ? , uname = ? , passwd = ? WHERE iduser = ? ", values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
         }
     });
 });
