@@ -7,12 +7,14 @@ import { PatientsComponent } from './content/patients/patients.component';
 import { HomeComponent } from './content/home/home.component';
 import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
+import { UnregisteredComponent } from './unregistered/unregistered.component';
 
 const routes: Routes = [
   //{ path: 'home', component: PageFoundComponent },
 
   { path: 'login', component: LoginComponent },
-
+  { path: 'notFound', component: PageNotFoundComponent },
+  { path: 'unregistered', component: UnregisteredComponent },
   {
     path: 'home',
     component: PageFoundComponent,
