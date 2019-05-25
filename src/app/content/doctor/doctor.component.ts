@@ -178,6 +178,7 @@ export class DoctorComponent implements OnInit {
   }
 
   showUpdateModal(doctor: any) {
+    console.log("hello bitch");
     this.mode = 'update';
     this.doctor.iddoctor = doctor.iddoctor;
     this.doctor.name = doctor.name;
