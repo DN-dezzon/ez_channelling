@@ -10,7 +10,7 @@ declare var $: any;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   providers: [DatePipe],
-  
+
 })
 export class HomeComponent implements OnInit {
   elementRef: ElementRef;
@@ -61,8 +61,8 @@ export class HomeComponent implements OnInit {
       forceParse: false,
       calendarWeeks: true,
       autoclose: true
-    });  
-    
+    });
+
     this.getDoctors();
     this.getPatients();
   }
@@ -79,6 +79,8 @@ export class HomeComponent implements OnInit {
     this.doctor.datee = '2019-05-13';
     // this.getDoctorById(this.doctor); 
     this.getAppointmentNumber(this.doctor);
+    this.getScheduleId(this.doctor);
+
   }
   activatePrint(value) {
 
@@ -142,6 +144,21 @@ export class HomeComponent implements OnInit {
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.number = this.doctor_appointments[index].count + 1;
         this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
+        this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
+        alert(this.doctor.iddoctor_schedule);
+      }
+
+    }, (err) => {
+      console.log(err);
+    });
+  }
+  getScheduleId(doctor: any) {
+    alert(doctor.iddoctor)
+    this.homeService.getScheduleIdId(doctor).subscribe((data: any) => {
+      this.doctor_appointments = data;
+      for (let index = 0; index < this.doctor_appointments.length; index++) {
+        this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
+        alert(this.doctor.iddoctor_schedule);
       }
 
     }, (err) => {
@@ -149,15 +166,15 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  selectPatientMobileNo(mobileNo){
-    this.patient.contactNo=mobileNo;
+  selectPatientMobileNo(mobileNo) {
+    this.patient.contactNo = mobileNo;
     this.homeService.getPatientByContactNo(this.patient).subscribe((data: any) => {
 
       this.patient_data = data;
       for (let index = 0; index < this.patient_data.length; index++) {
         console.log(this.patient_data[index].name);
         this.patient.name = this.patient_data[index].name;
-        this.patient.idpatient = this.patient_data[index].idpatient; 
+        this.patient.idpatient = this.patient_data[index].idpatient;
       }
     }, (err) => {
       console.log(err);
@@ -166,7 +183,7 @@ export class HomeComponent implements OnInit {
     console.log(mobileNo);
   }
 
-  selectNewPatientMobileNo(mobileNo){
+  selectNewPatientMobileNo(mobileNo) {
     console.log(mobileNo);
   }
 

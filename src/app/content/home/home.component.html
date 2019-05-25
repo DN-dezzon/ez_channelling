@@ -157,8 +157,12 @@
                             disabled="" class="form-control"> <span class="input-group-addon">.00</span></div>
                       </div>
                       <label class="col-sm-3 control-label">Appointment No</label>
-                      <div class="col-sm-2"><input type="text" value="001" disabled="" [(ngModel)]=doctor.number
+                      <div class="col-sm-2">
+                        <input type="hidden"  value="" [(ngModel)]=doctor.iddoctor_schedule class="form-control"
+                        [ngModelOptions]="{standalone: true}"/>
+                        <input type="text" value="001" disabled="" [(ngModel)]=doctor.number
                           class="form-control" [ngModelOptions]="{standalone: true}" class="form-control"></div>
+
 
                     </div>
                     <div class="hr-line-dashed"></div>

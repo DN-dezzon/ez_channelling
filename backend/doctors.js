@@ -198,6 +198,18 @@ app.post('/getAppointMentNumber', function (req, res) {
         }
     });
 });
+
+app.post('/getScheduleIdId', function (req, res) {
+    query ="SELECT DISTINCT d.iddoctor_schedule  FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=? and a.payment_status!='Cancelled'";
+    values = [req.body.iddoctor, req.body.datee];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
 app.post('/saveAppointment', function (req, res) {
 
     // Register customer if not exist
