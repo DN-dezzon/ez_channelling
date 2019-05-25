@@ -158,7 +158,9 @@
                       </div>
                       <label class="col-sm-3 control-label">Appointment No</label>
                       <div class="col-sm-2">
-                        <input type="hidden"  value="" [(ngModel)]=doctor.iddoctor_schedule class="form-control"
+                        <input type="hidden"  value="{{doctor.iddoctor_schedule}}" [(ngModel)]=doctor.iddoctor_schedule class="form-control"
+                        [ngModelOptions]="{standalone: true}"/>
+                        <input type="hidden"  value="{{doctor.iddoctor}}" [(ngModel)]=doctor.iddoctor class="form-control"
                         [ngModelOptions]="{standalone: true}"/>
                         <input type="text" value="001" disabled="" [(ngModel)]=doctor.number
                           class="form-control" [ngModelOptions]="{standalone: true}" class="form-control"></div>

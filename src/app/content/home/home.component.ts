@@ -145,7 +145,6 @@ export class HomeComponent implements OnInit {
         this.doctor.number = this.doctor_appointments[index].count + 1;
         this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
-        alert(this.doctor.iddoctor_schedule);
       }
 
     }, (err) => {
@@ -153,12 +152,11 @@ export class HomeComponent implements OnInit {
     });
   }
   getScheduleId(doctor: any) {
-    alert(doctor.iddoctor)
     this.homeService.getScheduleIdId(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
-        alert(this.doctor.iddoctor_schedule);
+        this.doctor.iddoctor=this.doctor_appointments[index].iddoctor;
       }
 
     }, (err) => {
@@ -305,7 +303,7 @@ export class HomeComponent implements OnInit {
 
 
   makeAppointment() {
-    alert(this.patient.name + " " + this.doctor.iddoctor_schedule);
+    alert(this.patient.idpatient + " " + this.doctor.iddoctor_schedule+" -" +this.doctor.fee);
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();
     }, (err) => {
