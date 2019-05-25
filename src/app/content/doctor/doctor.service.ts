@@ -28,4 +28,28 @@ export class DoctorService {
   getNextDoctorId(){
     return this.httpClient.get(environment.apiUrl + '/getNextDoctorId');
   }
+
+  getAllDoctorScheduleByDoctor(doctor : any){
+    return this.httpClient.post(environment.apiUrl + '/getAllDoctorScheduleByDoctor', doctor);
+  }
+
+  saveDoctorSchedule(doctorSchedule : any){
+    return this.httpClient.post(environment.apiUrl + '/saveDoctorSchedule',doctorSchedule);
+  } 
+  
+  updateDoctorSchedule(doctorSchedule : any){
+    return this.httpClient.post(environment.apiUrl + '/updateDoctorSchedule',doctorSchedule);
+  }
+
+  deleteDoctorSchedule(doctorSchedule : any){
+    return this.httpClient.post(environment.apiUrl + '/deleteDoctorSchedule',doctorSchedule);
+  }
+
+  getNextDoctorScheduleId(){
+    return this.httpClient.get(environment.apiUrl + '/getNextDoctorScheduleId');
+  }
+
+  getPatientsBySchedule(doctorSchedule : any){
+    return this.httpClient.post(environment.apiUrl + '/getPatientsBySchedule',doctorSchedule);
+  }
 }

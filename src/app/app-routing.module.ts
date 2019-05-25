@@ -8,14 +8,17 @@ import { HomeComponent } from './content/home/home.component';
 import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
 import { RegisterComponent } from './register/register.component';
+import { UnregisteredComponent } from './unregistered/unregistered.component';
 
 const routes: Routes = [
-  { path: 'home', component: PageFoundComponent },
+  //{ path: 'home', component: PageFoundComponent },
 
   { path: 'login', component: LoginComponent },
   
   { path: 'register', component: RegisterComponent },
 
+  { path: 'notFound', component: PageNotFoundComponent },
+  { path: 'unregistered', component: UnregisteredComponent },
   {
     path: 'home',
     component: PageFoundComponent,
@@ -40,7 +43,7 @@ const routes: Routes = [
   }, 
   {
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/login',
     pathMatch: 'full'
   },
   { path: '**', component: PageNotFoundComponent }

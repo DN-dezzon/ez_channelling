@@ -7,7 +7,8 @@ var methodOverride = require('method-override'); // simulate DELETE and PUT (exp
 var mysql = require('mysql');
 
 // configuration =================
-const db = mysql.createConnection({
+const db = mysql.createPool({
+    connectionLimit: 2,
     host: 'remotemysql.com',
     user: 'Rr6RfuQQAh',
     password: '7cA4hntkbd',
@@ -281,14 +282,110 @@ app.post('/getPatientByContactNo', function (req, res) {
     });
 });
 app.get('/getNextDoctorId', function (req, res) {
-    db.query("SELECT MAX(iddoctor) + 1 AS iddoctor FROM doctor;", (err, result) => {
+    db.query("SELECT MAX(iddoctor) + 1 AS iddoctor FROM doctor", (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
             if (result[0].iddoctor == null) {
-                result[0].iddoctor = 0;
+                result[0].iddoctor = 1;
             }
             res.json(result[0]);
+        }
+    });
+});
+
+app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
+    values = [req.body.iddoctor];
+    //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
+    query = "SELECT * , unix_timestamp(doctor_in) as start , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
+    let time;
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            result.forEach(element => {
+                time = new Date(element.start * 1000);
+                element.id = element.iddoctor_schedule;
+                element.start = element.datee;
+                element.start.setHours(time.getHours());
+                element.start.setMinutes(time.getMinutes());
+                element.start.setSeconds(time.getSeconds());
+            });
+            res.json(result);
+        }
+    });
+});
+
+app.post('/saveDoctorSchedule', function (req, res) {
+    query = "INSERT INTO doctor_schedule_new(iddoctor_schedule, doctor_iddoctor, datee, doctor_in, doctor_out) VALUES (?,?,?,?,?)";
+    values = [req.body.iddoctor_schedule, req.body.doctor.iddoctor, req.body.datee, req.body.doctor_in, req.body.doctor_out];
+    console.log(values);
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/updateDoctorSchedule', function (req, res) {
+    query = "UPDATE doctor_schedule_new SET datee = ?, doctor_in = ?, doctor_out = ? WHERE iddoctor_schedule = ? ";
+    values = [req.body.datee, req.body.doctor_in, req.body.doctor_out, req.body.iddoctor_schedule];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/deleteDoctorSchedule', function (req, res) {
+    query = "DELETE FROM doctor_schedule_new  WHERE iddoctor_schedule = ? ";
+    values = [req.body.iddoctor_schedule];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.get('/getNextDoctorScheduleId', function (req, res) {
+    db.query("SELECT MAX(iddoctor_schedule) + 1 AS iddoctor_schedule FROM doctor_schedule_new", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].iddoctor_schedule == null) {
+                result[0].iddoctor_schedule = 1;
+            }
+            res.json(result[0]);
+        }
+    });
+});
+
+app.post('/getPatientsBySchedule', function (req, res) {
+    values = [req.body.iddoctor_schedule];
+    query = "SELECT * FROM appointment LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+app.post('/getUser', function (req, res) {
+    values = [req.body.uname, req.body.passwd];
+    query = "SELECT * FROM user LEFT JOIN user_type ON user.iduser_type = user_type.iduser_type WHERE user.uname = ? AND user.passwd = ?";
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
         }
     });
 });

@@ -12,4 +12,11 @@ export class TopComponent implements OnInit {
   ngOnInit() {
   }
 
+  navBarAction(){
+    if(document.body.classList.contains('mini-navbar')){
+      document.body.classList.remove('mini-navbar');
+    }else{
+      document.body.classList.add('mini-navbar');
+    }
+  }
 }
