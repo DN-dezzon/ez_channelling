@@ -1,3 +1,6 @@
+<input type="text" hidden id="homeScheduleSelected" disabled>
+
+
 <div class="row">
   <div class="col-lg-6">
     <div class=row>
@@ -36,9 +39,7 @@
             <div class="ibox-title">
               <h5>{{myDate | date:'yyyy-MM-dd'}}</h5>
               <div class="ibox-tools">
-                <a class="collapse-link">
-                  <i class="fa fa-chevron-up"></i>
-                </a>
+                
               </div>
             </div>
             <div class="ibox-content ibox-heading">
@@ -108,9 +109,7 @@
                 <div class="ibox-title">
                   <h5>EZ Channelling <small>Enter patient's details for issue appointments.</small></h5>
                   <div class="ibox-tools">
-                    <a class="collapse-link">
-                      <i class="fa fa-chevron-up"></i>
-                    </a>
+                    
                   </div>
                 </div>
                 <div class="ibox-content">
@@ -142,12 +141,11 @@
                     <div class="hr-line-dashed"></div>
                     <div class="form-group"><label class="col-sm-3 control-label">Channeling Date</label>
                       <div class="col-sm-9">
-                        <div class="input-group date">
-                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-                            (click)="searchAppointment(channeling_date.value)" #channeling_date id="channeling_date"
-                            name="dob" type="text" class="form-control" value="01/01/2019">
-                        </div>
+                        <div id="calendar"></div>
+                        
                       </div>
+                      
+                      
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group"><label class="col-sm-3 control-label">Chennelling Fee</label>
@@ -158,10 +156,10 @@
                       </div>
                       <label class="col-sm-3 control-label">Appointment No</label>
                       <div class="col-sm-2">
-                        <input type="hidden"  value="" [(ngModel)]=doctor.iddoctor_schedule class="form-control"
-                        [ngModelOptions]="{standalone: true}"/>
-                        <input type="text" value="001" disabled="" [(ngModel)]=doctor.number
-                          class="form-control" [ngModelOptions]="{standalone: true}" class="form-control"></div>
+                        <input type="hidden" value="" [(ngModel)]=doctor.iddoctor_schedule class="form-control"
+                          [ngModelOptions]="{standalone: true}" />
+                        <input type="text" value="001" disabled="" [(ngModel)]=doctor.number class="form-control"
+                          [ngModelOptions]="{standalone: true}" class="form-control"></div>
 
 
                     </div>
@@ -217,6 +215,8 @@
     </div>
   </div>
 </div>
+
+
 <div id="invoice" class="modal fade" aria-hidden="true">
   <div class="modal-dialog ">
     <div class="modal-content">
@@ -291,3 +291,4 @@
       </div>
     </div>
   </div>
+</div>

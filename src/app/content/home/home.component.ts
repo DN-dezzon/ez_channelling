@@ -23,6 +23,9 @@ export class HomeComponent implements OnInit {
   private patient_data: any[];
   private doctor_data: any[];
 
+  fullCalendar: any;
+  doctorSchedules: any[];
+
   private mode = "";
   private doctor = {
     doctor_iddoctor: "",
@@ -65,6 +68,38 @@ export class HomeComponent implements OnInit {
 
     this.getDoctors();
     this.getPatients();
+    this.initCalendar();
+  }
+
+  initCalendar() {
+    if (!this.fullCalendar) {
+      this.fullCalendar = (<any>$('#calendar')).fullCalendar({
+        defaultView: 'month',
+        height: "auto",
+        header: {
+          left: '',
+          center: 'title',
+          right: 'prev,next today'
+        },
+        editable: false,
+        events: this.doctorSchedules,
+        eventClick: (schedule) => {
+          $('#homeScheduleSelected').val(schedule.index - 1);
+          $('#homeScheduleSelected').click();
+          return false;
+        }
+      });
+
+      var bttn = document.getElementById("homeScheduleSelected");
+
+      bttn.onclick = () => {
+        this.scheduleSelected($('#homeScheduleSelected').val());
+      }
+    }
+  }
+
+  scheduleSelected(index){
+    console.log(index);
   }
 
   searchPatientName() {
