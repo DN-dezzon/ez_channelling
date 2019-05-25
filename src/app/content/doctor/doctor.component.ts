@@ -509,7 +509,7 @@ export class DoctorComponent implements OnInit {
         }],
       "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-      "iDisplayLength": 5
+      "iDisplayLength": 50
     });
 
 

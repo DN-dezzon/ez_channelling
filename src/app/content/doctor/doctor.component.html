@@ -181,9 +181,9 @@
                 </div>
                 <div class=" col-sm-4"></div>
                 <div class="col-sm-4">
-                  <button *ngIf="mode == 'new'" class="btn btn-xs btn-primary"
+                  <button *ngIf="mode == 'new'" class="btn btn-xs btn-primary" [disabled] = "!doctor.name || !doctor.contactNo || !doctor.fee"
                     (click)="saveDoctor()"><strong>Save</strong></button>
-                  <button *ngIf="mode == 'update'" class="btn btn-xs btn-primary"
+                  <button *ngIf="mode == 'update'" class="btn btn-xs btn-primary" [disabled] = "!doctor.name || !doctor.contactNo || !doctor.fee"
                     (click)="updateDoctor()"><strong>Update</strong></button>
                 </div>
               </div>
