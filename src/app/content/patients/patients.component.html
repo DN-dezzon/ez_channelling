@@ -88,9 +88,9 @@
                   </div>
                   <div class=" col-sm-4"></div>
                   <div class="col-sm-4">
-                      <button *ngIf="mode == 'new'" class="btn btn-primary btn-xs"
+                      <button *ngIf="mode == 'new'" class="btn btn-primary btn-xs" [disabled]="!patient.name || !patient.contactNo"
                       (click)="savePatient()"><strong>Save</strong></button>
-                    <button *ngIf="mode == 'update'" class="btn btn-primary btn-xs"
+                    <button *ngIf="mode == 'update'" class="btn btn-primary btn-xs" [disabled]="!patient.name || !patient.contactNo"
                       (click)="updateDoctor()"><strong>Update</strong></button>
                   </div>
                 </div>
