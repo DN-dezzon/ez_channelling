@@ -486,3 +486,16 @@ app.get('/getUserDetails', function (req, res) {
         }
     });
 });
+
+app.get('/getNextPatientId', function (req, res) {
+    db.query("SELECT MAX(idpatient) + 1 AS idpatient FROM patient", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].idpatient == null) {
+                result[0].idpatient = 1;
+            }
+            res.json(result[0]);
+        }
+    });
+});

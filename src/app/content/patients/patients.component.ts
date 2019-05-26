@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PatientService } from './patient.service';
 import { Observable } from 'rxjs';
 
-
+declare let toastr:any;
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
@@ -61,7 +61,9 @@ export class PatientsComponent implements OnInit {
     (<any>$(".select2_demo_3")).on('select2:open', function (e) {
       $('.custom-dropdown').parent().css('z-index', 99999);
     });
+    this.initToasterNotifications();
   }
+
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
       "pagingType": "full_numbers",
@@ -111,6 +113,17 @@ export class PatientsComponent implements OnInit {
       console.log(array[index].index);
       array[index].index = index + 1;
     }
+  }
+
+  getNextPatientId() {
+    this.patientService.getNextPatientId().subscribe((data: any) => {
+      this.patient.idpatient = data.idpatient;
+      (<any>$("#newMember")).modal();
+    }, (err) => {
+      (<any>$("#newMember")).modal('hide');
+      toastr.error('While fetching doctor details', 'Data fetch error');
+    }
+    );
   }
 
   // Load ptient to main table
@@ -166,8 +179,9 @@ export class PatientsComponent implements OnInit {
     this.patient.idpatient = -1;
     this.patient.name = "";
     this.patient.contactNo = "";
-    (<any>$("#newMember")).modal();
+    this.getNextPatientId();
   }
+  
   showUpdateModal(patient: any) {
     this.mode = 'update';
     this.patient = patient;
@@ -229,6 +243,25 @@ export class PatientsComponent implements OnInit {
       console.log(err);
     }
     );
+  }
+
+  initToasterNotifications(){
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "progressBar": true,
+      "preventDuplicates": false,
+      "positionClass": "toast-top-right",
+      "onclick": null,
+      "showDuration": "400",
+      "hideDuration": "1000",
+      "timeOut": "7000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
   }
 
 }

@@ -4,7 +4,7 @@
       <div class="ibox-title">
         <h5>Patients</h5>
         <div class="ibox-tools">
-          <button type="button" data-toggle="modal" (click)="clickNew()" class="btn btn-primary"><i
+          <button type="button" data-toggle="modal" (click)="clickNew()" class="btn btn-xs btn-primary"><i
               class="fa fa-plus"></i>
             New</button>
         </div>
@@ -13,11 +13,11 @@
         <table class="table table-striped table-bordered table-hover " id="editable" width="100%">
           <thead>
             <tr>
-              <th></th>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Phone</th>
-              <th></th>
+              <th width="10%"></th>
+              <th width="10%">Code</th>
+              <th width="40%">Name</th>
+              <th width="20%">Phone</th>
+              <th width="20%"></th>
             </tr>
           </thead>
         </table>
@@ -67,7 +67,7 @@
         <div class="row">
           <form role="form" method="post" enctype="multipart/form-data" method="post">
             <div class="col-sm-12">
-              <div class="form-group"><label>Code</label> <input type="number" min="0" placeholder="Enter code"
+              <div class="form-group"><label>Code</label> <input type="number" min="0" placeholder="Enter code" disabled
                   [(ngModel)]=patient.idpatient class="form-control" [ngModelOptions]="{standalone: true}" required>
               </div> 
               <div class="form-group"><label>Patient's Name</label> <input type="text" placeholder="Enter patient name"
@@ -81,13 +81,13 @@
               <div class="form-group">
                 <br>
                 <div class="col-sm-2">
-                  <button *ngIf="mode == 'update'" class="btn btn-danger"
+                  <button *ngIf="mode == 'update'" class="btn btn-danger btn-xs"
                     (click)="deleteDoctor()"><strong>Delete</strong></button>
                 </div>
                 <div class="col-sm-2">
-                  <button *ngIf="mode == 'new'" class="btn btn-primary"
+                  <button *ngIf="mode == 'new'" class="btn btn-primary btn-xs"
                     (click)="savePatient()"><strong>Save</strong></button>
-                  <button *ngIf="mode == 'update'" class="btn btn-primary"
+                  <button *ngIf="mode == 'update'" class="btn btn-primary btn-xs"
                     (click)="updateDoctor()"><strong>Update</strong></button>
                 </div>
 
