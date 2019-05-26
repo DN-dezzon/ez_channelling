@@ -176,14 +176,16 @@
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group"><label class="col-sm-3 control-label">Patient's Name</label>
-                      <div class="col-sm-9"><input [(ngModel)]=patient.name class="form-control"
+                      <div class="col-sm-9">
+                         <input type="hidden"  [(ngModel)]=patient.contactNo value="" [ngModelOptions]="{standalone: true}"/>
+                        <input [(ngModel)]=patient.name class="form-control"
                           [ngModelOptions]="{standalone: true}" type="text" class="form-control"
                           placeholder="Enter patient name"></div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group"><label class="col-sm-3 control-label">Payment status</label>
                       <div class="col-sm-9">
-                        <select #paymentStatus (change)="activatePrint(paymentStatus.value)" class="form-control m-b"
+                        <select #paymentStatus [(ngModel)]=doctor.PrintActivateStatus (change)="activatePrint(paymentStatus.value)" class="form-control m-b"
                           name="account">
                           <option value="Pending">Not paid</option>
                           <option value="Paid">Paid</option>
@@ -201,7 +203,7 @@
                           Appointment</button>
                       </div>
                       <div class="col-sm-2 ">
-                        <button class="btn btn-primary" href="#invoice" data-toggle="modal" type="submit">Print
+                        <button class="btn btn-primary" id="printInvoice" href="#invoice" data-toggle="modal" type="submit">Print
                           Invoice</button>
                       </div>
                     </div>
@@ -248,23 +250,23 @@
                 <tbody>
                   <tr>
                     <td>Doctor Name :</td>
-                    <td style="text-align: left">Dr. Chathuri Mahanayake </td>
+                    <td style="text-align: left">{{doctor.name}} </td>
                   </tr>
                   <tr>
                     <td>Appointment :</td>
                     <td style="text-align: left">
-                      <div><strong>26</strong></div>
+                      <div><strong>{{doctor.number}}</strong></div>
                     </td>
                   </tr>
                   <tr>
                     <td>Appointment Date :</td>
                     <td style="text-align: left">
-                      <div><strong>2019-05-23</strong></div>
+                      <div><strong>{{doctor.datee}}</strong></div>
                     </td>
                   </tr>
                   <tr>
                     <td>Patient :</td>
-                    <td style="text-align: left">Mr. Madhava Dabare</td>
+                    <td style="text-align: left">{{patient.name}}</td>
                   </tr>
 
                 </tbody>
@@ -279,7 +281,7 @@
                 </tr>
                 <tr>
                   <td><strong>FEE (Rs.) :</strong></td>
-                  <td>2500.00</td>
+                  <td>{{doctor.fee}}</td>
                 </tr>
               </tbody>
             </table>
