@@ -9,6 +9,7 @@ import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
 import { RegisterComponent } from './register/register.component';
 import { UnregisteredComponent } from './unregistered/unregistered.component';
+import { SettingsComponent } from './content/settings/settings.component';
 
 const routes: Routes = [
   //{ path: 'home', component: PageFoundComponent },
@@ -38,6 +39,10 @@ const routes: Routes = [
       {
         path: 'transactions',
         component: TransactionsComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
       },
     ]
   }, 

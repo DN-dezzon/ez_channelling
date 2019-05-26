@@ -2,67 +2,91 @@
 
 
 <div class="row">
-  <div class="col-lg-6">
-    <div class=row>
-
-      <div class="col-lg-6">
-        <div class="widget style1 navy-bg">
-          <div class="row">
-            <div class="col-xs-4 text-center">
-              <i class="fa fa-trophy fa-5x"></i>
-            </div>
-            <div class="col-xs-8 text-right">
-              <span> Today income </span>
-              <h2 class="font-bold">Rs. {{patient.amount}}</h2>
-            </div>
-          </div>
+  <div class="col-lg-3">
+    <div class="widget style1 navy-bg">
+      <div class="row">
+        <div class="col-xs-4 text-center">
+          <i class="fa fa-trophy fa-5x"></i>
         </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="widget style1 lazur-bg">
-          <div class="row">
-            <div class="col-xs-4 text-center">
-              <i class="fa fa-dollar fa-5x"></i>
-            </div>
-            <div class="col-xs-8 text-right">
-              <span> Monthly income </span>
-              <h2 class="font-bold">Rs. {{patient.monthly_income}}</h2>
-            </div>
-          </div>
+        <div class="col-xs-8 text-right">
+          <span> Today income </span>
+          <h2 class="font-bold">Rs. {{patient.amount}}</h2>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="wrapper wrapper-content">
-          <div class="ibox float-e-margins">
-            <div class="ibox-title">
-              <h5>{{myDate | date:'yyyy-MM-dd'}}</h5>
-              <div class="ibox-tools">
-                
-              </div>
-            </div>
-            <div class="ibox-content ibox-heading">
-              <h3>{{myDate | date:'EEEE'}}</h3>
-              <small><i class="fa fa-user-md"></i> {{doctor.tablelength}} doctors are coming today. Check your schedule
-                to see
-                detail.</small>
-            </div>
-            <div class="ibox-content inspinia-timeline">
-              <div class="timeline-item" *ngFor="let doctor of todaySchedule; index as i">
-                <div class="row">
-                  <div class="col-xs-3 date">
-                    <i class="fa fa-briefcase"></i>
-                    {{doctor.timee}}
-                    <br />
-                    <small class="text-navy">2 hour ago</small>
-                  </div>
-                  <div class="col-xs-7 content no-top-border">
-                    <p class="m-b-xs"><strong>Dr. {{doctor.name}}</strong></p>
+  </div>
+  <div class="col-lg-3">
+    <div class="widget style1 lazur-bg">
+      <div class="row">
+        <div class="col-xs-4 text-center">
+          <i class="fa fa-dollar fa-5x"></i>
+        </div>
+        <div class="col-xs-8 text-right">
+          <span> Monthly income </span>
+          <h2 class="font-bold">Rs. {{patient.monthly_income}}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class="widget style1 yellow-bg">
+      <div class="row">
+        <div class="col-xs-4 text-center">
+          <i class="fa fa-user fa-5x"></i>
+        </div>
+        <div class="col-xs-8 text-right">
+          <span>Patients visits</span>
+          <h2 class="font-bold">{{doctor.todayPatientVisits}}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class="widget style1 lazur-bg">
+      <div class="row">
+        <div class="col-xs-4 text-center">
+          <i class="fa fa-user-md fa-5x"></i>
+        </div>
+        <div class="col-xs-8 text-right">
+          <span> Doctor visits </span>
+          <h2 class="font-bold">{{doctor.tablelength}} </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-                    <p>Charging Fee Rs. {{doctor.fee}}</p>
-                    <h4><span class="label label-warning">{{doctor.totalAppointment}} Appointments</span></h4>
-                  </div>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="col-lg-12">
+      <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+          <div class="ibox-title">
+            <h5>{{myDate | date:'yyyy-MM-dd'}}</h5>
+            <div class="ibox-tools">
+
+            </div>
+          </div>
+          <div class="ibox-content ibox-heading">
+            <h3>{{myDate | date:'EEEE'}}</h3>
+            <small><i class="fa fa-user-md"></i> {{doctor.tablelength}} doctors are coming today. Check your schedule
+              to see
+              detail.</small>
+          </div>
+          <div class="ibox-content inspinia-timeline">
+            <div class="timeline-item" *ngFor="let doctor of todaySchedule; index as i">
+              <div class="row">
+                <div class="col-xs-3 date">
+                  <i class="fa fa-briefcase"></i>
+                  {{doctor.timee}}
+                  <br />
+                  <small class="text-navy">2 hour ago</small>
+                </div>
+                <div class="col-xs-7 content no-top-border">
+                  <p class="m-b-xs"><strong>Dr. {{doctor.name}}</strong></p>
+
+                  <p>Charging Fee Rs. {{doctor.fee}}</p>
+                  <h4><span class="label label-warning">{{doctor.totalAppointment}} Appointments</span></h4>
                 </div>
               </div>
             </div>
@@ -73,34 +97,6 @@
   </div>
   <div class="col-lg-6">
     <div class="row">
-      <div class="col-lg-6">
-        <div class="widget style1 yellow-bg">
-          <div class="row">
-            <div class="col-xs-4 text-center">
-              <i class="fa fa-user fa-5x"></i>
-            </div>
-            <div class="col-xs-8 text-right">
-              <span>Patients visits</span>
-              <h2 class="font-bold">{{doctor.todayPatientVisits}}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="widget style1 lazur-bg">
-          <div class="row">
-            <div class="col-xs-4 text-center">
-              <i class="fa fa-user-md fa-5x"></i>
-            </div>
-            <div class="col-xs-8 text-right">
-              <span> Doctor visits </span>
-              <h2 class="font-bold">{{doctor.tablelength}} </h2>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-lg-12">
         <div class="wrapper wrapper-content">
           <div class="row">
@@ -109,7 +105,7 @@
                 <div class="ibox-title">
                   <h5>EZ Channelling <small>Enter patient's details for issue appointments.</small></h5>
                   <div class="ibox-tools">
-                    
+
                   </div>
                 </div>
                 <div class="ibox-content">
@@ -142,10 +138,10 @@
                     <div class="form-group"><label class="col-sm-3 control-label">Channeling Date</label>
                       <div class="col-sm-9">
                         <div id="calendar"></div>
-                        
+
                       </div>
-                      
-                      
+
+
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group"><label class="col-sm-3 control-label">Chennelling Fee</label>
@@ -217,7 +213,6 @@
     </div>
   </div>
 </div>
-
 
 <div id="invoice" class="modal fade" aria-hidden="true">
   <div class="modal-dialog ">

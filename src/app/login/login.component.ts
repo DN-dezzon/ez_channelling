@@ -67,6 +67,18 @@ export class LoginComponent implements OnInit {
 
   }
 
+  keyDownFunction(event) {
+    if(event.keyCode == 13) {
+      if(!this.user.uname){
+        toastr.warning("", "Enter a username");
+      }else if(!this.user.passwd){
+        toastr.warning("", "Enter password to login");
+      }else{
+        this.submit();
+      }
+    }
+  }
+
   initToasterNotifications() {
     toastr.options = {
       "closeButton": true,

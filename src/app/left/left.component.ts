@@ -17,7 +17,7 @@ export class LeftComponent implements OnInit {
 
   constructor(private databaseService : DatabaseService) { }
 
-  private previousEl = "";
+  private previousEl = "#homeNav";
 
   ngOnInit() {
     this.user.iduser = this.databaseService.user.iduser;
