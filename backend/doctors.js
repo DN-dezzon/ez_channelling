@@ -267,11 +267,7 @@ app.post('/saveAppointment', function (req, res) {
         });
     }
     // Register customer if not exist
-<<<<<<< HEAD
-
-=======
     query = "INSERT INTO patient(idpatient, name, contactNo) VALUES (?,?,?)";
->>>>>>> 90e45b1e88de80ee2eb01469763c4d98397fd69b
 
     //    Make an appointment
     // query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
@@ -346,8 +342,8 @@ app.get('/getNextDoctorId', function (req, res) {
 
 app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
     values = [req.body.iddoctor];
-    //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
-    query = "SELECT * , unix_timestamp(doctor_in) as start , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
+    //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule WHERE doctor_iddoctor = ? ORDER BY datee ASC";
+    query = "SELECT * , unix_timestamp(doctor_in) as start , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_schedule WHERE doctor_iddoctor = ? ORDER BY datee ASC";
     let time;
     db.query(query, values, (err, result) => {
         if (err) {
@@ -367,7 +363,7 @@ app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
 });
 
 app.post('/saveDoctorSchedule', function (req, res) {
-    query = "INSERT INTO doctor_schedule_new(iddoctor_schedule, doctor_iddoctor, datee, doctor_in, doctor_out) VALUES (?,?,?,?,?)";
+    query = "INSERT INTO doctor_schedule(iddoctor_schedule, doctor_iddoctor, datee, doctor_in, doctor_out) VALUES (?,?,?,?,?)";
     values = [req.body.iddoctor_schedule, req.body.doctor.iddoctor, req.body.datee, req.body.doctor_in, req.body.doctor_out];
     console.log(values);
     db.query(query, values, (err, result) => {
@@ -380,7 +376,7 @@ app.post('/saveDoctorSchedule', function (req, res) {
 });
 
 app.post('/updateDoctorSchedule', function (req, res) {
-    query = "UPDATE doctor_schedule_new SET datee = ?, doctor_in = ?, doctor_out = ? WHERE iddoctor_schedule = ? ";
+    query = "UPDATE doctor_schedule SET datee = ?, doctor_in = ?, doctor_out = ? WHERE iddoctor_schedule = ? ";
     values = [req.body.datee, req.body.doctor_in, req.body.doctor_out, req.body.iddoctor_schedule];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -392,7 +388,7 @@ app.post('/updateDoctorSchedule', function (req, res) {
 });
 
 app.post('/deleteDoctorSchedule', function (req, res) {
-    query = "DELETE FROM doctor_schedule_new  WHERE iddoctor_schedule = ? ";
+    query = "DELETE FROM doctor_schedule  WHERE iddoctor_schedule = ? ";
     values = [req.body.iddoctor_schedule];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -404,7 +400,7 @@ app.post('/deleteDoctorSchedule', function (req, res) {
 });
 
 app.get('/getNextDoctorScheduleId', function (req, res) {
-    db.query("SELECT MAX(iddoctor_schedule) + 1 AS iddoctor_schedule FROM doctor_schedule_new", (err, result) => {
+    db.query("SELECT MAX(iddoctor_schedule) + 1 AS iddoctor_schedule FROM doctor_schedule", (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
