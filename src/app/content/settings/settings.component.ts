@@ -55,10 +55,10 @@ export class SettingsComponent implements OnInit {
   updateFee() {
     this.settingsService.updateCenterFee(this.center).subscribe((data: any) => {
       this.getCenterFee();
-      toastr.success('Success', 'Fee updated');
+      toastr.success('Success', 'Center fee updated');
     }, (err) => {
       console.log(err);
-      toastr.error('While fetching doctor details', 'Data fetch error');
+      toastr.error('While updating center fee', 'Data update error');
     }
     );
   }
@@ -86,19 +86,20 @@ export class SettingsComponent implements OnInit {
       this.center.fee = data.fee;
     }, (err) => {
       console.log(err);
+      toastr.error('While fetching center fee', 'Data fetch error');
     }
     );
   }
 
   updateuser() {
-
     this.settingsService.updateUser(this.user).subscribe((data: any) => {
       this.getUserdata();
-      toastr.success('Success', 'User details updated.');
+      toastr.success('Success', 'User details updated');
       this.router.navigateByUrl('/login');
+      toastr.info('to apply the changes', 'Please login again');
     }, (err) => {
       console.log(err);
-      toastr.error('While fetching doctor details', 'Data fetch error');
+      toastr.error('While updating user details', 'Data update error');
     }
     );
   }
@@ -114,6 +115,7 @@ export class SettingsComponent implements OnInit {
 
     }, (err) => {
       console.log(err);
+      toastr.error('While fetching user details', 'Data fetch error');
     }
     );
   }

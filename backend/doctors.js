@@ -466,7 +466,7 @@ app.post('/updateCenterFee', function (req, res) {
 });
 
 app.post('/updateUser', function (req, res) {
-    values = [req.body.name, req.body.password, req.body.iduser];
+    values = [req.body.name, req.body.passwd, req.body.iduser];
     db.query("UPDATE user SET name = ? , passwd = ? WHERE iduser = ? ", values, (err, result) => {
         if (err) {
             res.send(500, err);

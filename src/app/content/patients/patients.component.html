@@ -61,11 +61,11 @@
   </div>
 </div>
 <div id="newMember" class="modal fade" aria-hidden="true">
-  <div class="modal-dialog modal-">
+  <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-body">
         <div class="row">
-          <form role="form" method="post" enctype="multipart/form-data" method="post">
+          
             <div class="col-sm-12">
               <div class="form-group"><label>Code</label> <input type="number" min="0" placeholder="Enter code" disabled
                   [(ngModel)]=patient.idpatient class="form-control" [ngModelOptions]="{standalone: true}" required>
@@ -78,23 +78,26 @@
                   [ngModelOptions]="{standalone: true}" required>
               </div>
 
-              <div class="form-group">
-                <br>
-                <div class="col-sm-2">
-                  <button *ngIf="mode == 'update'" class="btn btn-danger btn-xs"
-                    (click)="deleteDoctor()"><strong>Delete</strong></button>
-                </div>
-                <div class="col-sm-2">
-                  <button *ngIf="mode == 'new'" class="btn btn-primary btn-xs"
-                    (click)="savePatient()"><strong>Save</strong></button>
-                  <button *ngIf="mode == 'update'" class="btn btn-primary btn-xs"
-                    (click)="updateDoctor()"><strong>Update</strong></button>
-                </div>
 
+              <div class="form-group"><label>Action</label>
+                <br>
+                <div class="col-sm-12">
+                  <div class="col-sm-4">
+                      <button *ngIf="mode == 'update'" class="btn btn-danger btn-xs"
+                      (click)="deleteDoctor()"><strong>Delete</strong></button>
+                  </div>
+                  <div class=" col-sm-4"></div>
+                  <div class="col-sm-4">
+                      <button *ngIf="mode == 'new'" class="btn btn-primary btn-xs"
+                      (click)="savePatient()"><strong>Save</strong></button>
+                    <button *ngIf="mode == 'update'" class="btn btn-primary btn-xs"
+                      (click)="updateDoctor()"><strong>Update</strong></button>
+                  </div>
+                </div>
               </div>
             </div>
 
-          </form>
+            
         </div>
       </div>
     </div>

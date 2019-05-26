@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PatientService } from './patient.service';
 import { Observable } from 'rxjs';
 
-declare let toastr:any;
+declare let swal: any;
+declare let toastr: any;
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
@@ -13,7 +14,6 @@ export class PatientsComponent implements OnInit {
   private datatable_history: any;
   private patients: any[];
   private all_patientHistory: any[];
-
   private mode = "";
 
   private patient = {
@@ -66,7 +66,6 @@ export class PatientsComponent implements OnInit {
 
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
-      "pagingType": "full_numbers",
       responsive: true,
       columns: [
         {
@@ -102,15 +101,15 @@ export class PatientsComponent implements OnInit {
         }],
       "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-      "iDisplayLength": 5
+      "iDisplayLength": 5,
+      "fnDrawCallback": (osSettings) => {
+        this.resetTableListners();
+      }
     });
-
-
   }
 
   addIndex(array: any[]) {
     for (let index = 0; index < array.length; index++) {
-      console.log(array[index].index);
       array[index].index = index + 1;
     }
   }
@@ -138,40 +137,61 @@ export class PatientsComponent implements OnInit {
       this.resetTableListners();
     }, (err) => {
       console.log(err);
+      toastr.error('While fetching patient details', 'Data fetch error');
     }
     );
   }
 
   // Save new patient
   savePatient() {
-    (<any>$("#newMember")).modal("hide");
     this.patientService.savePatient(this.patient).subscribe((data: any) => {
       this.getPatients();
+      (<any>$("#newMember")).modal("hide");
+      toastr.success("Success", "New patient inserted");
     }, (err) => {
       console.log(err);
+      toastr.error('While saving patient', 'Data save error');
     }
     );
   }
 
 
   updateDoctor() {
-    (<any>$("#newMember")).modal("hide");
     this.patientService.updatePatient(this.patient).subscribe((data: any) => {
       this.getPatients();
+      (<any>$("#newMember")).modal("hide");
+      toastr.success("Success", "Updated patient details");
     }, (err) => {
       console.log(err);
+      toastr.error('While updating patient', 'Data update error');
     }
     );
   }
 
   deleteDoctor() {
-    (<any>$("#newMember")).modal("hide");
-    this.patientService.deletePatient(this.patient).subscribe((data: any) => {
-      this.getPatients();
-    }, (err) => {
-      console.log(err);
-    }
-    );
+    let _this = this;
+    swal({
+      title: "Are you sure?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel"
+    },
+      function (isConfirm) {
+        if (isConfirm) {
+          _this.patientService.deletePatient(_this.patient).subscribe((data: any) => {
+            _this.getPatients();
+            (<any>$("#newMember")).modal("hide");
+            toastr.success("Success", "Deleted patient");
+          }, (err) => {
+            toastr.error('While deleting patient', 'Data deletion error');
+          }
+          );
+        } else {
+          (<any>$("#newMember")).modal("hide");
+        }
+      });
   }
 
   clickNew() {
@@ -181,7 +201,7 @@ export class PatientsComponent implements OnInit {
     this.patient.contactNo = "";
     this.getNextPatientId();
   }
-  
+
   showUpdateModal(patient: any) {
     this.mode = 'update';
     this.patient = patient;
@@ -225,9 +245,9 @@ export class PatientsComponent implements OnInit {
 
   // Patient history mamagement
   showHistoryTable(patient: any) {
-    this.patient_ui.patientHistory = true; 
+    this.patient_ui.patientHistory = true;
     this.getPatientHistory(patient);
-  } 
+  }
   // load patient history table
   getPatientHistory(patient: any) {
     this.patientService.getPatientHistory(patient).subscribe((data: any) => {
@@ -241,11 +261,12 @@ export class PatientsComponent implements OnInit {
       // this.resetTableListners();
     }, (err) => {
       console.log(err);
+      toastr.error('While fetching patient details', 'Data fetch error');
     }
     );
   }
 
-  initToasterNotifications(){
+  initToasterNotifications() {
     toastr.options = {
       "closeButton": true,
       "debug": false,
