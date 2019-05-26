@@ -13,6 +13,7 @@ export class LeftComponent implements OnInit {
     name: "",
     designation: "",
     type: "",
+    password:"",
   };
 
   constructor(private databaseService : DatabaseService) { }
@@ -24,6 +25,7 @@ export class LeftComponent implements OnInit {
     this.user.name = this.databaseService.user.name;
     this.user.designation = this.databaseService.user.designation;
     this.user.type = this.databaseService.user.type;
+    this.user.password=this.databaseService.user.password;
   }
 
   clickLink(el){

@@ -12,7 +12,8 @@ export class DatabaseService {
     name: "",
     designation: "",
     type: "",
-    user:""
+    user:"",
+    password:""
   };
 
   constructor(private httpClient: HttpClient) {}
