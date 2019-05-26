@@ -266,9 +266,7 @@ app.post('/saveAppointment', function (req, res) {
             }
         });
     }
-    // Register customer if not exist
-    query = "INSERT INTO patient(idpatient, name, contactNo) VALUES (?,?,?)";
-
+    
     //    Make an appointment
     // query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
 
@@ -435,7 +433,17 @@ app.post('/getUser', function (req, res) {
         }
     });
 });
-
+app.post('/getUserdata', function (req, res) {
+    values = [req.body.iduser];
+    query = "SELECT * FROM user WHERE user.iduser = ?";
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
 app.get('/getChannellingFee', function (req, res) {
     db.query("SELECT valuee as fee FROM configuration WHERE keyy = 'fee'", (err, result) => {
         if (err) {
@@ -446,7 +454,7 @@ app.get('/getChannellingFee', function (req, res) {
     });
 });
 
-app.post('/updateChannellingFee', function (req, res) {
+app.post('/updateCenterFee', function (req, res) {
     values = [req.body.fee];
     db.query("UPDATE configuration SET valuee = ? WHERE keyy = 'fee'", values, (err, result) => {
         if (err) {
@@ -458,12 +466,23 @@ app.post('/updateChannellingFee', function (req, res) {
 });
 
 app.post('/updateUser', function (req, res) {
-    values = [req.body.name, req.body.uname, req.body.passwd, req.body.iduser];
-    db.query("UPDATE user SET name = ? , uname = ? , passwd = ? WHERE iduser = ? ", values, (err, result) => {
+    values = [req.body.name, req.body.password, req.body.iduser];
+    db.query("UPDATE user SET name = ? , passwd = ? WHERE iduser = ? ", values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
             res.json(result.affectedRows);
+        }
+    });
+});
+
+
+app.get('/getUserDetails', function (req, res) {
+    db.query("SELECT valuee as fee FROM configuration WHERE keyy = 'fee'", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
         }
     });
 });
