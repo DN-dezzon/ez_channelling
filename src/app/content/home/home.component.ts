@@ -29,15 +29,9 @@ export class HomeComponent implements OnInit {
 
   fullCalendar: any;
   doctorSchedules: any[];
-<<<<<<< HEAD
-  
-  private mode = "";
-  private doctor = {
-=======
 
   mode = "";
   doctor = {
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     PrintActivateStatus: "Not Paid",
     doctor_iddoctor: "",
     iddoctor_schedule: "",
@@ -53,11 +47,7 @@ export class HomeComponent implements OnInit {
     timee: "",
     tablelength: "",
     totalAppointment: "",
-<<<<<<< HEAD
-    todayPatientVisits: 0, 
-=======
     todayPatientVisits: 0,
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
   };
 
   patient = {
@@ -66,11 +56,7 @@ export class HomeComponent implements OnInit {
     contactNo: "",
     amount: "",
     monthly_income: "",
-<<<<<<< HEAD
-    newpatient:""
-=======
     newpatient: ""
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
   };
 
   schedule = {
@@ -201,15 +187,14 @@ export class HomeComponent implements OnInit {
       var bttn = document.getElementById("homeScheduleSelected");
 
       bttn.onclick = () => {
-        this.scheduleSelected($('#homeScheduleSelected').val());
+        // this.scheduleSelected($('#homeScheduleSelected').val());
+        this.getAppointmentNumber(this.doctor);
+        this.getScheduleId(this.doctor);
       }
     }
   }
 
   scheduleSelected(index) {
-<<<<<<< HEAD
-    console.log(index);
-=======
     this.schedule.d = this.doctorSchedules[index].d;
     this.schedule.datee = this.doctorSchedules[index].datee;
     this.schedule.doctor_in = this.doctorSchedules[index].doctor_in;
@@ -217,7 +202,6 @@ export class HomeComponent implements OnInit {
     this.schedule.iddoctor_schedule = this.doctorSchedules[index].iddoctor_schedule;
     this.schedule.m = this.doctorSchedules[index].m;
     this.schedule.y = this.doctorSchedules[index].y;
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
   }
 
   getSchedules() {
@@ -315,11 +299,7 @@ export class HomeComponent implements OnInit {
       for (let index = 0; index < this.doctor_data.length; index++) {
         this.doctor.fee = this.doctor_data[index].fee;
         this.doctor.iddoctor = this.doctor_data[index].iddoctor;
-<<<<<<< HEAD
-        this.doctor.name=this.doctor_data[index].name;
-=======
         this.doctor.name = this.doctor_data[index].name;
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
       }
     }, (err) => {
       console.log(err);
@@ -368,24 +348,14 @@ export class HomeComponent implements OnInit {
       console.log(err);
     }
     );
-<<<<<<< HEAD
-    this.patient.contactNo=mobileNo;
-    this.patient.newpatient="no";
-=======
     this.patient.contactNo = mobileNo;
     this.patient.newpatient = "no";
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     console.log(mobileNo);
   }
 
   selectNewPatientMobileNo(mobileNo) {
-<<<<<<< HEAD
-    this.patient.contactNo=mobileNo;
-    this.patient.newpatient="yes";
-=======
     this.patient.contactNo = mobileNo;
     this.patient.newpatient = "yes";
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     console.log(mobileNo);
   }
 
@@ -506,16 +476,10 @@ export class HomeComponent implements OnInit {
   }
 
 
-<<<<<<< HEAD
-  makeAppointment() { 
-    if(this.doctor.PrintActivateStatus=="Paid"){
-      $('#printInvoice').click(); 
-=======
   makeAppointment() {
     if (this.doctor.PrintActivateStatus == "Paid") {
       $('#printInvoice').click();
       this.print();
->>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     }
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();
