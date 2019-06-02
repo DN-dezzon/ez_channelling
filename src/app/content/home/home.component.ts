@@ -2,8 +2,11 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HomeService } from './home.servie';
 import { Observable } from 'rxjs';
+import * as jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
-
+declare let swal: any;
+declare let toastr: any;
 declare var $: any;
 @Component({
   selector: 'home',
@@ -14,20 +17,27 @@ declare var $: any;
 })
 export class HomeComponent implements OnInit {
   elementRef: ElementRef;
-  private datatable: any;
-  private doctors: any[];
-  private doctor_appointments: any[];
-  private todaySchedule: any[];
-  private OptionsSelect: -1;
-  private patients: any[];
-  private patient_data: any[];
-  private doctor_data: any[];
+  datatable: any;
+  doctors: any[];
+  doctor_appointments: any[];
+  todaySchedule: any[];
+  OptionsSelect: -1;
+  patients: any[];
+  patient_data: any[];
+  doctor_data: any[];
+
 
   fullCalendar: any;
   doctorSchedules: any[];
+<<<<<<< HEAD
   
   private mode = "";
   private doctor = {
+=======
+
+  mode = "";
+  doctor = {
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     PrintActivateStatus: "Not Paid",
     doctor_iddoctor: "",
     iddoctor_schedule: "",
@@ -43,17 +53,39 @@ export class HomeComponent implements OnInit {
     timee: "",
     tablelength: "",
     totalAppointment: "",
+<<<<<<< HEAD
     todayPatientVisits: 0, 
+=======
+    todayPatientVisits: 0,
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
   };
 
-  private patient = {
+  patient = {
     idpatient: -1,
     name: "",
     contactNo: "",
     amount: "",
     monthly_income: "",
+<<<<<<< HEAD
     newpatient:""
+=======
+    newpatient: ""
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
   };
+
+  schedule = {
+    iddoctor_schedule: -1,
+    doctor: this.doctor,
+    datee: "",//2012-12-30-----01/01/2015 - 01/31/2015
+    doctor_in: "00:00:00",//23:11:22
+    doctor_out: "00:00:00",
+    repetive: "false",
+    y: "",
+    m: "",
+    d: "",
+    daterange: "",
+  }
+
   myDate = new Date();
   constructor(private homeService: HomeService, private datePipe: DatePipe) {
 
@@ -73,6 +105,79 @@ export class HomeComponent implements OnInit {
     this.getPatients();
     this.initCalendar();
   }
+
+
+  print() {
+    var data = document.getElementById('invoicee');
+
+    //document.getElementById('invcont').style.display = "block";
+
+    document.getElementById('invoice').className = "";
+
+    html2canvas(data).then(canvas => {
+
+      let pdf = new jspdf('l', 'mm', 'a5'); // A4 size page of PDF  
+
+      // Few necessary setting options  
+      var imgWidth = pdf.internal.pageSize.getHeight();
+      //var imgWidth = canvas.width;
+
+      var imgHeight = canvas.height * imgWidth / canvas.width;
+      //var imgHeight = canvas.height;   
+
+
+      const contentDataURL = canvas.toDataURL('image/png')
+
+
+      var Pagelink = "about:blank";
+      var pwa = window.open(Pagelink, "_new");
+      pwa.document.open();
+      pwa.document.write(this.ImagetoPrint(contentDataURL));
+      pwa.document.close();
+      //     pdf.addImage(contentDataURL, 'PNG', 20, 0, imgWidth, imgHeight)  
+
+      // pdf.autoPrint({variant: 'non-conform'});
+      // pdf.save('autoprint.pdf');
+      //document.getElementById('invcont').style.display = "none";
+      document.getElementById('invoice').className = "modal fade";
+    });
+  }
+
+
+  ImagetoPrint(source) {
+    return "<html><head><style>" +
+      "@page { size: auto;  margin: 0mm; }" +
+      "</style><scri" + "pt>function step1(){\n" +
+      "setTimeout('step2()', 200);}\n" +
+      "function step2(){window.print();window.close()}\n" +
+      "</scri" + "pt></head><body onload='step1()' style='text-align: center; display: block;'>\n" +
+      "<img src='" + source + "' /></body></html>";
+  }
+
+  get12Pm(t24) {
+    let ret = "AM";
+    let t = t24.split(":");
+    if (parseInt(t[0], 10) > 12) {
+      ret = "PM";
+    }
+    return ret;
+  }
+
+  get12Hour(t24) {
+    let t = t24.split(":");
+    if (parseInt(t[0], 10) > 12) {
+      t[0] = parseInt(t[0], 10) - 12;
+    }
+    if (t[0] == 0) {
+      t[0] = 12;
+    }
+    return t[0];
+  }
+
+  get12Munite(t24) {
+    return t24.split(":")[1];
+  }
+
 
   initCalendar() {
     if (!this.fullCalendar) {
@@ -102,16 +207,58 @@ export class HomeComponent implements OnInit {
   }
 
   scheduleSelected(index) {
+<<<<<<< HEAD
     console.log(index);
+=======
+    this.schedule.d = this.doctorSchedules[index].d;
+    this.schedule.datee = this.doctorSchedules[index].datee;
+    this.schedule.doctor_in = this.doctorSchedules[index].doctor_in;
+    this.schedule.doctor_out = this.doctorSchedules[index].doctor_out;
+    this.schedule.iddoctor_schedule = this.doctorSchedules[index].iddoctor_schedule;
+    this.schedule.m = this.doctorSchedules[index].m;
+    this.schedule.y = this.doctorSchedules[index].y;
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
   }
 
-  searchPatientName() {
+  getSchedules() {
+    this.doctorSchedules = [];
+    if (this.fullCalendar) {
+      this.fullCalendar.fullCalendar('getCalendar').removeEvents();
+    }
+    this.homeService.getAllDoctorScheduleByDoctor(this.doctor).subscribe((data: any) => {
+      this.doctorSchedules = data;
+      this.addIndex(this.doctorSchedules);
+      if (this.fullCalendar) {
+        this.fullCalendar.fullCalendar('getCalendar').removeEvents();
+        this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
+      }
+    }, (err) => {
+      toastr.error('While fetching schedules', 'Data fetch error');
+    }
+    );
+  }
+
+
+  clearSchedule() {
+    this.schedule.iddoctor_schedule = -1;
+    this.schedule.datee = "";
+    this.schedule.doctor_in = "00:00:00";
+    this.schedule.doctor_out = "00:00:00";
+    this.schedule.y = "";
+    this.schedule.m = "";
+    this.schedule.d = "";
+    this.schedule.daterange = "";
+  }
+
+  searchPatientName(value) {
     // this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
   searchDoctorFee(value) {
     this.doctor.iddoctor = value;
     this.getDoctorById(this.doctor);
+    this.getSchedules();
+    this.clearSchedule();
   }
   searchAppointment(value) {
     this.doctor.datee = '2019-05-13';
@@ -168,7 +315,11 @@ export class HomeComponent implements OnInit {
       for (let index = 0; index < this.doctor_data.length; index++) {
         this.doctor.fee = this.doctor_data[index].fee;
         this.doctor.iddoctor = this.doctor_data[index].iddoctor;
+<<<<<<< HEAD
         this.doctor.name=this.doctor_data[index].name;
+=======
+        this.doctor.name = this.doctor_data[index].name;
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
       }
     }, (err) => {
       console.log(err);
@@ -217,14 +368,24 @@ export class HomeComponent implements OnInit {
       console.log(err);
     }
     );
+<<<<<<< HEAD
     this.patient.contactNo=mobileNo;
     this.patient.newpatient="no";
+=======
+    this.patient.contactNo = mobileNo;
+    this.patient.newpatient = "no";
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     console.log(mobileNo);
   }
 
   selectNewPatientMobileNo(mobileNo) {
+<<<<<<< HEAD
     this.patient.contactNo=mobileNo;
     this.patient.newpatient="yes";
+=======
+    this.patient.contactNo = mobileNo;
+    this.patient.newpatient = "yes";
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     console.log(mobileNo);
   }
 
@@ -345,9 +506,16 @@ export class HomeComponent implements OnInit {
   }
 
 
+<<<<<<< HEAD
   makeAppointment() { 
     if(this.doctor.PrintActivateStatus=="Paid"){
       $('#printInvoice').click(); 
+=======
+  makeAppointment() {
+    if (this.doctor.PrintActivateStatus == "Paid") {
+      $('#printInvoice').click();
+      this.print();
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     }
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();

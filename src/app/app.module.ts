@@ -19,6 +19,7 @@ import * as $ from 'jquery';
 import { HttpClientModule } from '@angular/common/http';
 import { PatientsComponent } from './content/patients/patients.component';
 import { UnregisteredComponent } from './unregistered/unregistered.component';
+import { SettingsComponent } from './content/settings/settings.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,6 +37,7 @@ import { UnregisteredComponent } from './unregistered/unregistered.component';
     DoctorComponent,
     TransactionsComponent,
     UnregisteredComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

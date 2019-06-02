@@ -27,4 +27,8 @@ export class PatientService {
   getPatientHistory(patient: any){ 
     return this.httpClient.post(environment.apiUrl + '/getPatientHistory',patient);
   }
+
+  getNextPatientId(){
+    return this.httpClient.get(environment.apiUrl + '/getNextPatientId');
+  }
 }

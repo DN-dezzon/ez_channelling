@@ -266,9 +266,13 @@ app.post('/saveAppointment', function (req, res) {
             }
         });
     }
+<<<<<<< HEAD
     // Register customer if not exist
 
 
+=======
+    
+>>>>>>> aec8829c389effe22dd0f4af90e3f1bf210d1299
     //    Make an appointment
     // query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
 
@@ -342,8 +346,8 @@ app.get('/getNextDoctorId', function (req, res) {
 
 app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
     values = [req.body.iddoctor];
-    //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
-    query = "SELECT * , unix_timestamp(doctor_in) as start , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_schedule_new WHERE doctor_iddoctor = ? ORDER BY datee ASC";
+    //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule WHERE doctor_iddoctor = ? ORDER BY datee ASC";
+    query = "SELECT * , unix_timestamp(doctor_in) as start , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_schedule WHERE doctor_iddoctor = ? ORDER BY datee ASC";
     let time;
     db.query(query, values, (err, result) => {
         if (err) {
@@ -363,7 +367,7 @@ app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
 });
 
 app.post('/saveDoctorSchedule', function (req, res) {
-    query = "INSERT INTO doctor_schedule_new(iddoctor_schedule, doctor_iddoctor, datee, doctor_in, doctor_out) VALUES (?,?,?,?,?)";
+    query = "INSERT INTO doctor_schedule(iddoctor_schedule, doctor_iddoctor, datee, doctor_in, doctor_out) VALUES (?,?,?,?,?)";
     values = [req.body.iddoctor_schedule, req.body.doctor.iddoctor, req.body.datee, req.body.doctor_in, req.body.doctor_out];
     console.log(values);
     db.query(query, values, (err, result) => {
@@ -376,7 +380,7 @@ app.post('/saveDoctorSchedule', function (req, res) {
 });
 
 app.post('/updateDoctorSchedule', function (req, res) {
-    query = "UPDATE doctor_schedule_new SET datee = ?, doctor_in = ?, doctor_out = ? WHERE iddoctor_schedule = ? ";
+    query = "UPDATE doctor_schedule SET datee = ?, doctor_in = ?, doctor_out = ? WHERE iddoctor_schedule = ? ";
     values = [req.body.datee, req.body.doctor_in, req.body.doctor_out, req.body.iddoctor_schedule];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -388,7 +392,7 @@ app.post('/updateDoctorSchedule', function (req, res) {
 });
 
 app.post('/deleteDoctorSchedule', function (req, res) {
-    query = "DELETE FROM doctor_schedule_new  WHERE iddoctor_schedule = ? ";
+    query = "DELETE FROM doctor_schedule  WHERE iddoctor_schedule = ? ";
     values = [req.body.iddoctor_schedule];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -400,7 +404,7 @@ app.post('/deleteDoctorSchedule', function (req, res) {
 });
 
 app.get('/getNextDoctorScheduleId', function (req, res) {
-    db.query("SELECT MAX(iddoctor_schedule) + 1 AS iddoctor_schedule FROM doctor_schedule_new", (err, result) => {
+    db.query("SELECT MAX(iddoctor_schedule) + 1 AS iddoctor_schedule FROM doctor_schedule", (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
@@ -432,6 +436,72 @@ app.post('/getUser', function (req, res) {
             res.send(500, err);
         } else {
             res.json(result);
+        }
+    });
+});
+app.post('/getUserdata', function (req, res) {
+    values = [req.body.iduser];
+    query = "SELECT * FROM user WHERE user.iduser = ?";
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+app.get('/getChannellingFee', function (req, res) {
+    db.query("SELECT valuee as fee FROM configuration WHERE keyy = 'fee'", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.post('/updateCenterFee', function (req, res) {
+    values = [req.body.fee];
+    db.query("UPDATE configuration SET valuee = ? WHERE keyy = 'fee'", values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/updateUser', function (req, res) {
+    values = [req.body.name, req.body.passwd, req.body.iduser];
+    db.query("UPDATE user SET name = ? , passwd = ? WHERE iduser = ? ", values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+
+app.get('/getUserDetails', function (req, res) {
+    db.query("SELECT valuee as fee FROM configuration WHERE keyy = 'fee'", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/getNextPatientId', function (req, res) {
+    db.query("SELECT MAX(idpatient) + 1 AS idpatient FROM patient", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].idpatient == null) {
+                result[0].idpatient = 1;
+            }
+            res.json(result[0]);
         }
     });
 });

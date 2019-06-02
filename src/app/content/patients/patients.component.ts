@@ -2,27 +2,27 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PatientService } from './patient.service';
 import { Observable } from 'rxjs';
 
-
+declare let swal: any;
+declare let toastr: any;
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.scss']
 })
 export class PatientsComponent implements OnInit {
-  private datatable: any;
-  private datatable_history: any;
-  private patients: any[];
-  private all_patientHistory: any[];
+  datatable: any;
+  datatable_history: any;
+  patients: any[];
+  all_patientHistory: any[];
+  mode = "";
 
-  private mode = "";
-
-  private patient = {
+  patient = {
     idpatient: -1,
     name: "",
     contactNo: "",
   };
 
-  private patientHistory = {
+  patientHistory = {
     number: "",
     name: "",
     issued_datetime: "",
@@ -35,7 +35,7 @@ export class PatientsComponent implements OnInit {
 
 
 
-  private patient_ui = {
+  patient_ui = {
     patientHistory: false
   }
   constructor(private patientService: PatientService) { }
@@ -61,10 +61,11 @@ export class PatientsComponent implements OnInit {
     (<any>$(".select2_demo_3")).on('select2:open', function (e) {
       $('.custom-dropdown').parent().css('z-index', 99999);
     });
+    this.initToasterNotifications();
   }
+
   initTable() {
     this.datatable = (<any>$('#editable')).DataTable({
-      "pagingType": "full_numbers",
       responsive: true,
       columns: [
         {
@@ -100,17 +101,28 @@ export class PatientsComponent implements OnInit {
         }],
       "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-      "iDisplayLength": 5
+      "iDisplayLength": 5,
+      "fnDrawCallback": (osSettings) => {
+        this.resetTableListners();
+      }
     });
-
-
   }
 
   addIndex(array: any[]) {
     for (let index = 0; index < array.length; index++) {
-      console.log(array[index].index);
       array[index].index = index + 1;
     }
+  }
+
+  getNextPatientId() {
+    this.patientService.getNextPatientId().subscribe((data: any) => {
+      this.patient.idpatient = data.idpatient;
+      (<any>$("#newMember")).modal();
+    }, (err) => {
+      (<any>$("#newMember")).modal('hide');
+      toastr.error('While fetching doctor details', 'Data fetch error');
+    }
+    );
   }
 
   // Load ptient to main table
@@ -125,40 +137,61 @@ export class PatientsComponent implements OnInit {
       this.resetTableListners();
     }, (err) => {
       console.log(err);
+      toastr.error('While fetching patient details', 'Data fetch error');
     }
     );
   }
 
   // Save new patient
   savePatient() {
-    (<any>$("#newMember")).modal("hide");
     this.patientService.savePatient(this.patient).subscribe((data: any) => {
       this.getPatients();
+      (<any>$("#newMember")).modal("hide");
+      toastr.success("Success", "New patient inserted");
     }, (err) => {
       console.log(err);
+      toastr.error('While saving patient', 'Data save error');
     }
     );
   }
 
 
   updateDoctor() {
-    (<any>$("#newMember")).modal("hide");
     this.patientService.updatePatient(this.patient).subscribe((data: any) => {
       this.getPatients();
+      (<any>$("#newMember")).modal("hide");
+      toastr.success("Success", "Updated patient details");
     }, (err) => {
       console.log(err);
+      toastr.error('While updating patient', 'Data update error');
     }
     );
   }
 
   deleteDoctor() {
-    (<any>$("#newMember")).modal("hide");
-    this.patientService.deletePatient(this.patient).subscribe((data: any) => {
-      this.getPatients();
-    }, (err) => {
-      console.log(err);
-    }
-    );
+    let _this = this;
+    swal({
+      title: "Are you sure?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel"
+    },
+      function (isConfirm) {
+        if (isConfirm) {
+          _this.patientService.deletePatient(_this.patient).subscribe((data: any) => {
+            _this.getPatients();
+            (<any>$("#newMember")).modal("hide");
+            toastr.success("Success", "Deleted patient");
+          }, (err) => {
+            toastr.error('While deleting patient', 'Data deletion error');
+          }
+          );
+        } else {
+          (<any>$("#newMember")).modal("hide");
+        }
+      });
   }
 
   clickNew() {
@@ -166,8 +199,9 @@ export class PatientsComponent implements OnInit {
     this.patient.idpatient = -1;
     this.patient.name = "";
     this.patient.contactNo = "";
-    (<any>$("#newMember")).modal();
+    this.getNextPatientId();
   }
+
   showUpdateModal(patient: any) {
     this.mode = 'update';
     this.patient = patient;
@@ -211,9 +245,9 @@ export class PatientsComponent implements OnInit {
 
   // Patient history mamagement
   showHistoryTable(patient: any) {
-    this.patient_ui.patientHistory = true; 
+    this.patient_ui.patientHistory = true;
     this.getPatientHistory(patient);
-  } 
+  }
   // load patient history table
   getPatientHistory(patient: any) {
     this.patientService.getPatientHistory(patient).subscribe((data: any) => {
@@ -227,8 +261,28 @@ export class PatientsComponent implements OnInit {
       // this.resetTableListners();
     }, (err) => {
       console.log(err);
+      toastr.error('While fetching patient details', 'Data fetch error');
     }
     );
+  }
+
+  initToasterNotifications() {
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "progressBar": true,
+      "preventDuplicates": false,
+      "positionClass": "toast-top-right",
+      "onclick": null,
+      "showDuration": "400",
+      "hideDuration": "1000",
+      "timeOut": "7000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
   }
 
 }

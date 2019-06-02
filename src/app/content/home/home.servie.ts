@@ -46,4 +46,7 @@ export class HomeService {
   getPatientIncomeMonthly(){
     return this.httpClient.get(environment.apiUrl + '/getPatientIncomeMonthly');
   }
+  getAllDoctorScheduleByDoctor(doctor : any){
+    return this.httpClient.post(environment.apiUrl + '/getAllDoctorScheduleByDoctor', doctor);
+  }
 }
