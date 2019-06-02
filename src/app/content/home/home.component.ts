@@ -23,8 +23,12 @@ export class HomeComponent implements OnInit {
   private patient_data: any[];
   private doctor_data: any[];
 
+  fullCalendar: any;
+  doctorSchedules: any[];
+  
   private mode = "";
   private doctor = {
+    PrintActivateStatus: "Not Paid",
     doctor_iddoctor: "",
     iddoctor_schedule: "",
     iddoctor: -1,
@@ -39,7 +43,7 @@ export class HomeComponent implements OnInit {
     timee: "",
     tablelength: "",
     totalAppointment: "",
-    todayPatientVisits: 0
+    todayPatientVisits: 0, 
   };
 
   private patient = {
@@ -47,7 +51,8 @@ export class HomeComponent implements OnInit {
     name: "",
     contactNo: "",
     amount: "",
-    monthly_income: ""
+    monthly_income: "",
+    newpatient:""
   };
   myDate = new Date();
   constructor(private homeService: HomeService, private datePipe: DatePipe) {
@@ -55,6 +60,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    $('#printInvoice').hide();
     $('#channeling_date').datepicker({
       todayBtn: "linked",
       keyboardNavigation: false,
@@ -65,6 +71,38 @@ export class HomeComponent implements OnInit {
 
     this.getDoctors();
     this.getPatients();
+    this.initCalendar();
+  }
+
+  initCalendar() {
+    if (!this.fullCalendar) {
+      this.fullCalendar = (<any>$('#calendar')).fullCalendar({
+        defaultView: 'month',
+        height: "auto",
+        header: {
+          left: '',
+          center: 'title',
+          right: 'prev,next today'
+        },
+        editable: false,
+        events: this.doctorSchedules,
+        eventClick: (schedule) => {
+          $('#homeScheduleSelected').val(schedule.index - 1);
+          $('#homeScheduleSelected').click();
+          return false;
+        }
+      });
+
+      var bttn = document.getElementById("homeScheduleSelected");
+
+      bttn.onclick = () => {
+        this.scheduleSelected($('#homeScheduleSelected').val());
+      }
+    }
+  }
+
+  scheduleSelected(index) {
+    console.log(index);
   }
 
   searchPatientName() {
@@ -130,6 +168,7 @@ export class HomeComponent implements OnInit {
       for (let index = 0; index < this.doctor_data.length; index++) {
         this.doctor.fee = this.doctor_data[index].fee;
         this.doctor.iddoctor = this.doctor_data[index].iddoctor;
+        this.doctor.name=this.doctor_data[index].name;
       }
     }, (err) => {
       console.log(err);
@@ -156,7 +195,7 @@ export class HomeComponent implements OnInit {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
-        this.doctor.iddoctor=this.doctor_appointments[index].iddoctor;
+        this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
       }
 
     }, (err) => {
@@ -178,10 +217,14 @@ export class HomeComponent implements OnInit {
       console.log(err);
     }
     );
+    this.patient.contactNo=mobileNo;
+    this.patient.newpatient="no";
     console.log(mobileNo);
   }
 
   selectNewPatientMobileNo(mobileNo) {
+    this.patient.contactNo=mobileNo;
+    this.patient.newpatient="yes";
     console.log(mobileNo);
   }
 
@@ -272,7 +315,7 @@ export class HomeComponent implements OnInit {
         // Remove invalid value
         this.input
           //.val("")
-          .attr("title", value + " is a new doctor")
+          .attr("title", value + " is a new Patient")
           .tooltip("open");
         //this.element.val("");
         _this.selectNewPatientMobileNo(value.trim());
@@ -302,8 +345,10 @@ export class HomeComponent implements OnInit {
   }
 
 
-  makeAppointment() {
-    alert(this.patient.idpatient + " " + this.doctor.iddoctor_schedule+" -" +this.doctor.fee);
+  makeAppointment() { 
+    if(this.doctor.PrintActivateStatus=="Paid"){
+      $('#printInvoice').click(); 
+    }
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();
     }, (err) => {

@@ -1,8 +1,54 @@
-<div class="row">
+<div class="row animated fadeInDown">
+  <div class="tabs-container">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#tab-1">Income</a></li>
+      <li class=""><a data-toggle="tab" href="#tab-2">Outcome</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="tab-1" class="tab-pane active">
+        <div class="panel-body">
+
+          <div class="ibox">
+            <div class="ibox-title">
+              <h5>Doctors</h5>
+              <div class="ibox-tools">
+                <button class="btn btn-xs btn-primary" (click)="clickNew()"><i class="fa fa-plus"></i>New</button>
+              </div>
+            </div>
+            <div class="ibox-content">
+              <div class="jqGrid_wrapper">
+                <table id="table_list_2"></table>
+                <div id="pager_list_2"></div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div id="tab-2" class="tab-pane">
+        <div class="panel-body">
+          <div class="ibox float-e-margins">
+            <div class="ibox-title">
+            </div>
+            <div class="ibox-content">
+              <div class="jqGrid_wrapper">
+                <table id="table_list_2"></table>
+                <div id="pager_list_2"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="row">
   <div class="col-lg-12">
     <div class="jqGrid_wrapper">
       <table id="table_list_2"></table>
       <div id="pager_list_2"></div>
   </div>
 	</div>
-</div>
+</div> -->
