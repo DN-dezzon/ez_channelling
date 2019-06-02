@@ -10,6 +10,7 @@ declare let toastr: any;
 declare var $: any;
 declare var jquery: any;
 @Component({
+  
   selector: 'home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit {
 
   mode = "";
   doctor = {
-    PrintActivateStatus: "Not Paid",
+    payment_status: "Not Paid",
     doctor_iddoctor: "",
     iddoctor_schedule: "",
     iddoctor: -1,
@@ -189,20 +190,21 @@ export class HomeComponent implements OnInit {
 
       bttn.onclick = () => {
 
-        this.scheduleSelected($('#homeScheduleSelected').val());
+        // this.scheduleSelected($('#homeScheduleSelected').val());
         this.getAppointmentNumber(this.doctor);
+        this.getScheduleId(this.doctor);
       }
     }
   }
 
   scheduleSelected(index) {
-    this.schedule.d = this.doctorSchedules[index].d;
-    this.schedule.datee = this.doctorSchedules[index].datee;
-    this.schedule.doctor_in = this.doctorSchedules[index].doctor_in;
-    this.schedule.doctor_out = this.doctorSchedules[index].doctor_out;
-    this.schedule.iddoctor_schedule = this.doctorSchedules[index].iddoctor_schedule;
-    this.schedule.m = this.doctorSchedules[index].m;
-    this.schedule.y = this.doctorSchedules[index].y;
+    // this.schedule.d = this.doctorSchedules[index].d;
+    // this.schedule.datee = this.doctorSchedules[index].datee;
+    // this.schedule.doctor_in = this.doctorSchedules[index].doctor_in;
+    // this.schedule.doctor_out = this.doctorSchedules[index].doctor_out;
+    // this.schedule.iddoctor_schedule = this.doctorSchedules[index].iddoctor_schedule;
+    // this.schedule.m = this.doctorSchedules[index].m;
+    // this.schedule.y = this.doctorSchedules[index].y;
   }
 
   getSchedules() {
@@ -314,20 +316,22 @@ export class HomeComponent implements OnInit {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.number = this.doctor_appointments[index].count + 1;
-        this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
-        this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
+        this.doctor.iddoctor = this.doctor_appointments[index].iddoctor; 
+      
       }
+     
 
     }, (err) => {
       console.log(err);
     });
   }
-  getScheduleId(doctor: any) {
+  getScheduleId(doctor: any) { 
     this.homeService.getScheduleIdId(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
         this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
+         
       }
 
     }, (err) => {
@@ -478,16 +482,27 @@ export class HomeComponent implements OnInit {
 
 
   makeAppointment() {
-    if (this.doctor.PrintActivateStatus == "Paid") {
+    if (this.doctor.payment_status == "Paid") {
+      alert(this.doctor.number+" "+ this.doctor.payment_status+" "+this.doctor.iddoctor_schedule+" ");
+      this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
+        // this.getPatients();
+      }, (err) => {
+        console.log(err);
+      }
+      );
       $('#printInvoice').click();
       this.print();
-    }
+    }else{
+   alert(this.doctor.number+" "+ this.doctor.payment_status+" "+this.doctor.iddoctor_schedule+" ");
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();
     }, (err) => {
       console.log(err);
     }
     );
+    }
+   
+ 
   }
   addIndex(array: any[]) {
     for (let index = 0; index < array.length; index++) {
@@ -507,11 +522,13 @@ export class HomeComponent implements OnInit {
         this.homeService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
           this.doctor_appointments = data;
           this.doctor.totalAppointment = "";
-
+          this.doctor.iddoctor_schedule=this.doctor_appointments[index].iddoctor_schedule;
           for (let index = 0; index < this.doctor_appointments.length; index++) {
+            
             this.doctor.totalAppointment = this.doctor_appointments[index].count;
-            this.doctor.todayPatientVisits = Number(this.doctor.todayPatientVisits) + Number(this.doctor_appointments[index].count)
-          }
+            this.doctor.todayPatientVisits = Number(this.doctor.todayPatientVisits) + Number(this.doctor_appointments[index].count);
+         
+          } 
           this.todaySchedule[index].totalAppointment = this.doctor.totalAppointment;
           // console.log( this.doctor.todayPatientVisits);
         }, (err) => {

@@ -136,7 +136,7 @@
                     </div>
                     <div class="form-group"><label class="col-sm-3 control-label">Channeling Date</label>
                       <div class="col-sm-9">
-
+ 
                         <input *ngIf="!schedule.m" type="text" class="form-control" placeholder="Select a schedule"
                           disabled>
 
@@ -195,8 +195,8 @@
                     
                     <div class="form-group"><label class="col-sm-3 control-label">Payment status</label>
                       <div class="col-sm-9">
-                        <select #paymentStatus [(ngModel)]=doctor.PrintActivateStatus
-                          (change)="activatePrint(paymentStatus.value)" class="form-control m-b" name="account">
+                        <select #paymentStatus [(ngModel)]=doctor.payment_status
+                          (change)="activatePrint(payment_status.value)" class="form-control m-b" name="account">
                           <option value="Pending">Not paid</option>
                           <option value="Paid">Paid</option>
                           <option value="Cancelled">Cancelled</option>
