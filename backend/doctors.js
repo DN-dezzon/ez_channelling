@@ -499,3 +499,65 @@ app.get('/getNextPatientId', function (req, res) {
         }
     });
 });
+
+
+app.get('/getNextDoctorInvoiceId', function (req, res) {
+    db.query("SELECT MAX(iddoctor_invoice) + 1 AS iddoctor_invoice FROM doctor_invoice", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].iddoctor_invoice == null) {
+                result[0].iddoctor_invoice = 1;
+            }
+            res.json(result[0]);
+        }
+    });
+});
+
+app.post('/updateDoctorInvoice', function (req, res) {
+    values = [req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.iddoctor_invoice];
+    db.query("UPDATE doctor_invoice SET datee = ? , patient_count = ?, center_fee = ? , doc_fee = ? WHERE iddoctor_invoice = ? ", values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
+    values = [req.body.iddoctor_schedule];
+    db.query("SELECT * , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_invoice WHERE doctor_schedule_iddoctor_schedule = ? ", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+app.post('/saveDoctorInvoice', function (req, res) {
+    query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?,?,?,?,?,?)";
+    values = [req.body.iddoctor_invoice, req.body.doctor.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule_iddoctor_schedule];
+    console.log(values);
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/deleteDoctorInvoice', function (req, res) {
+    query = "DELETE FROM doctor_invoice WHERE iddoctor_invoice = ?";
+    values = [req.body.iddoctor_invoice];
+    console.log(values);
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
