@@ -32,7 +32,7 @@ export class HomeService {
   }
   saveAppointment(patient:any, doctor : any){
     
-    return this.httpClient.post(environment.apiUrl + '/saveAppointment',patient,doctor);
+    return this.httpClient.post(environment.apiUrl + '/saveAppointment',[patient,doctor]);
   } 
   getTodaySchedule(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getTodaySchedule',doctor);

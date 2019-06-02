@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 declare let swal: any;
 declare let toastr: any;
 declare var $: any;
+declare var jquery: any;
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
@@ -65,9 +66,9 @@ export class HomeComponent implements OnInit {
     doctor_in: "00:00:00",//23:11:22
     doctor_out: "00:00:00",
     repetive: "false",
-    y:"",
-    m:"",
-    d:"",
+    y: "",
+    m: "",
+    d: "",
     daterange: "",
   }
 
@@ -139,7 +140,9 @@ export class HomeComponent implements OnInit {
       var bttn = document.getElementById("homeScheduleSelected");
 
       bttn.onclick = () => {
+
         this.scheduleSelected($('#homeScheduleSelected').val());
+        this.getAppointmentNumber(this.doctor);
       }
     }
   }
@@ -173,15 +176,15 @@ export class HomeComponent implements OnInit {
   }
 
 
-  clearSchedule(){
-      this.schedule.iddoctor_schedule= -1;
-      this.schedule.datee= "";
-      this.schedule.doctor_in= "00:00:00";
-      this.schedule.doctor_out= "00:00:00";
-      this.schedule.y="";
-      this.schedule.m="";
-      this.schedule.d="";
-      this.schedule.daterange= "";
+  clearSchedule() {
+    this.schedule.iddoctor_schedule = -1;
+    this.schedule.datee = "";
+    this.schedule.doctor_in = "00:00:00";
+    this.schedule.doctor_out = "00:00:00";
+    this.schedule.y = "";
+    this.schedule.m = "";
+    this.schedule.d = "";
+    this.schedule.daterange = "";
   }
 
   searchPatientName() {
@@ -477,7 +480,6 @@ export class HomeComponent implements OnInit {
   }
 
   getTodayPatientIncome() {
-
     this.homeService.getPatientIncome().subscribe((data: any) => {
       this.patient_data = data;
 
@@ -491,8 +493,8 @@ export class HomeComponent implements OnInit {
       console.log(err);
     });
   }
-  getTodayPatientMonthlyIncome() {
 
+  getTodayPatientMonthlyIncome() {
     this.homeService.getPatientIncomeMonthly().subscribe((data: any) => {
       this.patient_data = data;
 
