@@ -505,11 +505,14 @@ export class DoctorComponent implements OnInit {
         {
           "searchable": false,
           "orderable": false,
-          "targets": [4]
+          "targets": [8]
         }],
       "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-      "iDisplayLength": 50
+      "iDisplayLength": 5,
+      "fnDrawCallback": (osSettings) => {
+        this.resetTableListners();
+      }
     });
 
 

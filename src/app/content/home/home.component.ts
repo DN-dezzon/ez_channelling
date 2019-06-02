@@ -2,7 +2,8 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HomeService } from './home.servie';
 import { Observable } from 'rxjs';
-
+import * as jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
 declare let swal: any;
 declare let toastr: any;
@@ -17,21 +18,21 @@ declare var jquery: any;
 })
 export class HomeComponent implements OnInit {
   elementRef: ElementRef;
-  private datatable: any;
-  private doctors: any[];
-  private doctor_appointments: any[];
-  private todaySchedule: any[];
-  private OptionsSelect: -1;
-  private patients: any[];
-  private patient_data: any[];
-  private doctor_data: any[];
+  datatable: any;
+  doctors: any[];
+  doctor_appointments: any[];
+  todaySchedule: any[];
+  OptionsSelect: -1;
+  patients: any[];
+  patient_data: any[];
+  doctor_data: any[];
 
 
   fullCalendar: any;
   doctorSchedules: any[];
 
-  private mode = "";
-  private doctor = {
+  mode = "";
+  doctor = {
     PrintActivateStatus: "Not Paid",
     doctor_iddoctor: "",
     iddoctor_schedule: "",
@@ -50,7 +51,7 @@ export class HomeComponent implements OnInit {
     todayPatientVisits: 0,
   };
 
-  private patient = {
+  patient = {
     idpatient: -1,
     name: "",
     contactNo: "",
@@ -92,6 +93,53 @@ export class HomeComponent implements OnInit {
     this.initCalendar();
   }
 
+
+  print() {
+    var data = document.getElementById('invoicee');
+
+    //document.getElementById('invcont').style.display = "block";
+
+    document.getElementById('invoice').className = "";
+
+    html2canvas(data).then(canvas => {
+
+      let pdf = new jspdf('l', 'mm', 'a5'); // A4 size page of PDF  
+
+      // Few necessary setting options  
+      var imgWidth = pdf.internal.pageSize.getHeight();
+      //var imgWidth = canvas.width;
+
+      var imgHeight = canvas.height * imgWidth / canvas.width;
+      //var imgHeight = canvas.height;   
+
+
+      const contentDataURL = canvas.toDataURL('image/png')
+
+
+      var Pagelink = "about:blank";
+      var pwa = window.open(Pagelink, "_new");
+      pwa.document.open();
+      pwa.document.write(this.ImagetoPrint(contentDataURL));
+      pwa.document.close();
+      //     pdf.addImage(contentDataURL, 'PNG', 20, 0, imgWidth, imgHeight)  
+
+      // pdf.autoPrint({variant: 'non-conform'});
+      // pdf.save('autoprint.pdf');
+      //document.getElementById('invcont').style.display = "none";
+      document.getElementById('invoice').className = "modal fade";
+    });
+  }
+
+
+  ImagetoPrint(source) {
+    return "<html><head><style>" +
+      "@page { size: auto;  margin: 0mm; }" +
+      "</style><scri" + "pt>function step1(){\n" +
+      "setTimeout('step2()', 200);}\n" +
+      "function step2(){window.print();window.close()}\n" +
+      "</scri" + "pt></head><body onload='step1()' style='text-align: center; display: block;'>\n" +
+      "<img src='" + source + "' /></body></html>";
+  }
 
   get12Pm(t24) {
     let ret = "AM";
@@ -187,7 +235,7 @@ export class HomeComponent implements OnInit {
     this.schedule.daterange = "";
   }
 
-  searchPatientName() {
+  searchPatientName(value) {
     // this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
@@ -432,6 +480,7 @@ export class HomeComponent implements OnInit {
   makeAppointment() {
     if (this.doctor.PrintActivateStatus == "Paid") {
       $('#printInvoice').click();
+      this.print();
     }
     this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
       // this.getPatients();

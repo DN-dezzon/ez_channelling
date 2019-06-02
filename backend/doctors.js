@@ -467,7 +467,7 @@ app.post('/updateCenterFee', function (req, res) {
 });
 
 app.post('/updateUser', function (req, res) {
-    values = [req.body.name, req.body.password, req.body.iduser];
+    values = [req.body.name, req.body.passwd, req.body.iduser];
     db.query("UPDATE user SET name = ? , passwd = ? WHERE iduser = ? ", values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -483,6 +483,19 @@ app.get('/getUserDetails', function (req, res) {
         if (err) {
             res.send(500, err);
         } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.get('/getNextPatientId', function (req, res) {
+    db.query("SELECT MAX(idpatient) + 1 AS idpatient FROM patient", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            if (result[0].idpatient == null) {
+                result[0].idpatient = 1;
+            }
             res.json(result[0]);
         }
     });
