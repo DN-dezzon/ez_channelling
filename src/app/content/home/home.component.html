@@ -176,7 +176,7 @@
                     <div class="form-group"><label class="col-sm-3 control-label">Patient's Mobile</label>
                       <div class="col-sm-9">
                         <select #combobox (click)="searchPatientName(combobox.value)" id="combobox"
-                          class="form-control m-b" [(ngModel)]="OptionsSelect2" [ngModelOptions]="{standalone: true}">
+                          class="form-control m-b" >
                           <option *ngFor="let patient of patients" value="{{ patient.idpatient }}">
                             {{patient.contactNo}}
                           </option>

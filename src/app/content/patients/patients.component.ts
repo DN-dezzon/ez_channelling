@@ -10,19 +10,19 @@ declare let toastr: any;
   styleUrls: ['./patients.component.scss']
 })
 export class PatientsComponent implements OnInit {
-  private datatable: any;
-  private datatable_history: any;
-  private patients: any[];
-  private all_patientHistory: any[];
-  private mode = "";
+  datatable: any;
+  datatable_history: any;
+  patients: any[];
+  all_patientHistory: any[];
+  mode = "";
 
-  private patient = {
+  patient = {
     idpatient: -1,
     name: "",
     contactNo: "",
   };
 
-  private patientHistory = {
+  patientHistory = {
     number: "",
     name: "",
     issued_datetime: "",
@@ -35,7 +35,7 @@ export class PatientsComponent implements OnInit {
 
 
 
-  private patient_ui = {
+  patient_ui = {
     patientHistory: false
   }
   constructor(private patientService: PatientService) { }

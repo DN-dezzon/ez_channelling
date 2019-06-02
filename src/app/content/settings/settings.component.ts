@@ -18,13 +18,13 @@ declare var $: any;
 
 export class SettingsComponent implements OnInit {
   elementRef: ElementRef;
-  private datatable: any;
-  private centers: any[];
-  private userdata: any[];
+  datatable: any;
+  centers: any[];
+  userdata: any[];
   fullCalendar: any;
   doctorSchedules: any[];
 
-  private mode = "new";
+  mode = "new";
 
   user = {
     iduser: "",
@@ -34,7 +34,7 @@ export class SettingsComponent implements OnInit {
     passwd: ""
   };
 
-  private center = {
+  center = {
     fee: ""
   };
 
