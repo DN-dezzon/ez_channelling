@@ -269,7 +269,9 @@ app.post('/saveAppointment', function (req, res) {
             }
         });
     }
-    
+    // Register customer if not exist
+
+
     //    Make an appointment
     // query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?)";
 

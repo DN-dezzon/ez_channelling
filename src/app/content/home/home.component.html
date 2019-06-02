@@ -186,17 +186,18 @@
                     
                     <div class="form-group"><label class="col-sm-3 control-label">Patient's Name</label>
                       <div class="col-sm-9">
-                        <input type="hidden" [(ngModel)]=patient.contactNo value=""
-                          [ngModelOptions]="{standalone: true}" />
-                        <input [(ngModel)]=patient.name class="form-control" [ngModelOptions]="{standalone: true}"
-                          type="text" class="form-control" placeholder="Enter patient name">
-                      </div>
+                         <input type="hidden"  [(ngModel)]=patient.contactNo value="" [ngModelOptions]="{standalone: true}"/>
+                        <input [(ngModel)]=patient.name class="form-control"
+                          [ngModelOptions]="{standalone: true}" type="text" class="form-control"
+                          placeholder="Enter patient name"></div>
                     </div>
                     
                     <div class="form-group"><label class="col-sm-3 control-label">Payment status</label>
                       <div class="col-sm-9">
+ 
                         <select #paymentStatus [(ngModel)]=doctor.payment_status
                           (change)="activatePrint(payment_status.value)" class="form-control m-b" name="account">
+ 
                           <option value="Pending">Not paid</option>
                           <option value="Paid">Paid</option>
                           <option value="Cancelled">Cancelled</option>
@@ -213,8 +214,7 @@
                           Appointment</button>
                       </div>
                       <div class="col-sm-2 ">
-                        <button class="btn btn-primary" id="printInvoice" href="#invoice" data-toggle="modal"
-                          type="submit">Print
+                        <button class="btn btn-primary" id="printInvoice" href="#invoice" data-toggle="modal" type="submit">Print
                           Invoice</button>
                       </div>
                     </div>
