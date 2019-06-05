@@ -8,7 +8,9 @@ import html2canvas from 'html2canvas';
 declare let swal: any;
 declare let toastr: any;
 declare var $: any;
+declare var jquery: any;
 @Component({
+
   selector: 'home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
@@ -30,9 +32,8 @@ export class HomeComponent implements OnInit {
   fullCalendar: any;
   doctorSchedules: any[];
 
-  mode = "";
+
   doctor = {
-    PrintActivateStatus: "Not Paid",
     doctor_iddoctor: "",
     iddoctor_schedule: "",
     iddoctor: -1,
@@ -43,7 +44,6 @@ export class HomeComponent implements OnInit {
     fee: 0.0,
     description: "",
     datee: "",
-    number: "",
     timee: "",
     tablelength: "",
     totalAppointment: "",
@@ -71,6 +71,17 @@ export class HomeComponent implements OnInit {
     d: "",
     daterange: "",
   }
+
+  appointment = {
+    idappointment: -1,
+    number: -1,
+    payment_status: "Not Paid",
+    iddoctor_schedule: -1,
+    doctor_schedule: this.schedule,
+    paient: this.patient,
+    patient_idpatient: -1,
+    issued_datetime: "",
+  };
 
   myDate = new Date();
   constructor(private homeService: HomeService, private datePipe: DatePipe) {
@@ -187,7 +198,7 @@ export class HomeComponent implements OnInit {
       var bttn = document.getElementById("homeScheduleSelected");
 
       bttn.onclick = () => {
-        // this.scheduleSelected($('#homeScheduleSelected').val());
+        this.scheduleSelected($('#homeScheduleSelected').val());
         this.getAppointmentNumber(this.doctor);
         this.getScheduleId(this.doctor);
       }
@@ -202,6 +213,7 @@ export class HomeComponent implements OnInit {
     this.schedule.iddoctor_schedule = this.doctorSchedules[index].iddoctor_schedule;
     this.schedule.m = this.doctorSchedules[index].m;
     this.schedule.y = this.doctorSchedules[index].y;
+
   }
 
   getSchedules() {
@@ -238,23 +250,24 @@ export class HomeComponent implements OnInit {
     // this.patient.idpatient = value;
     this.getPatientById(this.patient.idpatient);
   }
+
   searchDoctorFee(value) {
     this.doctor.iddoctor = value;
     this.getDoctorById(this.doctor);
     this.getSchedules();
     this.clearSchedule();
   }
+
   searchAppointment(value) {
     this.doctor.datee = '2019-05-13';
     // this.getDoctorById(this.doctor); 
     this.getAppointmentNumber(this.doctor);
     this.getScheduleId(this.doctor);
-
   }
+
   activatePrint(value) {
 
   }
-
 
   getDoctors() {
     this.homeService.getDoctors().subscribe((data: any) => {
@@ -312,15 +325,17 @@ export class HomeComponent implements OnInit {
     this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
-        this.doctor.number = this.doctor_appointments[index].count + 1;
+        this.appointment.number = this.doctor_appointments[index].count + 1;
         this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
-        this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
+
       }
+
 
     }, (err) => {
       console.log(err);
     });
   }
+
   getScheduleId(doctor: any) {
     this.homeService.getScheduleIdId(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
@@ -328,7 +343,6 @@ export class HomeComponent implements OnInit {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
         this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
       }
-
     }, (err) => {
       console.log(err);
     });
@@ -475,22 +489,21 @@ export class HomeComponent implements OnInit {
     this.getTodayPatientMonthlyIncome();
   }
 
-
   makeAppointment() {
-    if (this.doctor.PrintActivateStatus == "Paid") {
-      $('#printInvoice').click();
-      this.print();
-    }
-    this.homeService.saveAppointment(this.patient, this.doctor).subscribe((data: any) => {
+    this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
       // this.getPatients();
+      if (this.appointment.payment_status == "Paid") {
+        $('#printInvoice').click();
+      } else {
+      }
     }, (err) => {
       console.log(err);
     }
     );
   }
+
   addIndex(array: any[]) {
     for (let index = 0; index < array.length; index++) {
-      console.log(array[index].index);
       array[index].index = index + 1;
     }
   }
@@ -506,10 +519,12 @@ export class HomeComponent implements OnInit {
         this.homeService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
           this.doctor_appointments = data;
           this.doctor.totalAppointment = "";
-
+          this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
           for (let index = 0; index < this.doctor_appointments.length; index++) {
+
             this.doctor.totalAppointment = this.doctor_appointments[index].count;
-            this.doctor.todayPatientVisits = Number(this.doctor.todayPatientVisits) + Number(this.doctor_appointments[index].count)
+            this.doctor.todayPatientVisits = Number(this.doctor.todayPatientVisits) + Number(this.doctor_appointments[index].count);
+
           }
           this.todaySchedule[index].totalAppointment = this.doctor.totalAppointment;
           // console.log( this.doctor.todayPatientVisits);
@@ -528,7 +543,6 @@ export class HomeComponent implements OnInit {
   }
 
   getTodayPatientIncome() {
-
     this.homeService.getPatientIncome().subscribe((data: any) => {
       this.patient_data = data;
 
@@ -542,8 +556,8 @@ export class HomeComponent implements OnInit {
       console.log(err);
     });
   }
-  getTodayPatientMonthlyIncome() {
 
+  getTodayPatientMonthlyIncome() {
     this.homeService.getPatientIncomeMonthly().subscribe((data: any) => {
       this.patient_data = data;
 

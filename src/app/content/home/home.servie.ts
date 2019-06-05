@@ -30,9 +30,9 @@ export class HomeService {
   getScheduleIdId(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getScheduleIdId',doctor);
   }
-  saveAppointment(patient:any, doctor : any){
+  saveAppointment(appointment:any){
     
-    return this.httpClient.post(environment.apiUrl + '/saveAppointment',patient,doctor);
+    return this.httpClient.post(environment.apiUrl + '/saveAppointment',appointment);
   } 
   getTodaySchedule(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getTodaySchedule',doctor);
