@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DoctorService } from './doctor.service';
 
 declare let swal: any;
-declare let toastr:any;
+declare let toastr: any;
 @Component({
   selector: 'app-doctor',
   templateUrl: './doctor.component.html',
@@ -42,6 +42,40 @@ export class DoctorComponent implements OnInit {
     out_m: "0",
     out_d: "AM",
     daterange: "",
+  };
+
+  doctorInvoice = {
+    iddoctor_invoice: -1,
+    datee: "",
+    patient_count: 0,
+    center_fee: 0,
+    doc_fee: 0,
+    doctor_schedule_iddoctor_schedule: -1,
+    y: "0",
+    m: "0",
+    d: "0",
+    cal:""
+  };
+
+  clearDoctorInvoice() {
+    this.doctorInvoice.iddoctor_invoice = -1;
+    this.doctorInvoice.datee = "";
+    this.doctorInvoice.patient_count = 0;
+    this.doctorInvoice.center_fee = 0;
+    this.doctorInvoice.doc_fee = 0;
+    this.doctorInvoice.doctor_schedule_iddoctor_schedule = -1;
+    this.doctorInvoice.y = "0";
+    this.doctorInvoice.m = "0";
+    this.doctorInvoice.d = "0";
+    this.doctorInvoice.cal = this.getWebDate(this.doctorInvoice);
+  }
+
+  getWebDate(obj) {
+    let ret = "";
+    if (obj && obj.y != "0") {
+      ret = obj.m + "/" + obj.d + "/" + obj.y;
+    }
+    return ret;
   }
 
   constructor(private doctorService: DoctorService) { }
@@ -227,7 +261,7 @@ export class DoctorComponent implements OnInit {
     this.schedule.out_m = this.get12Munite(this.schedule.doctor_out);
     this.schedule.out_d = this.get12Pm(this.schedule.doctor_out);
     let d = new Date(this.doctorSchedules[index].start);
-    this.schedule.daterange = this.doctorSchedules[index].m + "/" + this.doctorSchedules[index].d + "/" + this.doctorSchedules[index].y;
+    this.schedule.daterange = this.getWebDate(this.doctorSchedules[index]);
     this.getSchedulePatients();
   }
 
@@ -523,9 +557,18 @@ export class DoctorComponent implements OnInit {
       todayBtn: "linked",
       keyboardNavigation: false,
       forceParse: false,
-      calendarWeeks: true,
+      calendarWeeks: false,
       autoclose: true
     });
+
+    (<any>$('#selectDateDoctorInvoice')).datepicker({
+      todayBtn: "linked",
+      keyboardNavigation: false,
+      forceParse: false,
+      calendarWeeks: false,
+      autoclose: true
+    });
+
     (<any>$('#selectDateRangeDoctor')).daterangepicker();
   }
 
@@ -560,7 +603,7 @@ export class DoctorComponent implements OnInit {
     })
   }
 
-  initToasterNotifications(){
+  initToasterNotifications() {
     toastr.options = {
       "closeButton": true,
       "debug": false,
@@ -577,5 +620,38 @@ export class DoctorComponent implements OnInit {
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
+  }
+
+
+  clickPay() {
+    this.clearDoctorInvoice();
+    this.mode = 'newDocInvoice';
+    (<any>$("#docInvoice")).modal();
+  }
+
+  clickPaied() {
+    this.clearDoctorInvoice();
+    this.mode = 'editDocInvoice';
+    (<any>$("#docInvoice")).modal();
+  }
+
+  saveDoctorInvoice() {
+    this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
+
+    let datee = this.doctorInvoice.cal.split("/");
+      if (datee.length != 3) {
+        toastr.warning('Please select a valid date', 'Date invalid');
+      } else {
+        this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
+
+      }
+  }
+
+  deleteDoctorInvoice() {
+
+  }
+
+  updateDoctorInvoice() {
+
   }
 }
