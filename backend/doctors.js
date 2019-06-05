@@ -214,9 +214,15 @@ app.post('/getScheduleIdId', function (req, res) {
 app.post('/saveAppointment', function (req, res) {
     var d = new Date();
     console.log(req.body);
+<<<<<<< HEAD
     if (req.body.paient.newpatient == "yes") { 
         query = "INSERT INTO patient( idpatient,name, contactNo) VALUES (?,?,?)";
         values = [ 5,req.body.paient.name, req.body.paient.contactNo];
+=======
+    if (req.body[1].newpatient == "yes") { 
+        query = "INSERT INTO patient( name, contactNo) VALUES (?,?)";
+        values = [ req.patient.name, req.patient.contactNo];
+>>>>>>> 0d83f64936ab5dd29c7a6716d7f7d82953d2dcce
         db.query(query, values, (err, result) => {
             if (err) {
                 res.send(500, err);
@@ -224,16 +230,27 @@ app.post('/saveAppointment', function (req, res) {
                 
                 // Make an appointment
                 query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
+<<<<<<< HEAD
                 values = [req.body.number, req.body.doctor.payment_status, req.body.doctor_schedule.iddoctor_schedule, 5, d];
+=======
+                values = [req.body.number, req.PrintActivateStatus, req.doctor_schedule.iddoctor_schedule,  req.patient.idpatient, d];
+>>>>>>> 0d83f64936ab5dd29c7a6716d7f7d82953d2dcce
               
                 db.query(query2, values, (err, result) => {
                     if (err) {
                         res.send(500, err); 
                     } else {
+<<<<<<< HEAD
                         if (req.body.doctor.payment_status == "Paid") {
                             // Make a payment 
                             query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
                             values = [req.body.doctor.fee,24, d];
+=======
+                        if (req.body[2]== "Paid") {
+                            // Make a payment 
+                            query3 = "INSERT INTO patient_invoice(amount, id_appointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
+                            values = [req.body.doctor_schedule.doctor.fee, result.insertId, d];
+>>>>>>> 0d83f64936ab5dd29c7a6716d7f7d82953d2dcce
                             db.query(query3, values, (err, result) => {
                                 if (err) {
                                     res.send(500, err);
@@ -255,7 +272,11 @@ app.post('/saveAppointment', function (req, res) {
             if (err) {
                 res.send(500, err);
             } else {
+<<<<<<< HEAD
                 if (req.body.doctor.payment_status == "Paid") {
+=======
+                if (req.body[2] == "Paid") {
+>>>>>>> 0d83f64936ab5dd29c7a6716d7f7d82953d2dcce
                     // Make a payment 
                     query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
                     values = [req.body.doctor.fee,27, d]; 
@@ -533,18 +554,18 @@ app.post('/updateDoctorInvoice', function (req, res) {
 
 app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
     values = [req.body.iddoctor_schedule];
-    db.query("SELECT * , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_invoice WHERE doctor_schedule_iddoctor_schedule = ? ", (err, result) => {
+    db.query("SELECT * , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_invoice WHERE doctor_schedule_iddoctor_schedule = ? ",values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
-            res.json(result);
+            res.json(result[0]);
         }
     });
 });
 
 app.post('/saveDoctorInvoice', function (req, res) {
     query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?,?,?,?,?,?)";
-    values = [req.body.iddoctor_invoice, req.body.doctor.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule_iddoctor_schedule];
+    values = [req.body.iddoctor_invoice, req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule_iddoctor_schedule];
     console.log(values);
     db.query(query, values, (err, result) => {
         if (err) {

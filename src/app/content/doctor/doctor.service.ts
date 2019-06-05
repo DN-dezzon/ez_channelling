@@ -52,4 +52,28 @@ export class DoctorService {
   getPatientsBySchedule(doctorSchedule : any){
     return this.httpClient.post(environment.apiUrl + '/getPatientsBySchedule',doctorSchedule);
   }
+
+  getCenterFee(){
+    return this.httpClient.get(environment.apiUrl + '/getChannellingFee');
+  }
+
+  getNextDoctorInvoiceId(){
+
+  }
+
+  updateDoctorInvoice(){
+
+  }
+
+  getDoctrInvoiceByDoctorSchedule(){
+
+  }
+
+  saveDoctorInvoice(){
+
+  }
+
+  deleteDoctorInvoice(){
+    
+  }
 }
