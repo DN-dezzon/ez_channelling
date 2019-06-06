@@ -114,10 +114,12 @@ export class HomeComponent implements OnInit {
 
     html2canvas(data).then(canvas => {
 
-      let pdf = new jspdf('l', 'mm', 'a5'); // A4 size page of PDF  
-
+      let pdf = new jspdf('l', 'mm', [400, 480]); // A4 size page of PDF  
+      
+      
       // Few necessary setting options  
-      var imgWidth = pdf.internal.pageSize.getHeight();
+      // var imgWidth = pdf.internal.pageSize.getHeight();
+      var imgWidth = 88;
       //var imgWidth = canvas.width;
 
       var imgHeight = canvas.height * imgWidth / canvas.width;
@@ -125,7 +127,8 @@ export class HomeComponent implements OnInit {
 
 
       const contentDataURL = canvas.toDataURL('image/png')
-
+      pdf.addImage(contentDataURL, 'JPEG', 15, 40, 180, 160);
+      pdf.save("screen-3.pdf");
 
       var Pagelink = "about:blank";
       var pwa = window.open(Pagelink, "_new");
