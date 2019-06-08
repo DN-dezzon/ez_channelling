@@ -64,14 +64,12 @@
               <div class="ibox-title">
                 <h5>
                   Select doctor :
-                  <select class="select2_demo_3 form-control" style="width: 260px;">
-
+                  <select class="select2_demo_3 form-control" style="width: 260px;">  
                     <option value="">Select Doctor</option>
                     <option *ngFor="let doctor of doctors; index as i" value="{{i}}">{{ doctor.name }}
                     </option>
                   </select>
-                </h5>
-
+                </h5> 
                 <div class="ibox-tools">
                   <button *ngIf="doctor.iddoctor != -1" class="btn btn-xs btn-primary" (click)="clickNewSchedule()"><i
                       class="fa fa-plus"></i>New</button>
