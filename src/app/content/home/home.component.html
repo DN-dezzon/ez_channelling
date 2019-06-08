@@ -185,7 +185,6 @@
 
                         <select #payment_status [(ngModel)]=appointment.payment_status
                           (change)="activatePrint(payment_status.value)" class="form-control m-b" name="account">
-                          <option value="0">Select Payment option</option>
                           <option value="Pending">Not paid</option>
                           <option value="Paid">Paid</option>
                           <option value="Cancelled">Cancelled</option>
