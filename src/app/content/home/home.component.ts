@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { DatabaseService } from 'src/app/database.service';
+import { company, product, medicalCenter } from 'src/environments/environment.prod';
 
 declare let swal: any;
 declare let toastr: any;
@@ -29,7 +30,7 @@ export class HomeComponent implements OnInit {
   patient_data: any[];
   doctor_data: any[];
 
-
+  medicalCenter: any;
   fullCalendar: any;
   doctorSchedules: any[];
 
@@ -98,7 +99,7 @@ export class HomeComponent implements OnInit {
 
   myDate = new Date();
   constructor(private homeService: HomeService, private datePipe: DatePipe,private databaseService: DatabaseService) {
-
+    this.medicalCenter = medicalCenter;
   }
 
   ngOnInit() {
