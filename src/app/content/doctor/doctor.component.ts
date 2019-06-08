@@ -50,12 +50,36 @@ export class DoctorComponent implements OnInit {
     patient_count: 0,
     center_fee: 0,
     doc_fee: 0,
+    doctor_schedule: this.schedule,
     doctor_schedule_iddoctor_schedule: -1,
     y: "0",
     m: "0",
     d: "0",
-    cal:""
+    cal: ""
   };
+
+  reportRequest = {
+    doctor: this.doctor,
+    daterange: "",
+    patient_count: 0,
+    doc_fee: 0,
+    center_fee: 0,
+    from_datee: "",
+    to_datee: "",
+    net_profit: 0,
+    gross_profit: 0,
+  };
+
+  clearReportRequest() {
+    this.reportRequest.daterange = "";
+    this.reportRequest.patient_count = 0;
+    this.reportRequest.doc_fee = 0;
+    this.reportRequest.center_fee = 0;
+    this.reportRequest.from_datee = "";
+    this.reportRequest.to_datee = "";
+    this.reportRequest.net_profit = 0;
+    this.reportRequest.gross_profit = 0;
+  }
 
   clearDoctorInvoice() {
     this.doctorInvoice.iddoctor_invoice = -1;
@@ -175,9 +199,9 @@ export class DoctorComponent implements OnInit {
   }
 
   updateDoctor() {
-    (<any>$("#newDoctor")).modal("hide");
     this.doctorService.updateDoctor(this.doctor).subscribe((data: any) => {
       this.getDoctors();
+      (<any>$("#newDoctor")).modal("hide");
       toastr.success("Success", "Updated doctor details");
     }, (err) => {
       toastr.error('While updating doctor', 'Data update error');
@@ -212,7 +236,6 @@ export class DoctorComponent implements OnInit {
   }
 
   showUpdateModal(doctor: any) {
-    console.log("hello bitch");
     this.mode = 'update';
     this.doctor.iddoctor = doctor.iddoctor;
     this.doctor.name = doctor.name;
@@ -222,6 +245,17 @@ export class DoctorComponent implements OnInit {
     this.doctor.fee = doctor.fee;
     this.doctor.description = doctor.description;
     (<any>$("#newDoctor")).modal();
+  }
+
+  showReportModal(doctor: any) {
+    this.doctor.iddoctor = doctor.iddoctor;
+    this.doctor.name = doctor.name;
+    this.doctor.specialization = doctor.specialization;
+    this.doctor.base_hospital = doctor.base_hospital;
+    this.doctor.contactNo = doctor.contactNo;
+    this.doctor.fee = doctor.fee;
+    this.doctor.description = doctor.description;
+    (<any>$("#report")).modal();
   }
 
   get12Pm(t24) {
@@ -263,6 +297,7 @@ export class DoctorComponent implements OnInit {
     let d = new Date(this.doctorSchedules[index].start);
     this.schedule.daterange = this.getWebDate(this.doctorSchedules[index]);
     this.getSchedulePatients();
+    this.getDoctrInvoiceByDoctorSchedule();
   }
 
 
@@ -523,10 +558,14 @@ export class DoctorComponent implements OnInit {
         {
           data: "description"
         },
-        //create three buttons columns
         {
-          defaultContent: `<button type="button" class="btn btn-xs btn-warning showUpdateModal"><span class="glyphicon glyphicon-edit"></span>
-          </button>`
+          defaultContent: `<button type="button" class="btn btn-xs btn-info showReportModal">
+                              <span class="glyphicon glyphicon-list-alt"></span>
+                          </button>
+                          <button type="button" class="btn btn-xs btn-warning showUpdateModal">
+                              <span class="glyphicon glyphicon-edit"></span>
+                          </button>
+                          `
         }
       ],
       "columnDefs": [
@@ -569,7 +608,7 @@ export class DoctorComponent implements OnInit {
       autoclose: true
     });
 
-    (<any>$('#selectDateRangeDoctor')).daterangepicker();
+    (<any>$('#selectDateRangeReport')).daterangepicker();
   }
 
 
@@ -593,8 +632,8 @@ export class DoctorComponent implements OnInit {
         //use function of current class using reference
         // _currClassRef.showValue(row.data().FirstName);
       }
-      else if ($(this).hasClass("showLButton")) {
-        //_currClassRef.showValue(row.data().LastName);
+      else if ($(this).hasClass("showReportModal")) {
+        _currClassRef.showReportModal(row.data());
       }
       else if ($(this).hasClass("showUpdateModal")) {
         _currClassRef.showUpdateModal(row.data());
@@ -622,36 +661,147 @@ export class DoctorComponent implements OnInit {
     }
   }
 
+  getCenterFee() {
+    this.doctorService.getCenterFee().subscribe((data: any) => {
+      this.doctorInvoice.center_fee = data.fee;
+    }, (err) => {
+      toastr.error('While fetching center fee', 'Data fetch error');
+    }
+    );
+  }
+
+  getNextDoctorInvoiceId(showModal: boolean) {
+    this.doctorService.getNextDoctorInvoiceId().subscribe((data: any) => {
+      this.doctorInvoice.iddoctor_invoice = data.iddoctor_invoice;
+      if (showModal) { (<any>$("#docInvoice")).modal(); }
+    }, (err) => {
+      toastr.error('While fetching invoice details', 'Data fetch error');
+    }
+    );
+  }
+
+  getDoctrInvoiceByDoctorSchedule() {
+    this.clearDoctorInvoice();
+    this.doctorService.getDoctrInvoiceByDoctorSchedule(this.schedule).subscribe((data: any) => {
+      if (data) {
+        this.doctorInvoice.center_fee = data.center_fee;
+        this.doctorInvoice.d = data.d;
+        this.doctorInvoice.datee = data.datee;
+        this.doctorInvoice.doc_fee = data.doc_fee;
+        this.doctorInvoice.doctor_schedule_iddoctor_schedule = data.doctor_schedule_iddoctor_schedule;
+        this.doctorInvoice.iddoctor_invoice = data.iddoctor_invoice;
+        this.doctorInvoice.m = data.m;
+        this.doctorInvoice.patient_count = data.patient_count;
+        this.doctorInvoice.y = data.y;
+        this.doctorInvoice.cal = this.getWebDate(data);
+      }
+    }, (err) => {
+      toastr.error('While fetching invoice details', 'Data fetch error');
+    }
+    );
+  }
 
   clickPay() {
     this.clearDoctorInvoice();
     this.mode = 'newDocInvoice';
-    (<any>$("#docInvoice")).modal();
+    this.getCenterFee();
+    this.doctorInvoice.doc_fee = this.doctor.fee;
+    this.doctorInvoice.patient_count = this.schedulePatients.length;
+    this.doctorInvoice.cal = this.schedule.daterange;
+    this.getNextDoctorInvoiceId(true);
   }
 
   clickPaied() {
-    this.clearDoctorInvoice();
     this.mode = 'editDocInvoice';
-    (<any>$("#docInvoice")).modal();
+    if (this.doctorInvoice.iddoctor_invoice != -1) {
+      (<any>$("#docInvoice")).modal();
+    }
   }
 
   saveDoctorInvoice() {
     this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
     let datee = this.doctorInvoice.cal.split("/");
-      if (datee.length != 3) {
-        toastr.warning('Please select a valid date', 'Date invalid');
-      } else {
-        this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
+    if (datee.length != 3) {
+      toastr.warning('Please select a valid date', 'Date invalid');
+    } else {
+      this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
 
+      this.doctorService.saveDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
+        (<any>$("#docInvoice")).modal('hide');
+        this.getDoctrInvoiceByDoctorSchedule();
+        toastr.success("Success", "Invoice saved");
+      }, (err) => {
+        toastr.error('While saving invoice', 'Data saving error');
       }
+      );
+    }
   }
 
   deleteDoctorInvoice() {
-
+    let _this = this;
+    swal({
+      title: "Are you sure?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel"
+    },
+      function (isConfirm) {
+        if (isConfirm) {
+          _this.doctorService.deleteDoctorInvoice(_this.doctorInvoice).subscribe((data: any) => {
+            (<any>$("#docInvoice")).modal('hide');
+            _this.getDoctrInvoiceByDoctorSchedule();
+            toastr.success("Success", "Deleted invoice");
+          }, (err) => {
+            toastr.error('While deleting invoice', 'Data deletion error');
+          }
+          );
+        } else {
+          (<any>$("#docInvoice")).modal('hide');
+        }
+      });
   }
 
   updateDoctorInvoice() {
 
+    this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
+
+    let datee = this.doctorInvoice.cal.split("/");
+    if (datee.length != 3) {
+      toastr.warning('Please select a valid date', 'Date invalid');
+    } else {
+      this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
+
+      this.doctorService.updateDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
+        this.getDoctrInvoiceByDoctorSchedule();
+        (<any>$("#docInvoice")).modal("hide");
+        toastr.success("Success", "Updated invoice details");
+      }, (err) => {
+        toastr.error('While updating invoice', 'Data update error');
+      }
+      );
+    }
+  }
+
+  generateReport() {
+    this.reportRequest.daterange = (<HTMLInputElement>document.getElementById("selectDateRangeReport")).value;
+
+    let dates = this.reportRequest.daterange.split("-");
+    if (dates.length != 2) {
+      toastr.warning('Please select a valid date range', 'Date range invalid');
+    } else {
+      let from = dates[0].trim().split("/");
+      let to = dates[1].trim().split("/");
+
+      if (from.length != 3 || to.length != 3) {
+        toastr.warning('Please select a valid date range', 'Date range invalid');
+      } else {
+        this.reportRequest.from_datee = from[2] + "-" + from[0] + "-" + from[1];//yyyymmdd
+        this.reportRequest.to_datee = to[2] + "-" + to[0] + "-" + to[1];//yyyymmdd
+        console.log(this.reportRequest);
+      }
+    }
   }
 }

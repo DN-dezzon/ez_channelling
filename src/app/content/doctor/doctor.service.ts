@@ -7,73 +7,73 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class DoctorService {
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
-  getDoctors(){
+  getDoctors() {
     return this.httpClient.get(environment.apiUrl + '/getDoctors');
   }
 
-  saveDoctor(doctor : any){
-    return this.httpClient.post(environment.apiUrl + '/saveDoctor',doctor);
-  } 
-  
-  updateDoctor(doctor : any){
-    return this.httpClient.post(environment.apiUrl + '/updateDoctor',doctor);
+  saveDoctor(doctor: any) {
+    return this.httpClient.post(environment.apiUrl + '/saveDoctor', doctor);
   }
 
-  deleteDoctor(doctor : any){
-    return this.httpClient.post(environment.apiUrl + '/deleteDoctor',doctor);
+  updateDoctor(doctor: any) {
+    return this.httpClient.post(environment.apiUrl + '/updateDoctor', doctor);
   }
 
-  getNextDoctorId(){
+  deleteDoctor(doctor: any) {
+    return this.httpClient.post(environment.apiUrl + '/deleteDoctor', doctor);
+  }
+
+  getNextDoctorId() {
     return this.httpClient.get(environment.apiUrl + '/getNextDoctorId');
   }
 
-  getAllDoctorScheduleByDoctor(doctor : any){
+  getAllDoctorScheduleByDoctor(doctor: any) {
     return this.httpClient.post(environment.apiUrl + '/getAllDoctorScheduleByDoctor', doctor);
   }
 
-  saveDoctorSchedule(doctorSchedule : any){
-    return this.httpClient.post(environment.apiUrl + '/saveDoctorSchedule',doctorSchedule);
-  } 
-  
-  updateDoctorSchedule(doctorSchedule : any){
-    return this.httpClient.post(environment.apiUrl + '/updateDoctorSchedule',doctorSchedule);
+  saveDoctorSchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/saveDoctorSchedule', doctorSchedule);
   }
 
-  deleteDoctorSchedule(doctorSchedule : any){
-    return this.httpClient.post(environment.apiUrl + '/deleteDoctorSchedule',doctorSchedule);
+  updateDoctorSchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/updateDoctorSchedule', doctorSchedule);
   }
 
-  getNextDoctorScheduleId(){
+  deleteDoctorSchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/deleteDoctorSchedule', doctorSchedule);
+  }
+
+  getNextDoctorScheduleId() {
     return this.httpClient.get(environment.apiUrl + '/getNextDoctorScheduleId');
   }
 
-  getPatientsBySchedule(doctorSchedule : any){
-    return this.httpClient.post(environment.apiUrl + '/getPatientsBySchedule',doctorSchedule);
+  getPatientsBySchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/getPatientsBySchedule', doctorSchedule);
   }
 
-  getCenterFee(){
+  getCenterFee() {
     return this.httpClient.get(environment.apiUrl + '/getChannellingFee');
   }
 
-  getNextDoctorInvoiceId(){
-
+  getNextDoctorInvoiceId() {
+    return this.httpClient.get(environment.apiUrl + '/getNextDoctorInvoiceId');
   }
 
-  updateDoctorInvoice(){
-
+  updateDoctorInvoice(doctorInvoice: any) {
+    return this.httpClient.post(environment.apiUrl + '/updateDoctorInvoice', doctorInvoice);
   }
 
-  getDoctrInvoiceByDoctorSchedule(){
-
+  getDoctrInvoiceByDoctorSchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/getDoctrInvoiceByDoctorSchedule', doctorSchedule);
   }
 
-  saveDoctorInvoice(){
-
+  saveDoctorInvoice(doctorInvoice: any) {
+    return this.httpClient.post(environment.apiUrl + '/saveDoctorInvoice', doctorInvoice);
   }
 
-  deleteDoctorInvoice(){
-    
+  deleteDoctorInvoice(doctorInvoice: any) {
+    return this.httpClient.post(environment.apiUrl + '/deleteDoctorInvoice', doctorInvoice);
   }
 }

@@ -544,7 +544,7 @@ app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
 
 app.post('/saveDoctorInvoice', function (req, res) {
     query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?,?,?,?,?,?)";
-    values = [req.body.iddoctor_invoice, req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule_iddoctor_schedule];
+    values = [req.body.iddoctor_invoice, req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule.iddoctor_schedule];
     console.log(values);
     db.query(query, values, (err, result) => {
         if (err) {
