@@ -327,9 +327,7 @@ export class HomeComponent implements OnInit {
   }
 
   getAppointmentNumber(doctor: any) {
-    alert("sdasd");
-    console.log(this.doctor);
-    alert(this.doctor.iddoctor)
+   
     this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DoctorService } from './doctor.service';
+import { company, product, medicalCenter } from 'src/environments/environment.prod';
 
 declare let swal: any;
 declare let toastr: any;
@@ -15,6 +16,10 @@ export class DoctorComponent implements OnInit {
   doctors: any[];
   doctorSchedules: any[];
   schedulePatients: any[];
+
+  company : any;
+  product : any;
+  medicalCenter :any;
 
   mode = "";
 
@@ -102,7 +107,11 @@ export class DoctorComponent implements OnInit {
     return ret;
   }
 
-  constructor(private doctorService: DoctorService) { }
+  constructor(private doctorService: DoctorService) { 
+    this.company = company;
+    this.product = product;
+    this.medicalCenter = medicalCenter;
+  }
 
 
   ngOnInit() {
@@ -609,6 +618,9 @@ export class DoctorComponent implements OnInit {
     });
 
     (<any>$('#selectDateRangeReport')).daterangepicker();
+    $('#selectDateRangeReport').on('change.datepicker', (ev) => {
+      this.generateReport();
+    });
   }
 
 
