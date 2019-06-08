@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit {
   appointment = {
     doctor: this.doctor,
     idappointment: -1,
-    number: -1,
+    number: 0,
     payment_status: "Not Paid",
     iddoctor_schedule: -1,
     doctor_schedule: this.schedule,
@@ -497,15 +497,27 @@ export class HomeComponent implements OnInit {
     this.getTodayPatientMonthlyIncome();
   }
 
+  clearForm(){
+     this.getDoctors();
+    this.getPatients();
+    this.initCalendar();
+    this.createDropDown();
+    this.appointment.number=0;
+    this.doctor.fee=0;
+    this.patient.name="";
+  }
   makeAppointment() {
     this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
-      // this.getPatients();
       if (this.appointment.payment_status == "Paid") {
         $('#printInvoice').click();
       } else {
       }
+      toastr.info("Appointment made successfully!");
+      this.clearForm();
     }, (err) => {
       console.log(err);
+
+      toastr.error("Please try again!");
     }
     );
   }

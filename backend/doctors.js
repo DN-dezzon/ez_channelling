@@ -215,42 +215,58 @@ app.post('/saveAppointment', function (req, res) {
     var d = new Date();
     console.log(req.body);
     if (req.body.paient.newpatient == "yes") { 
-        query = "INSERT INTO patient( idpatient,name, contactNo) VALUES (?,?,?)";
-        values = [ 5,req.body.paient.name, req.body.paient.contactNo];
-        db.query(query, values, (err, result) => {
+        var p_id="0";
+        query_p_count="SELECT * from patient";
+
+        db.query(query_p_count, (err, result) => {
             if (err) {
                 res.send(500, err);
             } else {
-                
-                // Make an appointment
-                query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
-                values = [req.body.number, req.body.doctor.payment_status, req.body.doctor_schedule.iddoctor_schedule, 5, d];
-              
-                db.query(query2, values, (err, result) => {
-                    if (err) {
-                        res.send(500, err); 
-                    } else {
-                        if (req.body.doctor.payment_status == "Paid") {
-                            // Make a payment 
-                            query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
-                            values = [req.body.doctor.fee,24, d];
-                            db.query(query3, values, (err, result) => {
-                                if (err) {
-                                    res.send(500, err);
-                                } else {
-                                    res.json(result);
-                                }
-                            });
-                        }
-                    }
-                });
+              p_id= result.length; 
+              query = "INSERT INTO patient( idpatient,name, contactNo) VALUES (?,?,?)";
+              values = [p_id,req.body.paient.name, req.body.paient.contactNo];
+              db.query(query, values, (err, result) => {
+                  if (err) {
+                      res.send(500, err);
+                  } else {
+                      
+                      // Make an appointment
+                      query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
+                      values = [req.body.number, req.body.doctor.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
+                    
+                      db.query(query2, values, (err, result) => {
+                          if (err) {
+                              res.send(500, err); 
+                          } else {
+                              if (req.body.doctor.payment_status == "Paid") {
+                                  
+                                  // Make a payment 
+                                  query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
+                                  values = [req.body.doctor.fee,result.insertId, d];
+                                  db.query(query3, values, (err, result) => {
+                                      if (err) {
+                                          res.send(500, err);
+                                      } else {
+                                          res.json(result);
+                                      }
+                                  });
+                              }
+                          }
+                      });
+                  }
+              });
             }
         });
+
+
+
+       
     } else {    
         // Make an appointment
+
         query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
         values = [req.body.number, req.body.doctor.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
-  
+       
         db.query(query2, values, (err, result) => {
             if (err) {
                 res.send(500, err);
@@ -258,7 +274,7 @@ app.post('/saveAppointment', function (req, res) {
                 if (req.body.doctor.payment_status == "Paid") {
                     // Make a payment 
                     query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
-                    values = [req.body.doctor.fee,27, d]; 
+                    values = [req.body.doctor.fee,result.insertId, d]; 
                     db.query(query3, values, (err, result) => {
                         if (err) {
                             res.send(500, err);
