@@ -126,10 +126,10 @@ export class HomeComponent implements OnInit {
 
 
   print() {
-    var data = document.getElementById('invoicee');
+    var data = document.getElementById('invoicee'); 
 
     //document.getElementById('invcont').style.display = "block";
-
+  
     document.getElementById('invoice').className = "";
 
     html2canvas(data).then(canvas => {
@@ -140,23 +140,21 @@ export class HomeComponent implements OnInit {
       var imgHeight = canvas.height * imgWidth / canvas.width;
       const contentDataURL = canvas.toDataURL('image/png')
       pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
-      pdf.save("screen-3.pdf");
-
+      // pdf.save("screen-3.pdf");
+      pdf.autoPrint();
       var Pagelink = "about:blank";
-      var pwa = window.open(Pagelink, "_new");
-      pwa.document.open();
-      pwa.document.write(this.ImagetoPrint(contentDataURL));
-      pwa.document.close();
-      //     pdf.addImage(contentDataURL, 'PNG', 20, 0, imgWidth, imgHeight)  
-
-      // pdf.autoPrint({variant: 'non-conform'});
-      // pdf.save('autoprint.pdf');
-      //document.getElementById('invcont').style.display = "none";
+      // var pwa = window.open(Pagelink, "_new");
+      // pwa.document.open();
+      // pwa.document.write(this.ImagetoPrint(contentDataURL));
+      // pwa.document.close(); 
+       $('#invoice').show();
       document.getElementById('invoice').className = "modal fade";
     });
   }
 
-
+  printPatirntInvoice(){
+    this.print();
+  }
   ImagetoPrint(source) {
     return "<html><head><style>" +
       "@page { size: auto;  margin: 0mm; }" +

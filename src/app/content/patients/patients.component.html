@@ -45,14 +45,15 @@
                   Dr. {{patientHistory.name }}
                 </small>
                 <small>
-                  Appoiment Date: {{patientHistory.datee}}
+                  Appoiment Date: {{ patientHistory.datee | date : "y-MM-dd" }} 
+                  <!-- {{patientHistory.datee}} -->
                 </small>
               </td>
               <td>
                  Rs. {{patientHistory.fee }}
               </td>
               <td>
-                Issued Date: {{patientHistory.issued_datetime }}
+                Issued Date: {{patientHistory.issued_datetime | date : "y-MM-dd HH:mm:ss"}}
               </td>
             </tr>
         </tbody>
