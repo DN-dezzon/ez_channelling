@@ -671,7 +671,7 @@ app.post('/getTransactions', function (req, res) {
                 doctor_invoice.datee as date ,
                 doctor_invoice.iddoctor_invoice as id,
                 doctor.name as name,
-                doctor_invoice.doc_fee as expense,
+                (doctor_invoice.doc_fee * doctor_invoice.patient_count) as expense,
                 0 as income,
                 "doctor_invoice" as tablee
                 FROM doctor_invoice 

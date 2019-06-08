@@ -74,11 +74,14 @@ export class TransactionsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.initDatepickers();
-    this.initTable();
     let d = new Date();
     this.transactionsRequest.daterange = "01/01/2000 - " + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2) + "/" + d.getFullYear();
+    
+    this.initDatepickers();
+    this.initTable();
+    
     (<HTMLInputElement>document.getElementById("selectDateRangeTransactions")).value = this.transactionsRequest.daterange;
+    
     this.getTransactions();
   }
 
