@@ -24,15 +24,15 @@
               <table class="table table-striped table-bordered table-hover " id="editable" width="100%">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Specialization</th>
-                    <th>Base Hospital</th>
-                    <th>Phone</th>
-                    <th>Fee</th>
-                    <th>Description</th>
-                    <th></th>
+                    <th width="1%"></th>
+                    <th width="5%">Code</th>
+                    <th width="20%">Name</th>
+                    <th width="15%">Specialization</th>
+                    <th width="10%">Base</th>
+                    <th width="10%">Phone</th>
+                    <th width="10%">Fee</th>
+                    <th width="20%">Description</th>
+                    <th width="9%"></th>
                   </tr>
                 </thead>
 
@@ -89,17 +89,19 @@
             <div class="ibox">
               <div class="ibox-title">
                 <h5>
-                  <span class="badge badge-info">{{schedule.in_h + ':' + schedule.in_m + ' ' + schedule.in_d}}</span>
-                  to
-                  <span class="badge badge-info">{{schedule.out_h + ':' + schedule.out_m + ' ' + schedule.out_d}}</span>
+                  <span class="badge badge-danger">Date: {{schedule.daterange}}</span>
+                    &nbsp;
+                  <span class="badge badge-info">Time: {{schedule.in_h + ':' + schedule.in_m + ' ' + schedule.in_d}} to {{schedule.out_h + ':' + schedule.out_m + ' ' + schedule.out_d}}</span>
+                  &nbsp;
+                  <span class="badge badge-default">Patients: {{schedulePatients?.length}}</span>
                 </h5>
 
 
                 <div class="ibox-tools">
-                  <button class="btn btn-xs btn-success" (click)="clickPay()"><span
-                      class="glyphicon glyphicon-usd"></span> Pay</button>
-                  <button class="btn btn-xs btn-primary" (click)="clickPaied()"><span
-                      class="glyphicon glyphicon-ok"></span> Paied</button>
+                  <button *ngIf="doctorInvoice.iddoctor_invoice == -1 && schedulePatients?.length" class="btn btn-xs btn-success"
+                    (click)="clickPay()"><span class="glyphicon glyphicon-usd"></span> Pay</button>
+                  <button *ngIf="doctorInvoice.iddoctor_invoice > 0" class="btn btn-xs btn-primary"
+                    (click)="clickPaied()"><span class="glyphicon glyphicon-ok"></span> Paied</button>
                   &nbsp;
                   <button type="button" class="btn btn-xs btn-warning" (click)="showUpdateScheduleModal($event)">
                     <span class="glyphicon glyphicon-edit"></span>
@@ -374,6 +376,86 @@
                 </div>
               </div>
             </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="report" class="modal fade" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+
+          <div class="col-sm-4 b-r">
+
+            <div class="form-group"><label>Doctor Name</label> <input disabled
+                [(ngModel)]="doctor.name" class="form-control" [ngModelOptions]="{standalone: true}"
+                disabled>
+            </div>
+
+
+            <div class="form-group"><label>Doctor Code</label> <input type="number" 
+                [(ngModel)]="doctor.iddoctor" class="form-control" [ngModelOptions]="{standalone: true}"
+                disabled>
+            </div>
+
+            <div class="form-group">
+              <label>Select Date Range</label>
+              <div class="input-group date">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input class="form-control" type="text" id="selectDateRangeReport" [(ngModel)]="schedule.daterange" />
+              </div>
+            </div>
+
+            <div class="form-group"><label>Action</label>
+              <br>
+              <div class="col-sm-12">
+                <div class=" col-sm-4"></div>
+                <div class="col-sm-8">
+                  <button class="btn btn-xs btn-info" (click)="generateReport()"><strong>Generate Report </strong></button>
+                </div>
+              </div>
+            </div>
+
+
+            
+          </div>
+
+
+          <div class="col-sm-8">
+
+            <div class="form-group"><label>Report</label>
+              <br><br>
+              <table class="table table-bordered" width="100%" height="100%">
+                <tbody>
+                    <tr class="bg-success">
+                        <td>Patient Count</td>
+                        <td align="right">100</td>
+                    </tr>
+                    <tr class="bg-warning">
+                        <td>Total Center Fee Rs:</td>
+                        <td align="right">1000</td>
+                    </tr>
+                    <tr  class="bg-danger">
+                        <td>Total Doctor Fee Rs:</td>
+                        <td align="right">10000</td>
+                    </tr>
+                    <tr class="bg-info">
+                        <td>Gross Profit Rs:</td>
+                        <td align="right">10000</td>
+                    </tr>
+                    <tr class="bg-primary">
+                        <td>Net Profit Rs:</td>
+                        <td align="right">10000</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+            
           </div>
 
         </div>
