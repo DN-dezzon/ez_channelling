@@ -263,7 +263,7 @@ app.post('/saveAppointment', function (req, res) {
                             if (err) {
                                 res.send(500, err);
                             } else {
-                                if (req.body.doctor.payment_status == "Paid") {
+                                if (req.body.payment_status == "Paid") {
 
                                     // Make a payment 
                                     query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
@@ -275,6 +275,8 @@ app.post('/saveAppointment', function (req, res) {
                                             res.json(result.insertId);
                                         }
                                     });
+                                }else{
+                                    res.json(result);
                                 }
                             }
                         });
@@ -292,7 +294,8 @@ app.post('/saveAppointment', function (req, res) {
             if (err) {
                 res.send(500, err);
             } else {
-                if (req.body.doctor.payment_status == "Paid") {
+                
+                if (req.body.payment_status == "Paid") {
                     // Make a payment 
                     query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
                     values = [req.body.doctor.fee, result.insertId, d];
@@ -303,6 +306,8 @@ app.post('/saveAppointment', function (req, res) {
                             res.json(result.insertId);
                         }
                     });
+                }else{
+                    res.json(result);
                 }
             }
         });

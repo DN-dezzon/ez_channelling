@@ -244,8 +244,9 @@
                 <h4>Invoice No.</h4>
                 <h4 class="text-navy">INV-{{patient.invoice_id}}</h4>
                 <p>
-                  <span><strong>Invoice Date:</strong> </span><br />
+                  <span><strong>Invoice Date: </strong>  {{ appointment.today | date : "y-MM-dd HH:mm:ss" }}</span><br />
                 </p>
+                
               </div>
             </div>
 
@@ -286,12 +287,16 @@
                 <tr>
                   <td><strong>FEE (Rs.) :</strong></td>
                   <td>{{doctor.fee}}</td>
-                </tr>
+                </tr> 
               </tbody>
             </table>
+            <p style="font-size: 12px">
+                <span> Issued By:  {{user.name}}</span><br />
+              </p>
             <div style="font-size: 11px"><small>**Not Refund. Goverment taxes are included</small>
 
             </div>
+            
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { HomeService } from './home.servie';
 import { Observable } from 'rxjs';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import { DatabaseService } from 'src/app/database.service';
 
 declare let swal: any;
 declare let toastr: any;
@@ -32,6 +33,9 @@ export class HomeComponent implements OnInit {
   fullCalendar: any;
   doctorSchedules: any[];
 
+  user={
+    name:"test"
+  }
 
   doctor = {
     doctor_iddoctor: "",
@@ -84,19 +88,22 @@ export class HomeComponent implements OnInit {
     paient: this.patient,
     patient_idpatient: -1,
     issued_datetime: "",
+    today:new Date()
   };
-
+ 
   appointmentdata = {
     idpatient: -1,
     iddoctor_schedule: ""
   };
 
   myDate = new Date();
-  constructor(private homeService: HomeService, private datePipe: DatePipe) {
+  constructor(private homeService: HomeService, private datePipe: DatePipe,private databaseService: DatabaseService) {
 
   }
 
   ngOnInit() {
+    this.user.name = this.databaseService.user.name;
+   this.appointment.today = new Date();
     this.appointment.hideAppointment = true;
     // $('#printInvoice').hide();
     $('#makepayment').hide();
@@ -112,6 +119,8 @@ export class HomeComponent implements OnInit {
     this.getDoctors();
     this.getPatients();
     this.initCalendar();
+
+    
   }
 
 
@@ -125,20 +134,12 @@ export class HomeComponent implements OnInit {
     html2canvas(data).then(canvas => {
 
       let pdf = new jspdf('l', 'mm', 'A5'); // A4 size page of PDF  
-
-      const contentDataURL = canvas.toDataURL('image/png')
-      pdf.addImage(contentDataURL, 'JPEG', 0, 0, 74, 160);
-      pdf.save("screen-3.pdf");
-      // Few necessary setting options  
-      // var imgWidth = pdf.internal.pageSize.getHeight();
-      var imgWidth = 88;
-      //var imgWidth = canvas.width;
+      var imgWidth = 88; 
 
       var imgHeight = canvas.height * imgWidth / canvas.width;
-      //var imgHeight = canvas.height;   
-
-
-
+      const contentDataURL = canvas.toDataURL('image/png')
+      pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
+      pdf.save("screen-3.pdf");
 
       var Pagelink = "about:blank";
       var pwa = window.open(Pagelink, "_new");
@@ -320,8 +321,7 @@ export class HomeComponent implements OnInit {
           this.appointment.payment_status = data[index].payment_status;
           this.appointment.idappointment = data[index].idappointment;
           console.log(data[index].number);
-          this.appointment.number = data[index].number;
-          alert(data[index].payment_status);
+          this.appointment.number = data[index].number; 
           if (data[index].payment_status == "Paid") {
             toastr.info("Payment already made!");
             $('#makeappointment').hide();
@@ -338,8 +338,7 @@ export class HomeComponent implements OnInit {
       }
     }, (err) => {
       console.log(err);
-    }
-    );
+    });
     this.getAppointmentNumber(this.doctor);
     this.getScheduleId(this.doctor);
   }
@@ -595,11 +594,11 @@ export class HomeComponent implements OnInit {
       console.log(data);
       
       if (this.appointment.payment_status == "Paid") {
-        this.patient.invoice_id=data[0];
+        this.patient.invoice_id=data;
         $('#printInvoice').click();
       } 
       toastr.info("Appointment made successfully!");
-      this.clearForm();
+      
     }, (err) => {
       console.log(err);
       toastr.error("Please try again!");
@@ -608,12 +607,13 @@ export class HomeComponent implements OnInit {
   }
 
   makePayment() {
+    
     this.homeService.makePayment(this.appointment).subscribe((data: any) => {
-
+      console.log(data);
       $('#printInvoice').click();
       this.patient.invoice_id=data[0];
       toastr.info("Payment made successfully!");
-      this.clearForm();
+      
     }, (err) => {
       console.log(err);
 
