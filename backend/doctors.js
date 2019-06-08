@@ -176,6 +176,31 @@ app.get('/getPatientbyId', function (req, res) {
     });
 });
 
+app.post('/searchAppointment', function (req, res) {
+    query = "SELECT * From appointment as a inner join patient as p on a.patient_idpatient=p.idpatient  where iddoctor_schedule=? and patient_idpatient=?";
+    values = [req.body.iddoctor_schedule, req.body.idpatient];
+    // values=1;
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+app.get('/getPatientbyMobile', function (req, res) {
+    query = "SELECT * From patient  where contactNo=?";
+    // values = [req.body.idpatient]; 
+    values = 1;
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+
 app.post('/getDoctortbyId', function (req, res) {
     query = "SELECT * From doctor  where iddoctor=?";
     values = [req.body.iddoctor];
@@ -214,74 +239,75 @@ app.post('/getScheduleIdId', function (req, res) {
 app.post('/saveAppointment', function (req, res) {
     var d = new Date();
     console.log(req.body);
-    if (req.body.paient.newpatient == "yes") { 
-        var p_id="0";
-        query_p_count="SELECT * from patient";
+    if (req.body.paient.newpatient == "yes") {
+        var p_id = "0";
+        query_p_count = "SELECT * from patient";
 
         db.query(query_p_count, (err, result) => {
             if (err) {
                 res.send(500, err);
             } else {
-              p_id= result.length; 
-              query = "INSERT INTO patient( idpatient,name, contactNo) VALUES (?,?,?)";
-              values = [p_id,req.body.paient.name, req.body.paient.contactNo];
-              db.query(query, values, (err, result) => {
-                  if (err) {
-                      res.send(500, err);
-                  } else {
-                      
-                      // Make an appointment
-                      query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
-                      values = [req.body.number, req.body.doctor.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
-                    
-                      db.query(query2, values, (err, result) => {
-                          if (err) {
-                              res.send(500, err); 
-                          } else {
-                              if (req.body.doctor.payment_status == "Paid") {
-                                  
-                                  // Make a payment 
-                                  query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
-                                  values = [req.body.doctor.fee,result.insertId, d];
-                                  db.query(query3, values, (err, result) => {
-                                      if (err) {
-                                          res.send(500, err);
-                                      } else {
-                                          res.json(result);
-                                      }
-                                  });
-                              }
-                          }
-                      });
-                  }
-              });
+                p_id = result.length;
+                query = "INSERT INTO patient( idpatient,name, contactNo) VALUES (?,?,?)";
+                values = [p_id, req.body.paient.name, req.body.paient.contactNo];
+                db.query(query, values, (err, result) => {
+                    if (err) {
+                        res.send(500, err);
+                    } else {
+
+                        // Make an appointment
+                        query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
+                        values = [req.body.number, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
+
+                        db.query(query2, values, (err, result) => {
+                            if (err) {
+                                res.send(500, err);
+                            } else {
+                                if (req.body.payment_status == "Paid") {
+
+                                    // Make a payment 
+                                    query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
+                                    values = [req.body.doctor.fee, result.insertId, d];
+                                    db.query(query3, values, (err, result) => {
+                                        if (err) {
+                                            res.send(500, err);
+                                        } else {
+                                            res.json(result.insertId);
+                                        }
+                                    });
+                                }else{
+                                    res.json(result);
+                                }
+                            }
+                        });
+                    }
+                });
             }
-        });
-
-
-
-       
-    } else {    
+        });  
+    } else {
         // Make an appointment
 
         query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
-        values = [req.body.number, req.body.doctor.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
-       
+        values = [req.body.number, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
+
         db.query(query2, values, (err, result) => {
             if (err) {
                 res.send(500, err);
             } else {
-                if (req.body.doctor.payment_status == "Paid") {
+                
+                if (req.body.payment_status == "Paid") {
                     // Make a payment 
                     query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
-                    values = [req.body.doctor.fee,result.insertId, d]; 
+                    values = [req.body.doctor.fee, result.insertId, d];
                     db.query(query3, values, (err, result) => {
                         if (err) {
                             res.send(500, err);
                         } else {
-                            res.json(result);
+                            res.json(result.insertId);
                         }
                     });
+                }else{
+                    res.json(result);
                 }
             }
         });
@@ -297,6 +323,28 @@ app.post('/saveAppointment', function (req, res) {
 
 
 
+});
+
+app.post('/makePayment', function (req, res) {
+    var d = new Date();
+    query2 = "UPDATE appointment set payment_status=? where idappointment=?";
+        values = ['Paid',req.body.idappointment];
+        db.query(query2, values, (err, result) => {
+            if (err) {
+                res.send(500, err);
+            } else { 
+                query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
+                values = [req.body.doctor.fee, req.body.idappointment, d];
+                db.query(query3, values, (err, result) => {
+                    if (err) {
+                        res.send(500, err);
+                    } else { 
+                        res.json(result.insertId);
+                    }
+                });
+            }
+        });
+   
 });
 
 app.post('/getTodaySchedule', function (req, res) {
@@ -561,7 +609,7 @@ app.post('/updateDoctorInvoice', function (req, res) {
 
 app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
     values = [req.body.iddoctor_schedule];
-    db.query("SELECT * , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_invoice WHERE doctor_schedule_iddoctor_schedule = ? ",values, (err, result) => {
+    db.query("SELECT * , DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d FROM doctor_invoice WHERE doctor_schedule_iddoctor_schedule = ? ", values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {

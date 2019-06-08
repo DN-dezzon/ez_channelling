@@ -18,6 +18,13 @@ export class HomeService {
   getPatientById(pid : any){
     return this.httpClient.get(environment.apiUrl + '/getPatientbyId',pid);
   }
+  getPatientbyMobile(pid : any){
+    return this.httpClient.get(environment.apiUrl + '/getPatientbyMobile',pid);
+  }
+ 
+  searchAppointment(searchAppointment : any){
+    return this.httpClient.post(environment.apiUrl + '/searchAppointment',searchAppointment);
+  }
   getPatientByContactNo(patient:any){
     return this.httpClient.post(environment.apiUrl + '/getPatientByContactNo',patient);
   }
@@ -33,6 +40,11 @@ export class HomeService {
   saveAppointment(appointment:any){
     
     return this.httpClient.post(environment.apiUrl + '/saveAppointment',appointment);
+  } 
+
+  makePayment(appointment:any){
+    
+    return this.httpClient.post(environment.apiUrl + '/makePayment',appointment);
   } 
   getTodaySchedule(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getTodaySchedule',doctor);

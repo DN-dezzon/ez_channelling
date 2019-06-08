@@ -4,6 +4,8 @@ import { HomeService } from './home.servie';
 import { Observable } from 'rxjs';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import { DatabaseService } from 'src/app/database.service';
+import { company, product, medicalCenter } from 'src/environments/environment.prod';
 
 declare let swal: any;
 declare let toastr: any;
@@ -28,10 +30,13 @@ export class HomeComponent implements OnInit {
   patient_data: any[];
   doctor_data: any[];
 
-
+  medicalCenter: any;
   fullCalendar: any;
   doctorSchedules: any[];
 
+  user={
+    name:"test"
+  }
 
   doctor = {
     doctor_iddoctor: "",
@@ -56,7 +61,8 @@ export class HomeComponent implements OnInit {
     contactNo: "",
     amount: "",
     monthly_income: "",
-    newpatient: ""
+    newpatient: "",
+    invoice_id:0
   };
 
   schedule = {
@@ -73,6 +79,7 @@ export class HomeComponent implements OnInit {
   }
 
   appointment = {
+    hideAppointment: true,
     doctor: this.doctor,
     idappointment: -1,
     number: 0,
@@ -82,15 +89,26 @@ export class HomeComponent implements OnInit {
     paient: this.patient,
     patient_idpatient: -1,
     issued_datetime: "",
+    today:new Date()
+  };
+ 
+  appointmentdata = {
+    idpatient: -1,
+    iddoctor_schedule: ""
   };
 
   myDate = new Date();
-  constructor(private homeService: HomeService, private datePipe: DatePipe) {
-
+  constructor(private homeService: HomeService, private datePipe: DatePipe,private databaseService: DatabaseService) {
+    this.medicalCenter = medicalCenter;
   }
 
   ngOnInit() {
-    $('#printInvoice').hide();
+    this.user.name = this.databaseService.user.name;
+   this.appointment.today = new Date();
+    this.appointment.hideAppointment = true;
+    // $('#printInvoice').hide();
+    $('#makepayment').hide();
+    $('#pname_new').hide();
     $('#channeling_date').datepicker({
       todayBtn: "linked",
       keyboardNavigation: false,
@@ -98,10 +116,12 @@ export class HomeComponent implements OnInit {
       calendarWeeks: true,
       autoclose: true
     });
-
+    this.initSelect();
     this.getDoctors();
     this.getPatients();
     this.initCalendar();
+
+    
   }
 
 
@@ -114,21 +134,13 @@ export class HomeComponent implements OnInit {
 
     html2canvas(data).then(canvas => {
 
-      let pdf = new jspdf('l', 'mm','A5'); // A4 size page of PDF  
-      
-      const contentDataURL = canvas.toDataURL('image/png')
-      pdf.addImage(contentDataURL, 'JPEG', 0, 0, 74, 160);
-      pdf.save("screen-3.pdf");
-      // Few necessary setting options  
-      // var imgWidth = pdf.internal.pageSize.getHeight();
-      var imgWidth = 88;
-      //var imgWidth = canvas.width;
+      let pdf = new jspdf('l', 'mm', 'A5'); // A4 size page of PDF  
+      var imgWidth = 88; 
 
       var imgHeight = canvas.height * imgWidth / canvas.width;
-      //var imgHeight = canvas.height;   
-
-
-     
+      const contentDataURL = canvas.toDataURL('image/png')
+      pdf.addImage(contentDataURL, 'JPEG', 0, 0, imgWidth, imgHeight);
+      pdf.save("screen-3.pdf");
 
       var Pagelink = "about:blank";
       var pwa = window.open(Pagelink, "_new");
@@ -179,6 +191,23 @@ export class HomeComponent implements OnInit {
     return t24.split(":")[1];
   }
 
+  initSelect() {
+    var _this = this;
+
+    (<any>$(".select2_demo_3")).select2({
+      dropdownCssClass: 'custom-dropdown'
+    });
+
+    (<any>$(".select2_demo_3")).on('select2:open', function (e) {
+      $('.custom-dropdown').parent().css('z-index', 99999);
+    });
+
+    (<any>$(".select2_demo_3")).on('select2:select', function (e) {
+
+      _this.searchDoctorFee(e.params.data.id);
+    });
+  }
+
 
   initCalendar() {
     if (!this.fullCalendar) {
@@ -203,9 +232,9 @@ export class HomeComponent implements OnInit {
 
       bttn.onclick = () => {
         this.scheduleSelected($('#homeScheduleSelected').val());
-       
-        var res = this.schedule.datee.split("T"); 
-        this.doctor.datee= res[0] ;
+
+        var res = this.schedule.datee.split("T");
+        this.doctor.datee = res[0];
         this.getAppointmentNumber(this.doctor);
         this.getScheduleId(this.doctor);
       }
@@ -254,8 +283,22 @@ export class HomeComponent implements OnInit {
   }
 
   searchPatientName(value) {
-    // this.patient.idpatient = value;
-    this.getPatientById(this.patient.idpatient);
+   
+    // this.patient.idpatient = value; 
+    this.patient.contactNo = value;
+    this.homeService.getPatientbyMobile(this.patient).subscribe((data: any) => {
+
+      this.patient_data = data;
+      for (let index = 0; index < this.patient_data.length; index++) {
+        this.patient.name = this.patient_data[index].name;
+        this.patient.idpatient = this.patient_data[index].idpatient;
+        this.patient_data[index].index = index + 1;
+      }
+    }, (err) => {
+      console.log(err);
+    }
+    );
+
   }
 
   searchDoctorFee(value) {
@@ -267,12 +310,42 @@ export class HomeComponent implements OnInit {
 
   searchAppointment(value) {
     
+    this.patient.idpatient = value;
+    this.appointmentdata.iddoctor_schedule = this.doctor.iddoctor_schedule;
+    this.appointmentdata.idpatient = this.patient.idpatient;
+     
+    this.homeService.searchAppointment(this.appointmentdata).subscribe((data: any) => {
+      if (data.length > 0) {
+        for (let index = 0; index < data.length; index++) { 
+          
+          this.patient.name=data[index].name;
+          this.appointment.payment_status = data[index].payment_status;
+          this.appointment.idappointment = data[index].idappointment;
+          console.log(data[index].number);
+          this.appointment.number = data[index].number; 
+          if (data[index].payment_status == "Paid") {
+            toastr.info("Payment already made!");
+            $('#makeappointment').hide();
+            $('#makepayment').hide();
+          } else {
+            $('#makeappointment').hide();
+            $('#makepayment').show();
+          }
+        }
+      } else {
+        $('#makeappointment').show();
+        $('#makepayment').hide();
+        this.appointment.hideAppointment = false;
+      }
+    }, (err) => {
+      console.log(err);
+    });
     this.getAppointmentNumber(this.doctor);
     this.getScheduleId(this.doctor);
   }
 
   activatePrint(value) {
-
+    this.appointment.hideAppointment = false;
   }
 
   getDoctors() {
@@ -327,12 +400,12 @@ export class HomeComponent implements OnInit {
   }
 
   getAppointmentNumber(doctor: any) {
-   
+
     this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.appointment.number = this.doctor_appointments[index].count + 1;
-        
+
 
       }
 
@@ -347,7 +420,7 @@ export class HomeComponent implements OnInit {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
-        
+
       }
     }, (err) => {
       console.log(err);
@@ -363,6 +436,8 @@ export class HomeComponent implements OnInit {
         console.log(this.patient_data[index].name);
         this.patient.name = this.patient_data[index].name;
         this.patient.idpatient = this.patient_data[index].idpatient;
+        $('#pname_new').hide();
+        $('#pname_old').show();
       }
     }, (err) => {
       console.log(err);
@@ -460,19 +535,27 @@ export class HomeComponent implements OnInit {
 
         // Found a match, nothing to do
         if (valid) {
+         
           return;
         }
-
+        
         // Remove invalid value
         this.input
           //.val("")
           .attr("title", value + " is a new Patient")
           .tooltip("open");
+          $('#pname_new').show();
+          $('#pname_old').hide();
+          $('#makeappointment').show();
+         
         //this.element.val("");
         _this.selectNewPatientMobileNo(value.trim());
+       
         this._delay(function () {
           this.input.tooltip("close").attr("title", "");
+          
         }, 2500);
+      
         //this.input.autocomplete("instance").term = "";
       },
 
@@ -495,23 +578,43 @@ export class HomeComponent implements OnInit {
     this.getTodayPatientMonthlyIncome();
   }
 
-  clearForm(){
-     this.getDoctors();
+  clearForm() {
+    this.getDoctors();
     this.getPatients();
     this.initCalendar();
+    this.initSelect();
     this.createDropDown();
-    this.appointment.number=0;
-    this.doctor.fee=0;
-    this.patient.name="";
+    this.appointment.number = 0;
+    this.doctor.fee = 0;
+    this.patient.name = "0";
+    this.patient.contactNo = "0;"
+    this.appointment.payment_status == "0"
   }
   makeAppointment() {
     this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
+      console.log(data);
+      
       if (this.appointment.payment_status == "Paid") {
+        this.patient.invoice_id=data;
         $('#printInvoice').click();
-      } else {
-      }
+      } 
       toastr.info("Appointment made successfully!");
-      this.clearForm();
+      
+    }, (err) => {
+      console.log(err);
+      toastr.error("Please try again!");
+    }
+    );
+  }
+
+  makePayment() {
+    
+    this.homeService.makePayment(this.appointment).subscribe((data: any) => {
+      console.log(data);
+      $('#printInvoice').click();
+      this.patient.invoice_id=data[0];
+      toastr.info("Payment made successfully!");
+      
     }, (err) => {
       console.log(err);
 
