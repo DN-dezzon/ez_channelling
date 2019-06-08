@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   doctor = {
     doctor_iddoctor: "",
     iddoctor_schedule: "",
-    iddoctor: -1,
+    iddoctor: "",
     name: "",
     specialization: "",
     base_hospital: "",
@@ -73,6 +73,7 @@ export class HomeComponent implements OnInit {
   }
 
   appointment = {
+    doctor: this.doctor,
     idappointment: -1,
     number: -1,
     payment_status: "Not Paid",
@@ -113,10 +114,12 @@ export class HomeComponent implements OnInit {
 
     html2canvas(data).then(canvas => {
 
-      let pdf = new jspdf('l', 'mm', 'a5'); // A4 size page of PDF  
-
+      let pdf = new jspdf('l', 'mm', [400, 480]); // A4 size page of PDF  
+      
+      
       // Few necessary setting options  
-      var imgWidth = pdf.internal.pageSize.getHeight();
+      // var imgWidth = pdf.internal.pageSize.getHeight();
+      var imgWidth = 88;
       //var imgWidth = canvas.width;
 
       var imgHeight = canvas.height * imgWidth / canvas.width;
@@ -124,7 +127,8 @@ export class HomeComponent implements OnInit {
 
 
       const contentDataURL = canvas.toDataURL('image/png')
-
+      pdf.addImage(contentDataURL, 'JPEG', 15, 40, 180, 160);
+      pdf.save("screen-3.pdf");
 
       var Pagelink = "about:blank";
       var pwa = window.open(Pagelink, "_new");
@@ -199,6 +203,9 @@ export class HomeComponent implements OnInit {
 
       bttn.onclick = () => {
         this.scheduleSelected($('#homeScheduleSelected').val());
+       
+        var res = this.schedule.datee.split("T"); 
+        this.doctor.datee= res[0] ;
         this.getAppointmentNumber(this.doctor);
         this.getScheduleId(this.doctor);
       }
@@ -259,8 +266,7 @@ export class HomeComponent implements OnInit {
   }
 
   searchAppointment(value) {
-    this.doctor.datee = '2019-05-13';
-    // this.getDoctorById(this.doctor); 
+    
     this.getAppointmentNumber(this.doctor);
     this.getScheduleId(this.doctor);
   }
@@ -321,12 +327,14 @@ export class HomeComponent implements OnInit {
   }
 
   getAppointmentNumber(doctor: any) {
-
+    alert("sdasd");
+    console.log(this.doctor);
+    alert(this.doctor.iddoctor)
     this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.appointment.number = this.doctor_appointments[index].count + 1;
-        this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
+        
 
       }
 
@@ -341,7 +349,7 @@ export class HomeComponent implements OnInit {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
-        this.doctor.iddoctor = this.doctor_appointments[index].iddoctor;
+        
       }
     }, (err) => {
       console.log(err);
