@@ -477,7 +477,7 @@ app.get('/getNextDoctorScheduleId', function (req, res) {
 
 app.post('/getPatientsBySchedule', function (req, res) {
     values = [req.body.iddoctor_schedule];
-    query = "SELECT * FROM appointment LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
+    query = "SELECT * FROM patient_invoice LEFT JOIN appointment ON patient_invoice.idappointment = appointment.idappointment  LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -604,7 +604,6 @@ app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
 app.post('/saveDoctorInvoice', function (req, res) {
     query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?,?,?,?,?,?)";
     values = [req.body.iddoctor_invoice, req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule.iddoctor_schedule];
-    console.log(values);
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -617,12 +616,31 @@ app.post('/saveDoctorInvoice', function (req, res) {
 app.post('/deleteDoctorInvoice', function (req, res) {
     query = "DELETE FROM doctor_invoice WHERE iddoctor_invoice = ?";
     values = [req.body.iddoctor_invoice];
-    console.log(values);
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
             res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/getDoctorReport', function (req, res) {
+    query = `SELECT 
+    COUNT(patient_invoice.idpatient_invoice) AS patient_count ,
+    SUM(patient_invoice.doctor_fee) AS doc_fee ,
+    SUM(patient_invoice.center_fee) AS center_fee 
+    FROM patient_invoice 
+    LEFT JOIN appointment ON appointment.idappointment = patient_invoice.idappointment 
+    LEFT JOIN doctor_schedule ON doctor_schedule.iddoctor_schedule = appointment.iddoctor_schedule
+    LEFT JOIN doctor ON doctor.iddoctor = doctor_schedule.doctor_iddoctor
+    WHERE doctor.iddoctor = ? AND doctor_schedule.datee BETWEEN ? AND ?`;
+    values = [req.body.doctor.iddoctor , req.body.from_datee , req.body.to_datee];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
         }
     });
 });

@@ -17,9 +17,9 @@ export class DoctorComponent implements OnInit {
   doctorSchedules: any[];
   schedulePatients: any[];
 
-  company : any;
-  product : any;
-  medicalCenter :any;
+  company: any;
+  product: any;
+  medicalCenter: any;
 
   mode = "";
 
@@ -71,19 +71,14 @@ export class DoctorComponent implements OnInit {
     center_fee: 0,
     from_datee: "",
     to_datee: "",
-    net_profit: 0,
-    gross_profit: 0,
   };
 
   clearReportRequest() {
-    this.reportRequest.daterange = "";
     this.reportRequest.patient_count = 0;
     this.reportRequest.doc_fee = 0;
     this.reportRequest.center_fee = 0;
     this.reportRequest.from_datee = "";
     this.reportRequest.to_datee = "";
-    this.reportRequest.net_profit = 0;
-    this.reportRequest.gross_profit = 0;
   }
 
   clearDoctorInvoice() {
@@ -107,10 +102,11 @@ export class DoctorComponent implements OnInit {
     return ret;
   }
 
-  constructor(private doctorService: DoctorService) { 
+  constructor(private doctorService: DoctorService) {
     this.company = company;
     this.product = product;
-    this.medicalCenter = medicalCenter;
+    this.medicalCenter = medicalCenter;let d = new Date();
+    this.reportRequest.daterange = ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2) + "/" + d.getFullYear() + " - " + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2) + "/" + d.getFullYear();
   }
 
 
@@ -123,6 +119,10 @@ export class DoctorComponent implements OnInit {
     this.initSelect();
     this.initDatepickers();
     this.initToasterNotifications();
+    this.clearDoctor();
+    this.clearDoctorInvoice();
+    this.clearReportRequest();
+    this.clearSchedule();
   }
 
   clickNew() {
@@ -264,7 +264,7 @@ export class DoctorComponent implements OnInit {
     this.doctor.contactNo = doctor.contactNo;
     this.doctor.fee = doctor.fee;
     this.doctor.description = doctor.description;
-    (<any>$("#report")).modal();
+    this.generateReport();
   }
 
   get12Pm(t24) {
@@ -812,8 +812,23 @@ export class DoctorComponent implements OnInit {
       } else {
         this.reportRequest.from_datee = from[2] + "-" + from[0] + "-" + from[1];//yyyymmdd
         this.reportRequest.to_datee = to[2] + "-" + to[0] + "-" + to[1];//yyyymmdd
-        console.log(this.reportRequest);
+        this.getDoctorReport();
       }
     }
+  }
+
+  getDoctorReport() {
+    this.doctorService.getDoctorReport(this.reportRequest).subscribe((data: any) => {
+      this.clearReportRequest();
+      if (data && data.patient_count > 0) {
+        this.reportRequest.center_fee = data.center_fee;
+        this.reportRequest.doc_fee = data.doc_fee;
+        this.reportRequest.patient_count = data.patient_count;
+      }
+      (<any>$("#report")).modal();
+    }, (err) => {
+      toastr.error('While fetching doctor report', 'Data fetch error');
+    }
+    );
   }
 }
