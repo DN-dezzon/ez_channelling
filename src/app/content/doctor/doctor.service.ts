@@ -76,4 +76,8 @@ export class DoctorService {
   deleteDoctorInvoice(doctorInvoice: any) {
     return this.httpClient.post(environment.apiUrl + '/deleteDoctorInvoice', doctorInvoice);
   }
+
+  getDoctorReport(reportRequest: any){
+    return this.httpClient.post(environment.apiUrl + '/getDoctorReport', reportRequest);
+  }
 }

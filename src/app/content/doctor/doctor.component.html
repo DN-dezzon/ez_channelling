@@ -323,7 +323,7 @@
   </div>
 </div>
 
-<div id="docInvoice" class="modal fade" aria-hidden="true">
+<div id="" class="modal fade" aria-hidden="true">
   <div class="modal-dialog modal-">
     <div class="modal-content">
       <div class="modal-body">
@@ -335,15 +335,15 @@
                 disabled>
             </div>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label>Date</label>
               <div class="input-group date">
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 <input class="form-control" id="selectDateDoctorInvoice" [(ngModel)]="doctorInvoice.cal">
               </div>
-            </div>
+            </div> -->
             <div class="form-group"><label>Center Fee Rs.</label> <input type="number" min="0" step="0.01"
-                placeholder="Center Fee" [(ngModel)]="doctorInvoice.center_fee" class="form-control"
+                placeholder="Center Fee" [(ngModel)]="doctorInvoice.center_fee" class="form-control" disabled
                 [ngModelOptions]="{standalone: true}">
             </div>
           </div>
@@ -353,7 +353,7 @@
                 [ngModelOptions]="{standalone: true}">
             </div>
 
-            <div class="form-group"><label>Doctor Fee Rs.</label> <input type="number" min="0" step="0.01"
+            <div class="form-group"><label>Doctor Fee Rs.</label> <input type="number" min="0" step="0.01" disabled
                 placeholder="Doctor Fee" [(ngModel)]="doctorInvoice.doc_fee" class="form-control"
                 [ngModelOptions]="{standalone: true}">
             </div>
@@ -362,24 +362,117 @@
                 placeholder="Doctor Fee" [(ngModel)]="doctorInvoice.doc_fee * doctorInvoice.patient_count"
                 class="form-control" [ngModelOptions]="{standalone: true}" disabled>
             </div>
-            <div class="form-group"><label>Action</label>
-              <br>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="docInvoice" class="modal fade" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div>
+          <div class="ibox-content">
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <h3>{{medicalCenter.name}}</h3>
+                <address>
+                  {{medicalCenter.no}}<br>
+                  {{medicalCenter.city}}<br>
+                  <abbr title="Phone">P:</abbr> {{medicalCenter.phone}}
+                </address>
+                <h2><strong>Doctor Invoice</strong></h2>
+              </div>
+            </div>
+            <div class="row">
               <div class="col-sm-12">
-                <div class="col-sm-4">
-                  <button *ngIf="mode == 'editDocInvoice'" class="btn btn-xs btn-danger"
-                    (click)="deleteDoctorInvoice()"><strong>Delete</strong></button>
-                </div>
-                <div class=" col-sm-4"></div>
-                <div class="col-sm-4">
-                  <button *ngIf="mode == 'newDocInvoice'" class="btn btn-xs btn-primary"
-                    (click)="saveDoctorInvoice()"><strong>Save</strong></button>
-                  <button *ngIf="mode == 'editDocInvoice'" class="btn btn-xs btn-primary"
-                    (click)="updateDoctorInvoice()"><strong>Update</strong></button>
+                <h4>Invoice No: <label class="text-navy">INV-{{doctorInvoice.iddoctor_invoice}}</label></h4>
+                <h4>Doctor Name: <label class="text-navy">{{doctor.name}}</label></h4>
+                <h4></h4>
+                <h4 class="text-navy"></h4>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <h4 class="col-sm-1">Date:</h4>
+
+              <div class="col-sm-6">
+                <div class="input-group date">
+                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                  <input class="form-control" id="selectDateDoctorInvoice" [(ngModel)]="doctorInvoice.cal">
                 </div>
               </div>
             </div>
-          </div>
 
+            <div class="table-responsive m-t">
+              <table class="table invoice-table">
+                <tbody>
+                  <tr>
+                    <td>Patient Count :</td>
+                    <td style="text-align: right">
+                      <div><strong>{{doctorInvoice.patient_count}}</strong></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Doctor Fee (Rs.)</td>
+                    <td style="text-align: right">
+                      <div><strong>{{doctorInvoice.doc_fee}}</strong></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <table class="table invoice-total">
+              <tbody>
+                <tr>
+                  <td><strong></strong></td>
+                  <td> </td>
+                </tr>
+                <tr>
+                  <td><strong>Total (Rs.) :</strong></td>
+                  <td>{{doctorInvoice.doc_fee * doctorInvoice.patient_count}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="panel panel-warning">
+              <div class="">
+                <div class="panel-heading col-sm-12">
+                  <div class="col-sm-2">
+                      <strong>Action</strong>
+                  </div>
+                    <div class="col-sm-4">
+                      <button *ngIf="mode == 'editDocInvoice'" class="btn btn-xs btn-danger"
+                        (click)="deleteDoctorInvoice()"><strong>Delete</strong></button>
+                    </div>
+                    <div class=" col-sm-2"></div>
+                    <div class="col-sm-4">
+                      <button *ngIf="mode == 'newDocInvoice'" class="btn btn-xs btn-primary"
+                        (click)="saveDoctorInvoice()"><strong>Save</strong></button>
+                      <button *ngIf="mode == 'newDocInvoice'" class="btn btn-xs btn-success"
+                        (click)="saveDoctorInvoice()"><strong>& Print</strong></button>
+  
+                      <button *ngIf="mode == 'editDocInvoice'" class="btn btn-xs btn-primary"
+                        (click)="updateDoctorInvoice()"><strong>Update</strong></button>
+                      <button *ngIf="mode == 'editDocInvoice'" class="btn btn-xs btn-success"
+                        (click)="updateDoctorInvoice()"><strong>& Print</strong></button>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
@@ -390,77 +483,75 @@
   <div class="modal-dialog modal-">
     <div class="modal-content">
       <div class="modal-body">
-          <div class="ibox-content">
-              <div class="row">
-                <div class="col-sm-12 text-center">
-                  <h3>{{medicalCenter.name}}</h3>
-                  <address>
-                    {{medicalCenter.no}}<br>
-                    {{medicalCenter.city}}<br>
-                    <abbr title="Phone">P:</abbr> {{medicalCenter.phone}}
-                  </address>
-                  <h2><strong>Doctor Report</strong></h2>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <h4>Doctor Name: <label class="text-navy">{{ doctor.name }}</label></h4>
-                  <h4>Doctor Code: <label class="text-navy">{{ doctor.iddoctor }}</label></h4>
-                </div>
-              </div>
-              <div class="row">
-                  <h4 class="col-sm-1">Date:</h4>
-
-                  <div class="col-sm-6">
-                    <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                      <input class="form-control" type="text" id="selectDateRangeReport"
-                        [(ngModel)]="schedule.daterange" />
-                    </div>
-                  </div>
-              </div>
-
-              <div class="table-responsive m-t">
-                <table class="table invoice-table">
-                  <tbody>
-                    <tr>
-                      <td>Patient Count :</td>
-                      <td style="text-align: right">100</td>
-                    </tr>
-                    <tr>
-                      <td>Total Center Fee (Rs.):</td>
-                      <td style="text-align: right">
-                        0000
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Total Doctor Fee (Rs.):</td>
-                      <td style="text-align: right">
-                        600
-                      </td>
-                    </tr>
-
-                  </tbody>
-                </table>
-              </div>
-              
-              <table class="table invoice-total">
-                <tbody>
-                  <tr>
-                    <td><strong></strong></td>
-                    <td> </td>
-                  </tr>
-                  <tr>
-                      <td><strong>Gross Profit (Rs.) :</strong></td>
-                      <td><strong>300</strong></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Net Profit (Rs.) :</strong></td>
-                        <td><strong>300</strong></td>
-                      </tr>
-                </tbody>
-              </table>
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <h3>{{medicalCenter.name}}</h3>
+              <address>
+                {{medicalCenter.no}}<br>
+                {{medicalCenter.city}}<br>
+                <abbr title="Phone">P:</abbr> {{medicalCenter.phone}}
+              </address>
+              <h2><strong>Doctor Report</strong></h2>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>Doctor Name: <label class="text-navy">{{ doctor.name }}</label></h4>
+              <h4>Doctor Code: <label class="text-navy">{{ doctor.iddoctor }}</label></h4>
+            </div>
+          </div>
+          <div class="row">
+            <h4 class="col-sm-1">Date:</h4>
+
+            <div class="col-sm-6">
+              <div class="input-group date">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input class="form-control" type="text" id="selectDateRangeReport" [(ngModel)]="reportRequest.daterange" />
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive m-t">
+            <table class="table invoice-table">
+              <tbody>
+                <tr>
+                  <td>Patient Count :</td>
+                  <td style="text-align: right">{{reportRequest.patient_count}}</td>
+                </tr>
+                <tr>
+                  <td>Total Center Fee (Rs.):</td>
+                  <td style="text-align: right">
+                    {{reportRequest.center_fee}}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Total Doctor Fee (Rs.):</td>
+                  <td style="text-align: right">
+                    {{reportRequest.doc_fee}}
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-warning">
+            <div class="">
+              <div class="panel-heading col-sm-12">
+                <div class="col-sm-2">
+                    <strong>Action</strong>
+                </div>
+                  <div class="col-sm-6"></div>
+                  <div class="col-sm-4">
+                    <button class="btn btn-xs btn-success">
+                      <strong>Print</strong>
+                    </button>
+                  </div>
+                </div>
+            </div>
+          </div>
       </div>
     </div>
   </div>
