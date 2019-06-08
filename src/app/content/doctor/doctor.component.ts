@@ -47,6 +47,7 @@ export class DoctorComponent implements OnInit {
     out_m: "0",
     out_d: "AM",
     daterange: "",
+    patient_count: 0,
   };
 
   doctorInvoice = {
@@ -105,7 +106,8 @@ export class DoctorComponent implements OnInit {
   constructor(private doctorService: DoctorService) {
     this.company = company;
     this.product = product;
-    this.medicalCenter = medicalCenter;let d = new Date();
+    this.medicalCenter = medicalCenter;
+    let d = new Date();
     this.reportRequest.daterange = ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2) + "/" + d.getFullYear() + " - " + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2) + "/" + d.getFullYear();
   }
 
@@ -305,6 +307,7 @@ export class DoctorComponent implements OnInit {
     this.schedule.out_d = this.get12Pm(this.schedule.doctor_out);
     let d = new Date(this.doctorSchedules[index].start);
     this.schedule.daterange = this.getWebDate(this.doctorSchedules[index]);
+    this.getPendingPatientCountBySchedule();
     this.getSchedulePatients();
     this.getDoctrInvoiceByDoctorSchedule();
   }
@@ -388,6 +391,7 @@ export class DoctorComponent implements OnInit {
     this.schedule.out_m = "0";
     this.schedule.out_d = "AM";
     this.schedule.daterange = "";
+    this.schedule.patient_count = 0;
   }
 
   showUpdateScheduleModal(schedule: any) {
@@ -828,6 +832,15 @@ export class DoctorComponent implements OnInit {
       (<any>$("#report")).modal();
     }, (err) => {
       toastr.error('While fetching doctor report', 'Data fetch error');
+    }
+    );
+  }
+
+  getPendingPatientCountBySchedule(){
+    this.doctorService.getPendingPatientCountBySchedule(this.schedule).subscribe((data: any) => {
+      this.schedule.patient_count = data.patient_count;
+    }, (err) => {
+      toastr.error('While fetching pending patients', 'Data fetch error');
     }
     );
   }

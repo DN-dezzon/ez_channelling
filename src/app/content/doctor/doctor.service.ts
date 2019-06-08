@@ -80,4 +80,8 @@ export class DoctorService {
   getDoctorReport(reportRequest: any){
     return this.httpClient.post(environment.apiUrl + '/getDoctorReport', reportRequest);
   }
+
+  getPendingPatientCountBySchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/getPendingPatientCountBySchedule', doctorSchedule);
+  }
 }
