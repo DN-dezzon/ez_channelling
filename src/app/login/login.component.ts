@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from './login.service';
 import { DatabaseService } from '../database.service';
+import { company, product, medicalCenter } from 'src/environments/environment.prod';
 
 declare let toastr: any;
 @Component({
@@ -20,7 +21,15 @@ export class LoginComponent implements OnInit {
     passwd: "",
   };
 
-  constructor(private router: Router, private loginServeice: LoginService, private databaseService: DatabaseService) { }
+  company : any;
+  product : any;
+  medicalCenter :any;
+
+  constructor(private router: Router, private loginServeice: LoginService, private databaseService: DatabaseService) { 
+    this.company = company;
+    this.product = product;
+    this.medicalCenter = medicalCenter;
+  }
 
   ngOnInit() {
     document.body.className = 'gray-bg';
