@@ -7,22 +7,22 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class SettingsService {
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
-  updateCenterFee(center : any){
-    return this.httpClient.post(environment.apiUrl + '/updateCenterFee',center);
+  updateCenterFee(center: any) {
+    return this.httpClient.post(environment.apiUrl + '/updateCenterFee', center);
   }
 
-  getCenterFee(){
+  getCenterFee() {
     return this.httpClient.get(environment.apiUrl + '/getChannellingFee');
   }
 
-  updateUser(user : any){
-    return this.httpClient.post(environment.apiUrl + '/updateUser',user);
+  updateUser(user: any) {
+    return this.httpClient.post(environment.apiUrl + '/updateUser', user);
   }
 
-  getUserDetails(user:any){
-    return this.httpClient.post(environment.apiUrl + '/getUserdata',user);
+  getUserDetails(user: any) {
+    return this.httpClient.post(environment.apiUrl + '/getUserdata', user);
   }
 
 }

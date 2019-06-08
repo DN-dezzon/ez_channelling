@@ -17,7 +17,7 @@
             <div class="ibox-title">
               <h5>Doctors</h5>
               <div class="ibox-tools">
-                <button class="btn btn-xs btn-primary" (click)="clickNew()"><i class="fa fa-plus"></i>New</button>
+                <button class="btn btn-xs btn-primary" (click)="clickNew()"><i class="fa fa-plus"></i> New</button>
               </div>
             </div>
             <div class="ibox-content">
@@ -63,7 +63,7 @@
             <div class="ibox">
               <div class="ibox-title">
                 <h5>
-                  Select doctor :
+                  Select Doctor :
                   <select class="select2_demo_3 form-control" style="width: 260px;">
 
                     <option value="">Select Doctor</option>
@@ -74,7 +74,7 @@
 
                 <div class="ibox-tools">
                   <button *ngIf="doctor.iddoctor != -1" class="btn btn-xs btn-primary" (click)="clickNewSchedule()"><i
-                      class="fa fa-plus"></i>New</button>
+                      class="fa fa-plus"></i> New</button>
                 </div>
               </div>
               <div class="ibox-content">
@@ -89,12 +89,12 @@
             <div class="ibox">
               <div class="ibox-title">
                 <h5>
-                  <span class="badge badge-danger">Date: {{schedule.daterange}}</span>
+                  <span class="badge badge-danger">{{schedule.daterange}}</span>
                   &nbsp;
-                  <span class="badge badge-info">Time: {{schedule.in_h + ':' + schedule.in_m + ' ' + schedule.in_d}} to
+                  <span class="badge badge-info">{{schedule.in_h + ':' + schedule.in_m + ' ' + schedule.in_d}} -
                     {{schedule.out_h + ':' + schedule.out_m + ' ' + schedule.out_d}}</span>
                   &nbsp;
-                  <span class="badge badge-default">Patients: {{schedulePatients?.length}}</span>
+                  <span class="badge badge-default">Patients: {{schedulePatients?.length}} / {{schedulePatients?.length + schedule.patient_count}}</span>
                 </h5>
 
 
@@ -106,7 +106,7 @@
                     (click)="clickPaied()"><span class="glyphicon glyphicon-ok"></span> Paied</button>
                   &nbsp;
                   <button type="button" class="btn btn-xs btn-warning" (click)="showUpdateScheduleModal($event)">
-                    <span class="glyphicon glyphicon-edit"></span>
+                    <span class="glyphicon glyphicon-edit"></span> Edit
                   </button>
                 </div>
               </div>
@@ -386,12 +386,12 @@
                   {{medicalCenter.city}}<br>
                   <abbr title="Phone">P:</abbr> {{medicalCenter.phone}}
                 </address>
-                <h2><strong>Doctor Invoice</strong></h2>
+                <h2><strong>Doctor GRN</strong></h2>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
-                <h4>Invoice No: <label class="text-navy">INV-{{doctorInvoice.iddoctor_invoice}}</label></h4>
+                <h4>GRN No: <label class="text-navy">GRN-{{doctorInvoice.iddoctor_invoice}}</label></h4>
                 <h4>Doctor Name: <label class="text-navy">{{doctor.name}}</label></h4>
                 <h4></h4>
                 <h4 class="text-navy"></h4>

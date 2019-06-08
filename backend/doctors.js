@@ -8,7 +8,7 @@ var mysql = require('mysql');
 
 // configuration =================
 const db = mysql.createPool({
-    connectionLimit: 2,
+    connectionLimit: 100,
     host: 'remotemysql.com',
     user: 'Rr6RfuQQAh',
     password: '7cA4hntkbd',
@@ -444,6 +444,18 @@ app.post('/getPatientsBySchedule', function (req, res) {
     });
 });
 
+app.post('/getPendingPatientCountBySchedule', function (req, res) {
+    values = [req.body.iddoctor_schedule];
+    query = "SELECT count(*) as patient_count FROM appointment WHERE iddoctor_schedule = ? AND payment_status = 'Pending'";
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
 app.post('/getUser', function (req, res) {
     values = [req.body.uname, req.body.passwd];
     query = "SELECT * FROM user LEFT JOIN user_type ON user.iduser_type = user_type.iduser_type WHERE user.uname = ? AND user.passwd = ?";
@@ -598,6 +610,62 @@ app.post('/getDoctorReport', function (req, res) {
             res.send(500, err);
         } else {
             res.json(result[0]);
+        }
+    });
+});
+
+app.post('/getTransactions', function (req, res) {
+    query = `
+    SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , expense , income , tablee
+        FROM
+        (
+            SELECT 
+                doctor_invoice.datee as date ,
+                doctor_invoice.iddoctor_invoice as id,
+                doctor.name as name,
+                doctor_invoice.doc_fee as expense,
+                0 as income,
+                "doctor_invoice" as tablee
+                FROM doctor_invoice 
+                left join doctor_schedule on doctor_schedule.iddoctor_schedule = doctor_invoice.doctor_schedule_iddoctor_schedule
+                left join doctor on doctor.iddoctor = doctor_schedule.doctor_iddoctor 
+                WHERE doctor_invoice.datee BETWEEN ? AND ?
+            UNION
+            SELECT 
+                patient_invoice.issued_datetime as date ,
+                patient_invoice.idpatient_invoice as id ,
+                patient.name as name ,
+                0 as expense,
+                patient_invoice.amount as income,
+                "patient_invoice" as tablee
+                FROM patient_invoice 
+                LEFT JOIN appointment ON appointment.idappointment = patient_invoice.idappointment 
+                LEFT JOIN patient ON patient.idpatient = appointment.patient_idpatient
+                WHERE DATE(patient_invoice.issued_datetime) BETWEEN ? AND ?
+        )    as t1
+        order by date desc
+    `;
+    values = [req.body.from_datee , req.body.to_datee , req.body.from_datee , req.body.to_datee];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+
+app.post('/deleteTransaction', function (req, res) {
+    query = "DELETE FROM patient_invoice  WHERE idpatient_invoice = ? ";
+    if(req.body.tablee == "doctor_invoice"){
+        query = "DELETE FROM doctor_invoice WHERE iddoctor_invoice = ?";
+    }
+    values = [req.body.id];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
         }
     });
 });
