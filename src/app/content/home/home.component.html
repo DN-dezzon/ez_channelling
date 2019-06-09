@@ -206,9 +206,12 @@
                           Payment</button>
                       </div>
                       <div class="col-sm-2 ">
-                        <button class="btn btn-primary" id="printInvoice" href="#invoice" data-toggle="modal"
+                        <button class="btn btn-primary" (click)="printPatirntInvoice()" id="printInvoice" href="#invoice" data-toggle="modal"
                           type="submit">Print
                           Invoice</button>
+                          <!-- <button class="btn btn-primary" (click)="print()" id="printInvoice" href="#invoice"  
+                          type="submit">Print
+                          Invoice</button> -->
                       </div>
                     </div>
                   </form>
@@ -248,7 +251,7 @@
                 </p>
                 
               </div>
-            </div>
+            </div> 
 
             <div class="table-responsive m-t">
               <table class="table invoice-table">
