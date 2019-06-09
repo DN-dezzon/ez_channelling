@@ -89,7 +89,8 @@ export class HomeComponent implements OnInit {
     paient: this.patient,
     patient_idpatient: -1,
     issued_datetime: "",
-    today:new Date()
+    today:new Date(),
+    pay_now:"no"
   };
  
   appointmentdata = {
@@ -106,8 +107,7 @@ export class HomeComponent implements OnInit {
     this.user.name = this.databaseService.user.name;
    this.appointment.today = new Date();
     this.appointment.hideAppointment = true;
-    // $('#printInvoice').hide();
-    $('#makepayment').hide();
+    // $('#printInvoice').hide(); 
     $('#pname_new').hide();
     $('#channeling_date').datepicker({
       todayBtn: "linked",
@@ -314,8 +314,10 @@ export class HomeComponent implements OnInit {
      
     this.homeService.searchAppointment(this.appointmentdata).subscribe((data: any) => {
       if (data.length > 0) {
+        this.appointment.pay_now="yes";
+        $("#makeappointment").html('Make Payment');
         for (let index = 0; index < data.length; index++) { 
-          
+          $('#appno').css('border-color', 'red');
           this.patient.name=data[index].name;
           this.appointment.payment_status = data[index].payment_status;
           this.appointment.idappointment = data[index].idappointment;
@@ -323,16 +325,17 @@ export class HomeComponent implements OnInit {
           this.appointment.number = data[index].number; 
           if (data[index].payment_status == "Paid") {
             toastr.info("Payment already made!");
-            $('#makeappointment').hide();
-            $('#makepayment').hide();
+            this.appointment.hideAppointment = true;
           } else {
-            $('#makeappointment').hide();
-            $('#makepayment').show();
+            this.appointment.hideAppointment = false;
           }
         }
+       
       } else {
-        $('#makeappointment').show();
-        $('#makepayment').hide();
+        $("#makeappointment").html('Make Appointment');
+        this.appointment.pay_now="no";
+        // $('#makeappointment').show();
+        // $('#makepayment').hide();
         this.appointment.hideAppointment = false;
       }
     }, (err) => {
@@ -544,7 +547,7 @@ export class HomeComponent implements OnInit {
           .tooltip("open");
           $('#pname_new').show();
           $('#pname_old').hide();
-          $('#makeappointment').show();
+          
          
         //this.element.val("");
         _this.selectNewPatientMobileNo(value.trim());
@@ -552,7 +555,7 @@ export class HomeComponent implements OnInit {
         this._delay(function () {
           this.input.tooltip("close").attr("title", "");
           
-        }, 2500);
+        },1000);
       
         //this.input.autocomplete("instance").term = "";
       },
@@ -589,36 +592,41 @@ export class HomeComponent implements OnInit {
     this.appointment.payment_status == "0"
   }
   makeAppointment() {
-    this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
-      console.log(data);
-      
-      if (this.appointment.payment_status == "Paid") {
-        this.patient.invoice_id=data;
+    if(this.appointment.pay_now=="yes"){
+      this.homeService.makePayment(this.appointment).subscribe((data: any) => {
+        console.log(data);
         $('#printInvoice').click();
-      } 
-      toastr.info("Appointment made successfully!");
-      
-    }, (err) => {
-      console.log(err);
-      toastr.error("Please try again!");
+        this.patient.invoice_id=data[0];
+        toastr.info("Payment made successfully!");
+        
+      }, (err) => {
+        console.log(err);
+  
+        toastr.error("Please try again!");
+      }
+      );
+    }else{
+      this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
+        console.log(data);
+        
+        if (this.appointment.payment_status == "Paid") {
+          this.patient.invoice_id=data;
+          $('#printInvoice').click();
+        } 
+        toastr.info("Appointment made successfully!");
+        
+      }, (err) => {
+        console.log(err);
+        toastr.error("Please try again!");
+      }
+      );
     }
-    );
+   
   }
 
   makePayment() {
     
-    this.homeService.makePayment(this.appointment).subscribe((data: any) => {
-      console.log(data);
-      $('#printInvoice').click();
-      this.patient.invoice_id=data[0];
-      toastr.info("Payment made successfully!");
-      
-    }, (err) => {
-      console.log(err);
-
-      toastr.error("Please try again!");
-    }
-    );
+    
   }
 
   addIndex(array: any[]) {
