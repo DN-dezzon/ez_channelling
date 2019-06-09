@@ -66,7 +66,7 @@ export class TransactionsComponent implements OnInit {
           this.datatable.clear();
           this.datatable.rows.add(this.transactions);
           this.datatable.draw();
-          toastr.error('While fetching tramsactions details', 'Data fetch error');
+          toastr.error('While fetching transactions details', 'Data fetch error');
         }
         );
       }

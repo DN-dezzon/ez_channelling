@@ -64,9 +64,9 @@
               <div class="ibox-title">
                 <h5>
                   Select Doctor :
-                  <select class="select2_demo_3 form-control" style="width: 260px;">
+                  <select id="select2_demo_3" class="form-control" style="width: 260px;">
 
-                    <option value="">Select Doctor</option>
+                    <option value="" selected>Select Doctor</option>
                     <option *ngFor="let doctor of doctors; index as i" value="{{i}}">{{ doctor.name }}
                     </option>
                   </select>
@@ -84,7 +84,7 @@
             </div>
           </div>
 
-          <div class="col-lg-6" [hidden]="schedule.iddoctor_schedule == -1">
+          <div class="col-lg-6" [hidden]="doctorInvoice.iddoctor_invoice == -2">
             <div class="ibox">
               <div class="ibox-title">
                 <h5>

@@ -51,7 +51,7 @@ export class DoctorComponent implements OnInit {
   };
 
   doctorInvoice = {
-    iddoctor_invoice: -1,
+    iddoctor_invoice: -2,
     datee: "",
     patient_count: 0,
     center_fee: 0,
@@ -83,7 +83,7 @@ export class DoctorComponent implements OnInit {
   }
 
   clearDoctorInvoice() {
-    this.doctorInvoice.iddoctor_invoice = -1;
+    this.doctorInvoice.iddoctor_invoice = -2;
     this.doctorInvoice.datee = "";
     this.doctorInvoice.patient_count = 0;
     this.doctorInvoice.center_fee = 0;
@@ -164,12 +164,13 @@ export class DoctorComponent implements OnInit {
   datesTabSelected() {
     this.clearDoctor();
     this.clearSchedule();
+    this.clearSelect();
     this.doctorSchedules = [];
-    if (this.fullCalendar) {
-      this.fullCalendar.fullCalendar('getCalendar').removeEvents();
-      this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
-    }
     setTimeout(this.initCalendar, 10);
+  }
+
+  clearSelect(){
+    $('#select2_demo_3').val("").trigger('change');
   }
 
   getNextDoctorId() {
@@ -347,12 +348,17 @@ export class DoctorComponent implements OnInit {
       bttn.onclick = () => {
         this.scheduleSelected($('#globalScheduleSelected').val());
       }
+    }else{
+      this.fullCalendar.fullCalendar('getCalendar').removeEvents();
+      this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
     }
   }
 
   clickNewSchedule() {
     this.mode = 'newSchedule';
     this.clearSchedule();
+    this.clearDoctorInvoice();
+    this.schedulePatients = [];
     this.getNextDoctorScheduleId();
   }
 
@@ -512,15 +518,15 @@ export class DoctorComponent implements OnInit {
   initSelect() {
     var _this = this;
 
-    (<any>$(".select2_demo_3")).select2({
+    (<any>$("#select2_demo_3")).select2({
       dropdownCssClass: 'custom-dropdown'
     });
 
-    (<any>$(".select2_demo_3")).on('select2:open', function (e) {
+    (<any>$("#select2_demo_3")).on('select2:open', function (e) {
       $('.custom-dropdown').parent().css('z-index', 99999);
     });
 
-    (<any>$(".select2_demo_3")).on('select2:select', function (e) {
+    (<any>$("#select2_demo_3")).on('select2:select', function (e) {
       _this.docSelected(e.params.data.id);
     });
   }
@@ -698,6 +704,7 @@ export class DoctorComponent implements OnInit {
 
   getDoctrInvoiceByDoctorSchedule() {
     this.clearDoctorInvoice();
+    this.doctorInvoice.iddoctor_invoice = -1;
     this.doctorService.getDoctrInvoiceByDoctorSchedule(this.schedule).subscribe((data: any) => {
       if (data) {
         this.doctorInvoice.center_fee = data.center_fee;
