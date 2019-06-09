@@ -34,8 +34,8 @@ export class HomeComponent implements OnInit {
   fullCalendar: any;
   doctorSchedules: any[];
 
-  user={
-    name:"test"
+  user = {
+    name: "test"
   }
 
   doctor = {
@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
     amount: "",
     monthly_income: "",
     newpatient: "",
-    invoice_id:0
+    invoice_id: 0
   };
 
   schedule = {
@@ -89,23 +89,24 @@ export class HomeComponent implements OnInit {
     paient: this.patient,
     patient_idpatient: -1,
     issued_datetime: "",
-    today:new Date(),
-    pay_now:"no"
+    today: new Date(),
+    pay_now: "no",
+    patient_intime: "00:00"
   };
- 
+
   appointmentdata = {
     idpatient: -1,
     iddoctor_schedule: ""
   };
 
   myDate = new Date();
-  constructor(private homeService: HomeService, private datePipe: DatePipe,private databaseService: DatabaseService) {
+  constructor(private homeService: HomeService, private datePipe: DatePipe, private databaseService: DatabaseService) {
     this.medicalCenter = medicalCenter;
   }
 
   ngOnInit() {
     this.user.name = this.databaseService.user.name;
-   this.appointment.today = new Date();
+    this.appointment.today = new Date();
     this.appointment.hideAppointment = true;
     // $('#printInvoice').hide(); 
     $('#pname_new').hide();
@@ -121,21 +122,21 @@ export class HomeComponent implements OnInit {
     this.getPatients();
     this.initCalendar();
 
-    
+
   }
 
 
   print() {
-    var data = document.getElementById('invoicee'); 
+    var data = document.getElementById('invoicee');
 
     //document.getElementById('invcont').style.display = "block";
-  
+
     document.getElementById('invoice').className = "";
 
     html2canvas(data).then(canvas => {
 
       let pdf = new jspdf('l', 'mm', 'A5'); // A4 size page of PDF  
-      var imgWidth = 88; 
+      var imgWidth = 88;
 
       var imgHeight = canvas.height * imgWidth / canvas.width;
       const contentDataURL = canvas.toDataURL('image/png')
@@ -147,19 +148,18 @@ export class HomeComponent implements OnInit {
       // pwa.document.open();
       // pwa.document.write(this.ImagetoPrint(contentDataURL));
       // pwa.document.close(); 
-       $('#invoice').show();
+      $('#invoice').show();
       document.getElementById('invoice').className = "modal fade";
     });
   }
 
-  printPatirntInvoice(){
+  printPatirntInvoice() {
     this.print();
   }
   ImagetoPrint(source) {
     return "<html><head><style>" +
       "@page { size: auto;  margin: 0mm; }" +
       "</style><scri" + "pt>function step1(){\n" +
-      "setTimeout('step2()', 200);}\n" +
       "function step2(){window.print();window.close()}\n" +
       "</scri" + "pt></head><body onload='step1()' style='text-align: center; display: block;'>\n" +
       "<img src='" + source + "' /></body></html>";
@@ -281,17 +281,26 @@ export class HomeComponent implements OnInit {
   }
 
   searchPatientName(value) {
-   
+    alert(value);
     // this.patient.idpatient = value; 
     this.patient.contactNo = value;
     this.homeService.getPatientbyMobile(this.patient).subscribe((data: any) => {
+      alert(data);
+      if (data.length > 0) {
+        this.patient_data = data;
+        for (let index = 0; index < this.patient_data.length; index++) {
+          this.patient.name = this.patient_data[index].name;
+          this.patient.idpatient = this.patient_data[index].idpatient;
+          this.patient_data[index].index = index + 1;
+        }
+      } else {
+        $('#pname_new').show();
+        $('#pname_old').hide();
 
-      this.patient_data = data;
-      for (let index = 0; index < this.patient_data.length; index++) {
-        this.patient.name = this.patient_data[index].name;
-        this.patient.idpatient = this.patient_data[index].idpatient;
-        this.patient_data[index].index = index + 1;
+        this.getAppointmentNumber(this.doctor);
+        this.appointment.payment_status = "Pending";
       }
+
     }, (err) => {
       console.log(err);
     }
@@ -307,33 +316,46 @@ export class HomeComponent implements OnInit {
   }
 
   searchAppointment(value) {
-    
+
     this.patient.idpatient = value;
     this.appointmentdata.iddoctor_schedule = this.doctor.iddoctor_schedule;
     this.appointmentdata.idpatient = this.patient.idpatient;
-     
+
     this.homeService.searchAppointment(this.appointmentdata).subscribe((data: any) => {
       if (data.length > 0) {
-        this.appointment.pay_now="yes";
+        this.appointment.pay_now = "yes";
         $("#makeappointment").html('Make Payment');
-        for (let index = 0; index < data.length; index++) { 
-          $('#appno').css('border-color', 'red');
-          this.patient.name=data[index].name;
+        for (let index = 0; index < data.length; index++) {
+          // $('#appno').css('border-color', 'red');
+          // $('#apptime').css('border-color', 'red');
+          $('#appno').css('border', '2px solid red');
+    $('#apptime').css('border', '2px solid red');
+
+          this.patient.name = data[index].name;
           this.appointment.payment_status = data[index].payment_status;
           this.appointment.idappointment = data[index].idappointment;
           console.log(data[index].number);
-          this.appointment.number = data[index].number; 
+          this.appointment.patient_intime = data[index].patient_intime;
+          console.log(data[index].number);
+          this.appointment.number = data[index].number;
           if (data[index].payment_status == "Paid") {
             toastr.info("Payment already made!");
+            $('#pstatus').prop('disabled', true);
             this.appointment.hideAppointment = true;
           } else {
+            $('#pstatus').prop('disabled', false);
             this.appointment.hideAppointment = false;
           }
         }
-       
+
       } else {
+        $('#appno').css('border', '1px solid #e5e6e7');
+    $('#apptime').css('border', '1px solid #e5e6e7');
+        $('#pstatus').prop('disabled', false);
         $("#makeappointment").html('Make Appointment');
-        this.appointment.pay_now="no";
+        this.appointment.pay_now = "no";
+        this.getAppointmentNumber(this.doctor);
+        this.appointment.payment_status = "Pending";
         // $('#makeappointment').show();
         // $('#makepayment').hide();
         this.appointment.hideAppointment = false;
@@ -341,8 +363,8 @@ export class HomeComponent implements OnInit {
     }, (err) => {
       console.log(err);
     });
-    this.getAppointmentNumber(this.doctor);
-    this.getScheduleId(this.doctor);
+    // this.getAppointmentNumber(this.doctor);
+    // this.getScheduleId(this.doctor);
   }
 
   activatePrint(value) {
@@ -399,18 +421,26 @@ export class HomeComponent implements OnInit {
     }
     );
   }
+  addMinutes(time, minsToAdd) {
+    function D(J) { return (J < 10 ? '0' : '') + J };
 
+    var piece = time.split(':');
+
+    var mins = piece[0] * 60 + +piece[1] + +minsToAdd;
+
+    return D(mins % (24 * 60) / 60 | 0) + ':' + D(mins % 60);
+  }
   getAppointmentNumber(doctor: any) {
 
     this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
+      this.appointment.number = this.doctor_appointments.length + 1;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
-        this.appointment.number = this.doctor_appointments[index].count + 1;
+        let tot_minutes = this.doctor_appointments[index].con_period * (this.appointment.number - 1)
 
-
+        this.doctor_appointments[index].doctor_in;
+        this.appointment.patient_intime = this.addMinutes(this.doctor_appointments[index].doctor_in, tot_minutes);
       }
-
-
     }, (err) => {
       console.log(err);
     });
@@ -432,14 +462,20 @@ export class HomeComponent implements OnInit {
     this.patient.contactNo = mobileNo;
     this.homeService.getPatientByContactNo(this.patient).subscribe((data: any) => {
 
-      this.patient_data = data;
-      for (let index = 0; index < this.patient_data.length; index++) {
-        console.log(this.patient_data[index].name);
-        this.patient.name = this.patient_data[index].name;
-        this.patient.idpatient = this.patient_data[index].idpatient;
-        $('#pname_new').hide();
-        $('#pname_old').show();
+      if (data.length > 0) {
+
+        this.patient_data = data;
+        for (let index = 0; index < this.patient_data.length; index++) {
+          console.log(this.patient_data[index].name);
+          this.patient.name = this.patient_data[index].name;
+          this.patient.idpatient = this.patient_data[index].idpatient;
+          $('#pname_new').hide();
+          $('#pname_old').show();
+        }
+      } else {
+
       }
+
     }, (err) => {
       console.log(err);
     }
@@ -452,7 +488,14 @@ export class HomeComponent implements OnInit {
   selectNewPatientMobileNo(mobileNo) {
     this.patient.contactNo = mobileNo;
     this.patient.newpatient = "yes";
-    console.log(mobileNo);
+    this.patient.name = "";
+    $('#pname_new').show();
+    $('#pname_old').hide();
+    $('#pstatus').prop('disabled', false);
+    this.getAppointmentNumber(this.doctor);
+    this.appointment.payment_status = "Pending";
+    $('#appno').css('border', '1px solid #e5e6e7');
+    $('#apptime').css('border', '1px solid #e5e6e7');
   }
 
   createDropDown() {
@@ -536,27 +579,24 @@ export class HomeComponent implements OnInit {
 
         // Found a match, nothing to do
         if (valid) {
-         
+
           return;
         }
-        
+
         // Remove invalid value
         this.input
           //.val("")
           .attr("title", value + " is a new Patient")
           .tooltip("open");
-          $('#pname_new').show();
-          $('#pname_old').hide();
-          
-         
+
         //this.element.val("");
         _this.selectNewPatientMobileNo(value.trim());
-       
+
         this._delay(function () {
           this.input.tooltip("close").attr("title", "");
-          
-        },1000);
-      
+
+        }, 1000);
+
         //this.input.autocomplete("instance").term = "";
       },
 
@@ -587,46 +627,46 @@ export class HomeComponent implements OnInit {
     this.createDropDown();
     this.appointment.number = 0;
     this.doctor.fee = 0;
-    this.patient.name = "0";
-    this.patient.contactNo = "0;"
+    this.patient.name = "";
+    this.patient.contactNo = ""
     this.appointment.payment_status == "0"
   }
   makeAppointment() {
-    if(this.appointment.pay_now=="yes"){
+    if (this.appointment.pay_now == "yes") {
       this.homeService.makePayment(this.appointment).subscribe((data: any) => {
         console.log(data);
         $('#printInvoice').click();
-        this.patient.invoice_id=data[0];
+        this.patient.invoice_id = data[0];
         toastr.info("Payment made successfully!");
-        
+
       }, (err) => {
         console.log(err);
-  
+
         toastr.error("Please try again!");
       }
       );
-    }else{
+    } else {
       this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
         console.log(data);
-        
+
         if (this.appointment.payment_status == "Paid") {
-          this.patient.invoice_id=data;
+          this.patient.invoice_id = data;
           $('#printInvoice').click();
-        } 
+        }
         toastr.info("Appointment made successfully!");
-        
+
       }, (err) => {
         console.log(err);
         toastr.error("Please try again!");
       }
       );
     }
-   
+
   }
 
   makePayment() {
-    
-    
+
+
   }
 
   addIndex(array: any[]) {

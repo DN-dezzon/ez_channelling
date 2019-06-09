@@ -214,7 +214,7 @@ app.post('/getDoctortbyId', function (req, res) {
     });
 });
 app.post('/getAppointMentNumber', function (req, res) {
-    query = "SELECT count(number) as count FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule where d.doctor_iddoctor=? and d.datee=? and a.payment_status!='Cancelled'";
+    query = "SELECT * FROM  doctor_schedule d inner join appointment a on d.iddoctor_schedule=a.iddoctor_schedule inner join doctor as doc on d.doctor_iddoctor=doc.iddoctor where d.doctor_iddoctor=? and d.datee=? and a.payment_status!='Cancelled'";
     values = [req.body.iddoctor, req.body.datee];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -256,8 +256,8 @@ app.post('/saveAppointment', function (req, res) {
                     } else {
 
                         // Make an appointment
-                        query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
-                        values = [req.body.number, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
+                        query2 = "INSERT INTO appointment(number,patient_intime, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
+                        values = [req.body.number,req.body.patient_intime, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
 
                         db.query(query2, values, (err, result) => {
                             if (err) {
@@ -287,8 +287,8 @@ app.post('/saveAppointment', function (req, res) {
     } else {
         // Make an appointment
 
-        query2 = "INSERT INTO appointment(number, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
-        values = [req.body.number, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
+        query2 = "INSERT INTO appointment(number, patient_intime,payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
+        values = [req.body.number, req.body.patient_intime,req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
 
         db.query(query2, values, (err, result) => {
             if (err) {
