@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');    // pull information from HTML POST (
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 var mysql = require('mysql');
 
+const fs = require('fs');
+const carbone = require('carbone');
+
 // configuration =================
 const db = mysql.createPool({
     connectionLimit: 100,
@@ -275,7 +278,7 @@ app.post('/saveAppointment', function (req, res) {
                                             res.json(result.insertId);
                                         }
                                     });
-                                }else{
+                                } else {
                                     res.json(result);
                                 }
                             }
@@ -283,7 +286,7 @@ app.post('/saveAppointment', function (req, res) {
                     }
                 });
             }
-        });  
+        });
     } else {
         // Make an appointment
 
@@ -294,7 +297,7 @@ app.post('/saveAppointment', function (req, res) {
             if (err) {
                 res.send(500, err);
             } else {
-                
+
                 if (req.body.payment_status == "Paid") {
                     // Make a payment 
                     query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
@@ -306,7 +309,7 @@ app.post('/saveAppointment', function (req, res) {
                             res.json(result.insertId);
                         }
                     });
-                }else{
+                } else {
                     res.json(result);
                 }
             }
@@ -328,23 +331,23 @@ app.post('/saveAppointment', function (req, res) {
 app.post('/makePayment', function (req, res) {
     var d = new Date();
     query2 = "UPDATE appointment set payment_status=? where idappointment=?";
-        values = ['Paid',req.body.idappointment];
-        db.query(query2, values, (err, result) => {
-            if (err) {
-                res.send(500, err);
-            } else { 
-                query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
-                values = [req.body.doctor.fee, req.body.idappointment, d];
-                db.query(query3, values, (err, result) => {
-                    if (err) {
-                        res.send(500, err);
-                    } else { 
-                        res.json(result.insertId);
-                    }
-                });
-            }
-        });
-   
+    values = ['Paid', req.body.idappointment];
+    db.query(query2, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            query3 = "INSERT INTO patient_invoice(amount, idappointment,issued_datetime) VALUES (?,?,CURRENT_TIMESTAMP)";
+            values = [req.body.doctor.fee, req.body.idappointment, d];
+            db.query(query3, values, (err, result) => {
+                if (err) {
+                    res.send(500, err);
+                } else {
+                    res.json(result.insertId);
+                }
+            });
+        }
+    });
+
 });
 
 app.post('/getTodaySchedule', function (req, res) {
@@ -665,7 +668,7 @@ app.post('/getDoctorReport', function (req, res) {
     LEFT JOIN doctor_schedule ON doctor_schedule.iddoctor_schedule = appointment.iddoctor_schedule
     LEFT JOIN doctor ON doctor.iddoctor = doctor_schedule.doctor_iddoctor
     WHERE appointment.payment_status = 'Paid' AND doctor.iddoctor = ? AND doctor_schedule.datee BETWEEN ? AND ?`;
-    values = [req.body.doctor.iddoctor , req.body.from_datee , req.body.to_datee];
+    values = [req.body.doctor.iddoctor, req.body.from_datee, req.body.to_datee];
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -706,7 +709,7 @@ app.post('/getTransactions', function (req, res) {
         )    as t1
         order by date desc
     `;
-    values = [req.body.from_datee , req.body.to_datee , req.body.from_datee , req.body.to_datee];
+    values = [req.body.from_datee, req.body.to_datee, req.body.from_datee, req.body.to_datee];
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -718,7 +721,7 @@ app.post('/getTransactions', function (req, res) {
 
 app.post('/deleteTransaction', function (req, res) {
     query = "DELETE FROM patient_invoice  WHERE idpatient_invoice = ? ";
-    if(req.body.tablee == "doctor_invoice"){
+    if (req.body.tablee == "doctor_invoice") {
         query = "DELETE FROM doctor_invoice WHERE iddoctor_invoice = ?";
     }
     values = [req.body.id];
@@ -751,6 +754,28 @@ app.post('/isDoctorScheduleDeletable', function (req, res) {
             res.send(500, err);
         } else {
             res.json(result[0].schedule_count == 0);
+        }
+    });
+});
+
+var printOptions = {
+    convertTo: 'pdf', //can be docx, txt, ...
+};
+
+
+app.get('/testPrint', function (req, res) {
+    // Data to inject
+    var data = {
+        firstname: 'John',
+        lastname: 'Doe'
+    };
+    
+    carbone.render('./simple.odt', data, printOptions, function (err, result) {
+        if (err){
+            res.send(500, err);
+        }else{
+            fs.writeFileSync('result.pdf', result);
+            res.status(200).send("printed");
         }
     });
 });
