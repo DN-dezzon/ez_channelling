@@ -61,9 +61,9 @@ export class DoctorService {
     return this.httpClient.get(environment.apiUrl + '/getNextDoctorInvoiceId');
   }
 
-  updateDoctorInvoice(doctorInvoice: any) {
-    return this.httpClient.post(environment.apiUrl + '/updateDoctorInvoice', doctorInvoice);
-  }
+  // updateDoctorInvoice(doctorInvoice: any) {
+  //   return this.httpClient.post(environment.apiUrl + '/updateDoctorInvoice', doctorInvoice);
+  // }
 
   getDoctrInvoiceByDoctorSchedule(doctorSchedule: any) {
     return this.httpClient.post(environment.apiUrl + '/getDoctrInvoiceByDoctorSchedule', doctorSchedule);
@@ -83,5 +83,17 @@ export class DoctorService {
 
   getPendingPatientCountBySchedule(doctorSchedule: any) {
     return this.httpClient.post(environment.apiUrl + '/getPendingPatientCountBySchedule', doctorSchedule);
+  }
+
+  isDoctorDeletable(doctor: any) {
+    return this.httpClient.post(environment.apiUrl + '/isDoctorDeletable', doctor);
+  }
+
+  isDoctorScheduleDeletable(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/isDoctorScheduleDeletable', doctorSchedule);
+  }
+
+  getCancelledPatientCountBySchedule(doctorSchedule: any) {
+    return this.httpClient.post(environment.apiUrl + '/getCancelledPatientCountBySchedule', doctorSchedule);
   }
 }
