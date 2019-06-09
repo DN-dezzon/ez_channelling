@@ -317,7 +317,7 @@ export class HomeComponent implements OnInit {
         this.appointment.pay_now="yes";
         $("#makeappointment").html('Make Payment');
         for (let index = 0; index < data.length; index++) { 
-          
+          $('#appno').css('border-color', 'red');
           this.patient.name=data[index].name;
           this.appointment.payment_status = data[index].payment_status;
           this.appointment.idappointment = data[index].idappointment;
