@@ -31,6 +31,8 @@ export class DoctorComponent implements OnInit {
     contactNo: "",
     fee: 0.0,
     description: "",
+    con_period: 5,
+    isDeletable: false,
   };
 
   schedule = {
@@ -47,7 +49,10 @@ export class DoctorComponent implements OnInit {
     out_m: "0",
     out_d: "AM",
     daterange: "",
-    patient_count: 0,
+    paid_patient_count: 0,
+    pending_patient_count: 0,
+    cancelled_patient_count: 0,
+    isDeletable: false,
   };
 
   doctorInvoice = {
@@ -58,7 +63,7 @@ export class DoctorComponent implements OnInit {
     doc_fee: 0,
     doctor_schedule: this.schedule,
     doctor_schedule_iddoctor_schedule: -1,
-    y: "0",
+    y: 0,
     m: "0",
     d: "0",
     cal: ""
@@ -83,15 +88,16 @@ export class DoctorComponent implements OnInit {
   }
 
   clearDoctorInvoice() {
+    let d = new Date();
     this.doctorInvoice.iddoctor_invoice = -2;
     this.doctorInvoice.datee = "";
     this.doctorInvoice.patient_count = 0;
     this.doctorInvoice.center_fee = 0;
     this.doctorInvoice.doc_fee = 0;
     this.doctorInvoice.doctor_schedule_iddoctor_schedule = -1;
-    this.doctorInvoice.y = "0";
-    this.doctorInvoice.m = "0";
-    this.doctorInvoice.d = "0";
+    this.doctorInvoice.y = d.getFullYear();
+    this.doctorInvoice.m = ("0" + (d.getMonth() + 1)).slice(-2);
+    this.doctorInvoice.d = ("0" + d.getDate()).slice(-2);
     this.doctorInvoice.cal = this.getWebDate(this.doctorInvoice);
   }
 
@@ -141,6 +147,26 @@ export class DoctorComponent implements OnInit {
     this.doctor.contactNo = "";
     this.doctor.fee = 0.0;
     this.doctor.description = "";
+    this.doctor.con_period = 5;
+    this.doctor.isDeletable = false;
+  }
+
+  getIsDoctorDeletable() {
+    this.doctorService.isDoctorDeletable(this.doctor).subscribe((data: any) => {
+      this.doctor.isDeletable = data;
+    }, (err) => {
+      toastr.error('While fetching doctor details', 'Data fetch error');
+    }
+    );
+  }
+
+  getIsDoctorScheduleDeletable() {
+    this.doctorService.isDoctorScheduleDeletable(this.schedule).subscribe((data: any) => {
+      this.schedule.isDeletable = data;
+    }, (err) => {
+      toastr.error('While fetching schedule details', 'Data fetch error');
+    }
+    );
   }
 
   getDoctors() {
@@ -169,7 +195,7 @@ export class DoctorComponent implements OnInit {
     setTimeout(this.initCalendar, 10);
   }
 
-  clearSelect(){
+  clearSelect() {
     $('#select2_demo_3').val("").trigger('change');
   }
 
@@ -200,9 +226,12 @@ export class DoctorComponent implements OnInit {
   }
 
   saveDoctor() {
-    (<any>$("#newDoctor")).modal("hide");
+    if (!this.doctor.con_period) {
+      this.doctor.con_period = 0;
+    }
     this.doctorService.saveDoctor(this.doctor).subscribe((data: any) => {
       this.getDoctors();
+      (<any>$("#newDoctor")).modal("hide");
       toastr.success("Success", "New doctor inserted");
     }, (err) => {
       toastr.error('While saving doctor', 'Data save error');
@@ -211,6 +240,9 @@ export class DoctorComponent implements OnInit {
   }
 
   updateDoctor() {
+    if (!this.doctor.con_period) {
+      this.doctor.con_period = 0;
+    }
     this.doctorService.updateDoctor(this.doctor).subscribe((data: any) => {
       this.getDoctors();
       (<any>$("#newDoctor")).modal("hide");
@@ -248,6 +280,7 @@ export class DoctorComponent implements OnInit {
   }
 
   showUpdateModal(doctor: any) {
+    this.clearDoctor();
     this.mode = 'update';
     this.doctor.iddoctor = doctor.iddoctor;
     this.doctor.name = doctor.name;
@@ -256,6 +289,7 @@ export class DoctorComponent implements OnInit {
     this.doctor.contactNo = doctor.contactNo;
     this.doctor.fee = doctor.fee;
     this.doctor.description = doctor.description;
+    this.getIsDoctorDeletable();
     (<any>$("#newDoctor")).modal();
   }
 
@@ -308,9 +342,9 @@ export class DoctorComponent implements OnInit {
     this.schedule.out_d = this.get12Pm(this.schedule.doctor_out);
     let d = new Date(this.doctorSchedules[index].start);
     this.schedule.daterange = this.getWebDate(this.doctorSchedules[index]);
-    this.getPendingPatientCountBySchedule();
     this.getSchedulePatients();
     this.getDoctrInvoiceByDoctorSchedule();
+    this.getIsDoctorScheduleDeletable();
   }
 
 
@@ -318,10 +352,26 @@ export class DoctorComponent implements OnInit {
     this.schedulePatients = [];
     this.doctorService.getPatientsBySchedule(this.schedule).subscribe((data: any) => {
       this.schedulePatients = data;
+      this.countPatientsByStatus();
     }, (err) => {
       toastr.error('While getting patient details', 'Data fetching error');
     }
     );
+  }
+
+  countPatientsByStatus() {
+    this.schedule.paid_patient_count = 0;
+    this.schedule.pending_patient_count = 0;
+    this.schedule.cancelled_patient_count = 0;
+    this.schedulePatients.forEach(element => {
+      if (element.payment_status == "Paid") {
+        this.schedule.paid_patient_count++;
+      } else if (element.payment_status == "Cancelled") {
+        this.schedule.cancelled_patient_count++;
+      } else if (element.payment_status == "Pending") {
+        this.schedule.pending_patient_count++;
+      }
+    });
   }
 
   initCalendar() {
@@ -348,7 +398,7 @@ export class DoctorComponent implements OnInit {
       bttn.onclick = () => {
         this.scheduleSelected($('#globalScheduleSelected').val());
       }
-    }else{
+    } else {
       this.fullCalendar.fullCalendar('getCalendar').removeEvents();
       this.fullCalendar.fullCalendar('getCalendar').addEventSource(this.doctorSchedules);
     }
@@ -397,7 +447,10 @@ export class DoctorComponent implements OnInit {
     this.schedule.out_m = "0";
     this.schedule.out_d = "AM";
     this.schedule.daterange = "";
-    this.schedule.patient_count = 0;
+    this.schedule.paid_patient_count = 0;
+    this.schedule.pending_patient_count = 0;
+    this.schedule.cancelled_patient_count = 0;
+    this.schedule.isDeletable = false;
   }
 
   showUpdateScheduleModal(schedule: any) {
@@ -578,6 +631,9 @@ export class DoctorComponent implements OnInit {
           data: "description"
         },
         {
+          data: "con_period"
+        },
+        {
           defaultContent: `<button type="button" class="btn btn-xs btn-info showReportModal">
                               <span class="glyphicon glyphicon-list-alt"></span>
                           </button>
@@ -597,7 +653,7 @@ export class DoctorComponent implements OnInit {
         {
           "searchable": false,
           "orderable": false,
-          "targets": [8]
+          "targets": 9
         }],
       "order": [[1, 'asc']],
       "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -619,13 +675,13 @@ export class DoctorComponent implements OnInit {
       autoclose: true
     });
 
-    (<any>$('#selectDateDoctorInvoice')).datepicker({
-      todayBtn: "linked",
-      keyboardNavigation: false,
-      forceParse: false,
-      calendarWeeks: false,
-      autoclose: true
-    });
+    // (<any>$('#selectDateDoctorInvoice')).datepicker({
+    //   todayBtn: "linked",
+    //   keyboardNavigation: false,
+    //   forceParse: false,
+    //   calendarWeeks: false,
+    //   autoclose: true
+    // });
 
     (<any>$('#selectDateRangeReport')).daterangepicker();
     $('#selectDateRangeReport').on('change.datepicker', (ev) => {
@@ -729,8 +785,7 @@ export class DoctorComponent implements OnInit {
     this.mode = 'newDocInvoice';
     this.getCenterFee();
     this.doctorInvoice.doc_fee = this.doctor.fee;
-    this.doctorInvoice.patient_count = this.schedulePatients.length;
-    this.doctorInvoice.cal = this.schedule.daterange;
+    this.doctorInvoice.patient_count = this.schedule.paid_patient_count;
     this.getNextDoctorInvoiceId(true);
   }
 
@@ -741,24 +796,27 @@ export class DoctorComponent implements OnInit {
     }
   }
 
-  saveDoctorInvoice() {
-    this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
+  saveDoctorInvoice(print: boolean) {
+    // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
-    let datee = this.doctorInvoice.cal.split("/");
-    if (datee.length != 3) {
-      toastr.warning('Please select a valid date', 'Date invalid');
-    } else {
-      this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
+    // let datee = this.doctorInvoice.cal.split("/");
+    // if (datee.length != 3) {
+    //   toastr.warning('Please select a valid date', 'Date invalid');
+    // } else {
+    //   this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
 
-      this.doctorService.saveDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
-        (<any>$("#docInvoice")).modal('hide');
-        this.getDoctrInvoiceByDoctorSchedule();
-        toastr.success("Success", "Invoice saved");
-      }, (err) => {
-        toastr.error('While saving invoice', 'Data saving error');
+    this.doctorService.saveDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
+      (<any>$("#docInvoice")).modal('hide');
+      this.getDoctrInvoiceByDoctorSchedule();
+      toastr.success("Success", "Invoice saved");
+      if (print) {
+        this.printDoctorInvoice();
       }
-      );
+    }, (err) => {
+      toastr.error('While saving invoice', 'Data saving error');
     }
+    );
+    // }
   }
 
   deleteDoctorInvoice() {
@@ -787,25 +845,25 @@ export class DoctorComponent implements OnInit {
       });
   }
 
-  updateDoctorInvoice() {
+  printDoctorInvoice() {
+    alert("printing");
+    // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
-    this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
+    // let datee = this.doctorInvoice.cal.split("/");
+    // if (datee.length != 3) {
+    //   toastr.warning('Please select a valid date', 'Date invalid');
+    // } else {
+    //   this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
 
-    let datee = this.doctorInvoice.cal.split("/");
-    if (datee.length != 3) {
-      toastr.warning('Please select a valid date', 'Date invalid');
-    } else {
-      this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
-
-      this.doctorService.updateDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
-        this.getDoctrInvoiceByDoctorSchedule();
-        (<any>$("#docInvoice")).modal("hide");
-        toastr.success("Success", "Updated invoice details");
-      }, (err) => {
-        toastr.error('While updating invoice', 'Data update error');
-      }
-      );
-    }
+    //   this.doctorService.updateDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
+    //     this.getDoctrInvoiceByDoctorSchedule();
+    //     (<any>$("#docInvoice")).modal("hide");
+    //     toastr.success("Success", "Updated invoice details");
+    //   }, (err) => {
+    //     toastr.error('While updating invoice', 'Data update error');
+    //   }
+    //   );
+    // }
   }
 
   generateReport() {
@@ -843,12 +901,21 @@ export class DoctorComponent implements OnInit {
     );
   }
 
-  getPendingPatientCountBySchedule(){
-    this.doctorService.getPendingPatientCountBySchedule(this.schedule).subscribe((data: any) => {
-      this.schedule.patient_count = data.patient_count;
-    }, (err) => {
-      toastr.error('While fetching pending patients', 'Data fetch error');
-    }
-    );
-  }
+  // getPendingPatientCountBySchedule() {
+  //   this.doctorService.getPendingPatientCountBySchedule(this.schedule).subscribe((data: any) => {
+  //     this.schedule.pending_patient_count = data.patient_count;
+  //   }, (err) => {
+  //     toastr.error('While fetching pending patients', 'Data fetch error');
+  //   }
+  //   );
+  // }
+
+  // getCancelledPatientCountBySchedule() {
+  //   this.doctorService.getCancelledPatientCountBySchedule(this.schedule).subscribe((data: any) => {
+  //     this.schedule.cancelled_patient_count = data.patient_count;
+  //   }, (err) => {
+  //     toastr.error('While fetching pending patients', 'Data fetch error');
+  //   }
+  //   );
+  // }
 }

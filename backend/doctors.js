@@ -62,8 +62,8 @@ app.get('/getDoctors', function (req, res) {
 });
 
 app.post('/saveDoctor', function (req, res) {
-    query = "INSERT INTO doctor(iddoctor, name, contactNo, fee, base_hospital, specialization, description) VALUES (?,?,?,?,?,?,?)";
-    values = [req.body.iddoctor, req.body.name, req.body.contactNo, req.body.fee, req.body.base_hospital, req.body.specialization, req.body.description];
+    query = "INSERT INTO doctor(iddoctor, name, contactNo, fee, base_hospital, specialization, description, con_period) VALUES (?,?,?,?,?,?,?,?)";
+    values = [req.body.iddoctor, req.body.name, req.body.contactNo, req.body.fee, req.body.base_hospital, req.body.specialization, req.body.description, req.body.con_period];
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -74,8 +74,8 @@ app.post('/saveDoctor', function (req, res) {
 });
 
 app.post('/updateDoctor', function (req, res) {
-    query = "UPDATE doctor SET name = ?, contactNo = ?, fee = ?, base_hospital = ?, specialization = ?, description = ? WHERE iddoctor = ? ";
-    values = [req.body.name, req.body.contactNo, req.body.fee, req.body.base_hospital, req.body.specialization, req.body.description, req.body.iddoctor];
+    query = "UPDATE doctor SET name = ?, contactNo = ?, fee = ?, base_hospital = ?, specialization = ?, description = ?, con_period = ? WHERE iddoctor = ? ";
+    values = [req.body.name, req.body.contactNo, req.body.fee, req.body.base_hospital, req.body.specialization, req.body.description, req.body.con_period, req.body.iddoctor];
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -482,7 +482,8 @@ app.get('/getNextDoctorScheduleId', function (req, res) {
 
 app.post('/getPatientsBySchedule', function (req, res) {
     values = [req.body.iddoctor_schedule];
-    query = "SELECT * FROM patient_invoice LEFT JOIN appointment ON patient_invoice.idappointment = appointment.idappointment  LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
+    //query = "SELECT * FROM patient_invoice LEFT JOIN appointment ON patient_invoice.idappointment = appointment.idappointment  LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
+    query = "SELECT * FROM  appointment LEFT JOIN patient ON appointment.patient_idpatient = patient.idpatient WHERE appointment.iddoctor_schedule = ? order by appointment.number";
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -495,6 +496,18 @@ app.post('/getPatientsBySchedule', function (req, res) {
 app.post('/getPendingPatientCountBySchedule', function (req, res) {
     values = [req.body.iddoctor_schedule];
     query = "SELECT count(*) as patient_count FROM appointment WHERE iddoctor_schedule = ? AND payment_status = 'Pending'";
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.post('/getCancelledPatientCountBySchedule', function (req, res) {
+    values = [req.body.iddoctor_schedule];
+    query = "SELECT count(*) as patient_count FROM appointment WHERE iddoctor_schedule = ? AND payment_status = 'Cancelled'";
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -619,8 +632,8 @@ app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
 });
 
 app.post('/saveDoctorInvoice', function (req, res) {
-    query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?,?,?,?,?,?)";
-    values = [req.body.iddoctor_invoice, req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule.iddoctor_schedule];
+    query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?, CURRENT_TIMESTAMP ,?,?,?,?)";
+    values = [req.body.iddoctor_invoice, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule.iddoctor_schedule];
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -714,6 +727,30 @@ app.post('/deleteTransaction', function (req, res) {
             res.send(500, err);
         } else {
             res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/isDoctorDeletable', function (req, res) {
+    query = "SELECT count(doctor_iddoctor) as doctor_count FROM doctor_schedule WHERE doctor_iddoctor = ?";
+    values = [req.body.iddoctor];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0].doctor_count == 0);
+        }
+    });
+});
+
+app.post('/isDoctorScheduleDeletable', function (req, res) {
+    query = "SELECT count(iddoctor_schedule) as schedule_count FROM appointment WHERE iddoctor_schedule = ?";
+    values = [req.body.iddoctor_schedule];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0].schedule_count == 0);
         }
     });
 });
