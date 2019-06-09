@@ -66,7 +66,8 @@ export class DoctorComponent implements OnInit {
     y: 0,
     m: "0",
     d: "0",
-    cal: ""
+    cal: "",
+    paied: false,
   };
 
   reportRequest = {
@@ -99,6 +100,7 @@ export class DoctorComponent implements OnInit {
     this.doctorInvoice.m = ("0" + (d.getMonth() + 1)).slice(-2);
     this.doctorInvoice.d = ("0" + d.getDate()).slice(-2);
     this.doctorInvoice.cal = this.getWebDate(this.doctorInvoice);
+    this.doctorInvoice.paied = false;
   }
 
   getWebDate(obj) {
@@ -773,6 +775,7 @@ export class DoctorComponent implements OnInit {
         this.doctorInvoice.patient_count = data.patient_count;
         this.doctorInvoice.y = data.y;
         this.doctorInvoice.cal = this.getWebDate(data);
+        this.doctorInvoice.paied = true;
       }
     }, (err) => {
       toastr.error('While fetching invoice details', 'Data fetch error');
@@ -809,6 +812,7 @@ export class DoctorComponent implements OnInit {
       (<any>$("#docInvoice")).modal('hide');
       this.getDoctrInvoiceByDoctorSchedule();
       toastr.success("Success", "Invoice saved");
+      this.doctorInvoice.paied = true;
       if (print) {
         this.printDoctorInvoice();
       }

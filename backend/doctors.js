@@ -664,7 +664,7 @@ app.post('/getDoctorReport', function (req, res) {
     LEFT JOIN appointment ON appointment.idappointment = patient_invoice.idappointment 
     LEFT JOIN doctor_schedule ON doctor_schedule.iddoctor_schedule = appointment.iddoctor_schedule
     LEFT JOIN doctor ON doctor.iddoctor = doctor_schedule.doctor_iddoctor
-    WHERE doctor.iddoctor = ? AND doctor_schedule.datee BETWEEN ? AND ?`;
+    WHERE appointment.payment_status = 'Paid' AND doctor.iddoctor = ? AND doctor_schedule.datee BETWEEN ? AND ?`;
     values = [req.body.doctor.iddoctor , req.body.from_datee , req.body.to_datee];
     db.query(query, values, (err, result) => {
         if (err) {
