@@ -140,7 +140,7 @@
                       <div class="col-sm-9">
                         <input type="hidden" value="" [(ngModel)]=doctor.iddoctor_schedule class="form-control"
                           [ngModelOptions]="{standalone: true}" />
-                        <input type="text" value="001" disabled="" [(ngModel)]=appointment.number class="form-control"
+                        <input type="text" value="001" disabled="" id="appno" [(ngModel)]=appointment.number class="form-control"
                           [ngModelOptions]="{standalone: true}" class="form-control">
                       </div>
                     </div>
@@ -201,10 +201,10 @@
                           (click)="makeAppointment()" type="submit">Make
                           Appointment</button>
                       </div>
-                      <div class="col-sm-4">
+                      <!-- <div class="col-sm-4">
                         <button class="btn btn-primary" id="makepayment" (click)="makePayment()" type="submit">Make
                           Payment</button>
-                      </div>
+                      </div> -->
                       <div class="col-sm-2 ">
                         <button class="btn btn-primary" (click)="printPatirntInvoice()" id="printInvoice" href="#invoice" data-toggle="modal"
                           type="submit">Print
