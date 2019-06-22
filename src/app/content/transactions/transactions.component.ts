@@ -147,7 +147,7 @@ export class TransactionsComponent implements OnInit {
           {
             "className": "text-center",
             "targets": [0]
-          },
+          }, 
           {
             "orderable": false,
             "className": "text-center",
@@ -157,6 +157,7 @@ export class TransactionsComponent implements OnInit {
             "className": "text-center",
             "targets": [3]
           },
+         
           {
             "className": "text-center text-warning",
             "targets": [4]
@@ -213,16 +214,17 @@ export class TransactionsComponent implements OnInit {
           },
           {
             data: "expense"
-          },{
+          },
+          {
             data: "balance"
           },
          
         ],
         "columnDefs": [
-          {
-             
+          { 
             "targets": [1]
           },
+         
           {
             "className": "text-right text-success",
             "searchable": false,
@@ -250,9 +252,7 @@ export class TransactionsComponent implements OnInit {
             "className": "text-center",
             "targets": [3]
           },
-        ], 
-        
-       
+        ],  
         
       });
     }
