@@ -34,6 +34,9 @@ export class ChannellingServie {
   getAppointMentNumber(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getAppointMentNumber',doctor);
   }
+  getTimePeroid(doctor : any){ 
+    return this.httpClient.post(environment.apiUrl + '/getTimePeroid',doctor);
+  }
   getScheduleIdId(doctor : any){ 
     return this.httpClient.post(environment.apiUrl + '/getScheduleIdId',doctor);
   }

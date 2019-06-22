@@ -13,8 +13,12 @@ declare let toastr: any;
 export class TransactionsComponent implements OnInit {
 
   datatable: any;
-  datatable2: any;
+  datatable_report: any;
+  datatable_income: any;
+  datatable_expence: any;
   transactions: any[];
+  income: any[];
+  expences: any[];
   medicalCenter: any;
   transactionsRequest = {
     daterange: "",
@@ -74,9 +78,9 @@ export class TransactionsComponent implements OnInit {
           this.resetTableListners();
 
 
-          this.datatable2.clear();
-          this.datatable2.rows.add(this.transactions);
-          this.datatable2.draw();
+          this.datatable_report.clear();
+          this.datatable_report.rows.add(this.transactions);
+          this.datatable_report.draw();
           
 
 
@@ -85,15 +89,93 @@ export class TransactionsComponent implements OnInit {
           this.datatable.rows.add(this.transactions);
           this.datatable.draw();
 
-          this.datatable2.clear();
-          this.datatable2.rows.add(this.transactions);
-          this.datatable2.draw();
+          this.datatable_report.clear();
+          this.datatable_report.rows.add(this.transactions);
+          this.datatable_report.draw();
           toastr.error('While fetching transactions details', 'Data fetch error');
         }
         );
       }
     }
   }
+  getIncome() {
+    this.income = [];
+
+    this.transactionsRequest.daterange = (<HTMLInputElement>document.getElementById("selectDateRangeTransactions")).value;
+
+    let dates = this.transactionsRequest.daterange.split("-");
+    if (dates.length != 2) {
+      toastr.warning('Please select a valid date range', 'Date range invalid');
+    } else {
+      let from = dates[0].trim().split("/");
+      let to = dates[1].trim().split("/");
+
+      if (from.length != 3 || to.length != 3) {
+        toastr.warning('Please select a valid date range', 'Date range invalid');
+      } else {
+        this.transactionsRequest.from_datee = from[2] + "-" + from[0] + "-" + from[1];//yyyymmdd
+        this.transactionsRequest.to_datee = to[2] + "-" + to[0] + "-" + to[1];//yyyymmdd
+        
+        this.transactionsService.getIncome(this.transactionsRequest).subscribe((data: any) => {
+          this.income = data;
+          this.postProcessData(this.income);
+          this.datatable_income.clear();
+          this.datatable_income.rows.add(this.income);
+          this.datatable_income.draw();
+          this.resetTableListners();
+ 
+
+        }, (err) => {
+          this.datatable_income.clear();
+          this.datatable_income.rows.add(this.income);
+          this.datatable_income.draw();
+ 
+          toastr.error('While fetching transactions details', 'Data fetch error');
+        }
+        );
+      }
+    }
+  }
+
+  getExpence() {
+    this.expences = [];
+
+    this.transactionsRequest.daterange = (<HTMLInputElement>document.getElementById("selectDateRangeTransactions")).value;
+
+    let dates = this.transactionsRequest.daterange.split("-");
+    if (dates.length != 2) {
+      toastr.warning('Please select a valid date range', 'Date range invalid');
+    } else {
+      let from = dates[0].trim().split("/");
+      let to = dates[1].trim().split("/");
+
+      if (from.length != 3 || to.length != 3) {
+        toastr.warning('Please select a valid date range', 'Date range invalid');
+      } else {
+        this.transactionsRequest.from_datee = from[2] + "-" + from[0] + "-" + from[1];//yyyymmdd
+        this.transactionsRequest.to_datee = to[2] + "-" + to[0] + "-" + to[1];//yyyymmdd
+        
+        this.transactionsService.getExpenses(this.transactionsRequest).subscribe((data: any) => {
+          this.expences = data;
+          this.postProcessData(this.expences);
+          this.datatable_expence.clear();
+          this.datatable_expence.rows.add(this.expences);
+          this.datatable_expence.draw();
+          // this.resetTableListners();
+ 
+
+        }, (err) => {
+          this.datatable_expence.clear();
+          this.datatable_expence.rows.add(this.expences);
+          this.datatable_expence.draw();
+ 
+          toastr.error('While fetching transactions details', 'Data fetch error');
+        }
+        );
+      }
+    }
+  }
+
 
   ngAfterViewInit() {
     let d = new Date();
@@ -105,6 +187,7 @@ export class TransactionsComponent implements OnInit {
     (<HTMLInputElement>document.getElementById("selectDateRangeTransactions")).value = this.transactionsRequest.daterange;
     
     this.getTransactions();
+    this.getIncome();
   }
 
   initTable() {
@@ -191,10 +274,130 @@ export class TransactionsComponent implements OnInit {
         }
       });
     }
+
+    if(!this.datatable_expence){
+      this.datatable_expence= (<any>$('#editable_expence')).DataTable({
+        responsive: true,
+        columns: [
+          {
+            data: "index"
+          },
+          {
+            data: "date"
+          },
+          {
+            data: "name"
+          },
+          {
+            data: "code"
+          },
+          {
+            data: "status"
+          },
+          {
+            data: "income" 
+          },
+          {
+            defaultContent: `
+                            <button type="button" class="btn btn-xs btn-danger showReportModal">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                            `
+          }
+        ],
+        "columnDefs": [
+          {
+            "className": "text-center",
+            "targets": [0]
+          }, 
+          {
+            "orderable": false,
+            "className": "text-center",
+            "targets": [1]
+          },
+          {
+            "className": "text-center",
+            "targets": [3]
+          },
+         
+          {
+            "className": "text-center text-warning",
+            "targets": [4]
+          },
+          {
+            "className": "text-right text-info",
+            "targets": [5]
+          },
+          
+        ],
+       
+      });
+    }
     
 
-    if(!this.datatable2){
-      this.datatable2 = (<any>$('#editable2')).DataTable({
+
+    if(!this.datatable_income){
+      this.datatable_income= (<any>$('#editable_income')).DataTable({
+        responsive: true,
+        columns: [
+          {
+            data: "index"
+          },
+          {
+            data: "date"
+          },
+          {
+            data: "name"
+          },
+          {
+            data: "code"
+          },
+          {
+            data: "status"
+          },
+          {
+            data: "income" 
+          },
+          {
+            defaultContent: `
+                            <button type="button" class="btn btn-xs btn-danger showReportModal">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                            `
+          }
+        ],
+        "columnDefs": [
+          {
+            "className": "text-center",
+            "targets": [0]
+          }, 
+          {
+            "orderable": false,
+            "className": "text-center",
+            "targets": [1]
+          },
+          {
+            "className": "text-center",
+            "targets": [3]
+          },
+         
+          {
+            "className": "text-center text-warning",
+            "targets": [4]
+          },
+          {
+            "className": "text-right text-info",
+            "targets": [5]
+          },
+          
+        ],
+       
+      });
+    }
+    
+
+    if(!this.datatable_report){
+      this.datatable_report = (<any>$('#editable2')).DataTable({
         responsive: true,
         columns: [
           {
@@ -255,8 +458,8 @@ export class TransactionsComponent implements OnInit {
         ],  
         
       });
-    }
-
+    } 
+ 
 
   }
 
@@ -289,8 +492,7 @@ export class TransactionsComponent implements OnInit {
     var _currClassRef = this;
 
     //unbind previous event on tbody so that multiple events are not binded to the table whenever this function runs again
-    $('#editable tbody td').unbind();
-
+    $('#editable tbody td').unbind(); 
     //defined jquery click event
     $('#editable tbody td').on('click', 'button', function () {
       //the "this" in this function is "this" of jquery object not of component because we did not use an arrow function

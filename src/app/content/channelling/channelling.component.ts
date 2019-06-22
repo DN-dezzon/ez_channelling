@@ -24,6 +24,7 @@ export class ChannellingComponent implements OnInit {
   datatable: any;
   doctors: any[];
   doctor_appointments: any[];
+  doctor_appointments2: any[];
   todaySchedule: any[];
   OptionsSelect: -1;
   patients: any[];
@@ -329,7 +330,7 @@ export class ChannellingComponent implements OnInit {
           // $('#appno').css('border-color', 'red');
           // $('#apptime').css('border-color', 'red');
           $('#appno').css('border', '2px solid red');
-    $('#apptime').css('border', '2px solid red');
+          $('#apptime').css('border', '2px solid red');
 
           this.patient.name = data[index].name;
           this.appointment.payment_status = data[index].payment_status;
@@ -350,7 +351,7 @@ export class ChannellingComponent implements OnInit {
 
       } else {
         $('#appno').css('border', '1px solid #e5e6e7');
-    $('#apptime').css('border', '1px solid #e5e6e7');
+        $('#apptime').css('border', '1px solid #e5e6e7');
         $('#pstatus').prop('disabled', false);
         $("#makeappointment").html('Make Appointment');
         this.appointment.pay_now = "no";
@@ -430,21 +431,28 @@ export class ChannellingComponent implements OnInit {
 
     return D(mins % (24 * 60) / 60 | 0) + ':' + D(mins % 60);
   }
-  getAppointmentNumber(doctor: any) {
-
+  getAppointmentNumber(doctor: any) { 
     this.channellingService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
-      this.appointment.number = this.doctor_appointments.length + 1;
-      for (let index = 0; index < this.doctor_appointments.length; index++) {
-        let tot_minutes = this.doctor_appointments[index].con_period * (this.appointment.number - 1)
-
-        this.doctor_appointments[index].doctor_in;
-        this.appointment.patient_intime = this.addMinutes(this.doctor_appointments[index].doctor_in, tot_minutes);
-      }
+      this.appointment.number = this.doctor_appointments[0].count+1; 
+      this.channellingService.getTimePeroid(doctor).subscribe((data: any) => {
+        this.doctor_appointments2 = data; 
+        
+        for (let index = 0; index < this.doctor_appointments2.length; index++) {
+          let tot_minutes = this.doctor_appointments2[index].con_period * (this.appointment.number - 1);
+          this.appointment.patient_intime = this.addMinutes(this.doctor_appointments2[index].doctor_in, tot_minutes);
+        }
+      }, (err) => {
+        console.log(err);
+      });
+      //       }
     }, (err) => {
       console.log(err);
     });
+
+
   }
+
 
   getScheduleId(doctor: any) {
     this.channellingService.getScheduleIdId(doctor).subscribe((data: any) => {
@@ -497,11 +505,11 @@ export class ChannellingComponent implements OnInit {
     $('#appno').css('border', '1px solid #e5e6e7');
     $('#apptime').css('border', '1px solid #e5e6e7');
   }
-   pnoo="";
+  pnoo = "";
   createDropDown() {
 
     var _this = this;
-    
+
     $.widget("custom.combobox", {
       _create: function () {
         this.wrapper = $("<span>")
@@ -514,26 +522,26 @@ export class ChannellingComponent implements OnInit {
 
       _createAutocomplete: function () {
         var selected = this.element.children(":selected"),
-          value = selected.val() ? selected.text() : ""; 
+          value = selected.val() ? selected.text() : "";
         this.input = $("<input >")
-        
+
           .appendTo(this.wrapper)
           .val(value)
-          .attr("title", "") 
+          .attr("title", "")
           .addClass("form-control m-b pnumber")
           .autocomplete({
             delay: 0,
             minLength: 0,
             source: $.proxy(this, "_source")
           })
-          
+
           .tooltip({
             classes: {
               "ui-tooltip": "ui-state-highlight"
             }
           });
-        
-        
+
+
 
         this._on(this.input, {
           autocompleteselect: function (event, ui) {
@@ -552,23 +560,23 @@ export class ChannellingComponent implements OnInit {
         var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
         response(this.element.children("option").map(function () {
           var text = $(this).text();
-        
+
           if (this.value && (!request.term || matcher.test(text)))
             return {
-              
+
               label: text,
               value: text,
               option: this
             };
         }));
-        
+
       },
 
       _removeIfInvalid: function (event, ui) {
 
         // Selected an item, nothing to do
-        
-     
+
+
         if (ui.item) {
           _this.selectPatientMobileNo(this.input.val().trim());
           return;
@@ -618,11 +626,11 @@ export class ChannellingComponent implements OnInit {
     $("#toggle").on("click", function () {
       $("#combobox").toggle();
     });
-    $('.pnumber').keypress(function(event){
-	
+    $('.pnumber').keypress(function (event) {
+
       var keycode = (event.keyCode ? event.keyCode : event.which);
-      if(keycode == '13'){ 
-        alert('You pressed a "enter" key in textbox'+this.pnoo);	
+      if (keycode == '13') {
+        alert('You pressed a "enter" key in textbox' + this.pnoo);
       }
     });
   }
@@ -635,58 +643,58 @@ export class ChannellingComponent implements OnInit {
 
   clearForm() {
     this.getDoctors();
-   
+
     this.appointment.number = 0;
     this.doctor.fee = 0;
     this.patient.name = "";
     this.patient.contactNo = "";
-    this.appointment.patient_intime="00.00";
-    this.doctor.iddoctor_schedule="";
+    this.appointment.patient_intime = "00.00";
+    this.doctor.iddoctor_schedule = "";
     this.appointment.payment_status == "Pending";
     $(".pnumber").val("");
-    $('#pname_old option:eq(0)').prop('selected', true) 
+    $('#pname_old option:eq(0)').prop('selected', true)
     // $('#pname_old')
     // .empty()
     // .append('<option selected="selected"></option>'); 
     $('#appno').css('border', '1px solid #e5e6e7');
     $('#apptime').css('border', '1px solid #e5e6e7');
-  ;
+    ;
   }
 
-  validateNull(){
-    if(this.appointment.number==0 || this.doctor.fee==0 || $('.pnumber').val()=='' || $('#pname_old').val()=='0' ||this.appointment.payment_status==''){
+  validateNull() {
+    if (this.appointment.number == 0 || this.doctor.fee == 0 || $('.pnumber').val() == '' || $('#pname_old').val() == '0' || this.appointment.payment_status == '') {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
   makeAppointment() {
-    if(this.validateNull()==true){
+    if (this.validateNull() == true) {
       toastr.error("Please fill required data!");
-    }else{
+    } else {
       if (this.appointment.pay_now == "yes") {
         this.channellingService.makePayment(this.appointment).subscribe((data: any) => {
           console.log(data);
           $('#printInvoice').click();
           this.patient.invoice_id = data[0];
           toastr.info("Payment made successfully!");
-  
+
         }, (err) => {
           console.log(err);
-  
+
           toastr.error("Please try again!");
         }
         );
       } else {
         this.channellingService.saveAppointment(this.appointment).subscribe((data: any) => {
           console.log(data);
-  
+
           if (this.appointment.payment_status == "Paid") {
             this.patient.invoice_id = data;
             $('#printInvoice').click();
           }
           toastr.info("Appointment made successfully!");
-  
+
         }, (err) => {
           console.log(err);
           toastr.error("Please try again!");
@@ -694,10 +702,10 @@ export class ChannellingComponent implements OnInit {
         );
       }
     }
-   
+
 
   }
- 
+
 
   addIndex(array: any[]) {
     for (let index = 0; index < array.length; index++) {

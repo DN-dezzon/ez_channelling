@@ -13,6 +13,13 @@ export class TransactionsService {
     return this.httpClient.post(environment.apiUrl + '/getTransactions',transactionsRequest);
   }
   
+  getIncome(transactionsRequest:any){
+    return this.httpClient.post(environment.apiUrl + '/getIncome',transactionsRequest);
+  }
+  getExpenses(transactionsRequest:any){
+    return this.httpClient.post(environment.apiUrl + '/getExpenses',transactionsRequest);
+  }
+
   cancelTransaction(transaction: any) {
     return this.httpClient.post(environment.apiUrl + '/cancelTransaction', transaction);
   }
