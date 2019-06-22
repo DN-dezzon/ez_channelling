@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionsService } from './transactions.servie';
+import { company, product, medicalCenter } from 'src/environments/environment.prod';
+import { DatabaseService } from 'src/app/database.service';
+
 declare let swal: any;
 declare let toastr: any;
 @Component({
@@ -10,16 +13,19 @@ declare let toastr: any;
 export class TransactionsComponent implements OnInit {
 
   datatable: any;
+  datatable2: any;
   transactions: any[];
-
+  medicalCenter: any;
   transactionsRequest = {
     daterange: "",
     from_datee: "",
     to_datee: "",
   };
 
-  constructor(private transactionsService:TransactionsService) { }
-
+  constructor(private transactionsService:TransactionsService,private databaseService: DatabaseService) { 
+    this.medicalCenter = medicalCenter;
+  }
+  
   ngOnInit() {
   }
 
@@ -36,7 +42,9 @@ export class TransactionsComponent implements OnInit {
       array[index].code += array[index].id;
     }
   }
-
+  getTransactionReport(){ 
+    this.getTransactions();
+  }
   getTransactions() {
     this.transactions = [];
 
@@ -62,10 +70,22 @@ export class TransactionsComponent implements OnInit {
           this.datatable.rows.add(this.transactions);
           this.datatable.draw();
           this.resetTableListners();
+
+
+          this.datatable2.clear();
+          this.datatable2.rows.add(this.transactions);
+          this.datatable2.draw();
+          
+
+
         }, (err) => {
           this.datatable.clear();
           this.datatable.rows.add(this.transactions);
           this.datatable.draw();
+
+          this.datatable2.clear();
+          this.datatable2.rows.add(this.transactions);
+          this.datatable2.draw();
           toastr.error('While fetching transactions details', 'Data fetch error');
         }
         );
@@ -165,6 +185,73 @@ export class TransactionsComponent implements OnInit {
       });
     }
     
+
+    if(!this.datatable2){
+      this.datatable2 = (<any>$('#editable2')).DataTable({
+        responsive: true,
+        columns: [
+          {
+            data: "index"
+          },
+          {
+            data: "date"
+          },
+          {
+            data: "name"
+          },
+          {
+            data: "code"
+          },
+          {
+            data: "income"
+          },
+          {
+            data: "expense"
+          },{
+            data: "balance"
+          },
+         
+        ],
+        "columnDefs": [
+          {
+             
+            "targets": [1]
+          },
+          {
+            "className": "text-right text-success",
+            "searchable": false,
+            "orderable": false,
+            "targets": [6]
+          },
+          
+          {
+            "className": "text-right text-danger",
+            "targets": [5]
+          },
+          {
+            "className": "text-right text-info",
+            "targets": [4]
+          },
+          {
+            "className": "text-center",
+            "targets": [0]
+          },
+          {
+            "className": "text-center",
+            "targets": [1]
+          },
+          {
+            "className": "text-center",
+            "targets": [3]
+          },
+        ], 
+        
+       
+        
+      });
+    }
+
+
   }
 
   deleteTransaction(transaction:any){
