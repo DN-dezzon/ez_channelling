@@ -193,6 +193,7 @@ export class DoctorComponent implements OnInit {
     this.clearDoctor();
     this.clearSchedule();
     this.clearSelect();
+    this.clearDoctorInvoice();
     this.doctorSchedules = [];
     setTimeout(this.initCalendar, 10);
   }
@@ -379,6 +380,8 @@ export class DoctorComponent implements OnInit {
   initCalendar() {
     if (!this.fullCalendar) {
       this.fullCalendar = (<any>$('#calendar')).fullCalendar({
+        timezone : 'local',
+        displayEventTime : false,
         defaultView: 'month',
         height: "auto",
         header: {
@@ -526,6 +529,7 @@ export class DoctorComponent implements OnInit {
     }
     this.doctorService.getAllDoctorScheduleByDoctor(this.doctor).subscribe((data: any) => {
       this.doctorSchedules = data;
+      console.log(this.doctorSchedules);
       this.addIndex(this.doctorSchedules);
       if (this.fullCalendar) {
         this.fullCalendar.fullCalendar('getCalendar').removeEvents();
@@ -602,6 +606,7 @@ export class DoctorComponent implements OnInit {
     this.initCalendar();
     this.getSchedules();
     this.clearSchedule();
+    this.clearDoctorInvoice();
   }
 
   initTable() {

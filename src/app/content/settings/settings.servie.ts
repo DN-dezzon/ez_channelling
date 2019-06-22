@@ -25,4 +25,11 @@ export class SettingsService {
     return this.httpClient.post(environment.apiUrl + '/getUserdata', user);
   }
 
+  getPrinterName() {
+    return this.httpClient.get(environment.apiUrl + '/getPrinterName');
+  }
+
+  updatePrinterName(name: any) {
+    return this.httpClient.post(environment.apiUrl + '/updatePrinterName', name);
+  }
 }

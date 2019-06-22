@@ -38,6 +38,9 @@ export class SettingsComponent implements OnInit {
     fee: ""
   };
 
+  printer = {
+    name: "",
+  };
 
 
   myDate = new Date();
@@ -51,6 +54,7 @@ export class SettingsComponent implements OnInit {
     this.getCenterFee();
     this.initToasterNotifications();
     this.getUserdata();
+    this.getPrinterName();
   }
   updateFee() {
     this.settingsService.updateCenterFee(this.center).subscribe((data: any) => {
@@ -62,6 +66,18 @@ export class SettingsComponent implements OnInit {
     }
     );
   }
+
+  updatePrinterName() {
+    this.settingsService.updatePrinterName(this.printer).subscribe((data: any) => {
+      this.getPrinterName();
+      toastr.success('Success', 'Printer name updated');
+    }, (err) => {
+      console.log(err);
+      toastr.error('While updating printer name', 'Data update error');
+    }
+    );
+  }
+
   initToasterNotifications() {
     toastr.options = {
       "closeButton": true,
@@ -90,6 +106,18 @@ export class SettingsComponent implements OnInit {
     }
     );
   }
+
+
+  getPrinterName() {
+    this.settingsService.getPrinterName().subscribe((data: any) => {
+      this.printer.name = data.name;
+    }, (err) => {
+      console.log(err);
+      toastr.error('While fetching printer name', 'Data fetch error');
+    }
+    );
+  }
+
 
   updateuser() {
     this.settingsService.updateUser(this.user).subscribe((data: any) => {

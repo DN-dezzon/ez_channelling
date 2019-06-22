@@ -412,6 +412,13 @@ app.get('/getNextDoctorId', function (req, res) {
     });
 });
 
+function tConvert (timeString) {
+    var H = +timeString.substr(0, 2);
+    var h = H % 12 || 12;
+    var ampm = (H < 12 || H === 24) ? "AM" : "PM";
+    return h + timeString.substr(2, 3) + ampm;
+  }
+
 app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
     values = [req.body.iddoctor];
     //query = "SELECT * , DATE_FORMAT(datee , '%Y-%m-%d') as datee, DATE_FORMAT(datee , '%Y') as y , DATE_FORMAT(datee , '%m') as m, DATE_FORMAT(datee , '%d') as d  FROM doctor_schedule WHERE doctor_iddoctor = ? ORDER BY datee ASC";
@@ -422,12 +429,14 @@ app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
             res.send(500, err);
         } else {
             result.forEach(element => {
+                element.allDay = true;
                 time = new Date(element.start * 1000);
                 element.id = element.iddoctor_schedule;
                 element.start = element.datee;
                 element.start.setHours(time.getHours());
                 element.start.setMinutes(time.getMinutes());
                 element.start.setSeconds(time.getSeconds());
+                element.title = tConvert(element.doctor_in);
             });
             res.json(result);
         }
@@ -759,6 +768,38 @@ app.post('/isDoctorScheduleDeletable', function (req, res) {
     });
 });
 
+
+app.get('/getPrinterName', function (req, res) {
+    db.query("SELECT valuee as name FROM configuration WHERE keyy = 'printer'", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result[0]);
+        }
+    });
+});
+
+app.post('/updatePrinterName', function (req, res) {
+    values = [req.body.name];
+    db.query("UPDATE configuration SET valuee = ? WHERE keyy = 'printer'", values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+////////////////////////////
+
 var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
@@ -810,5 +851,3 @@ app.get('/testPrint', function (req, res) {
 
 });
 
-
-print('simple.odt',data,null);
