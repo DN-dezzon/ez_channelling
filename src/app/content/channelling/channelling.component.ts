@@ -497,11 +497,11 @@ export class ChannellingComponent implements OnInit {
     $('#appno').css('border', '1px solid #e5e6e7');
     $('#apptime').css('border', '1px solid #e5e6e7');
   }
-
+   pnoo="";
   createDropDown() {
 
     var _this = this;
-
+    
     $.widget("custom.combobox", {
       _create: function () {
         this.wrapper = $("<span>")
@@ -514,23 +514,26 @@ export class ChannellingComponent implements OnInit {
 
       _createAutocomplete: function () {
         var selected = this.element.children(":selected"),
-          value = selected.val() ? selected.text() : "";
-
+          value = selected.val() ? selected.text() : ""; 
         this.input = $("<input >")
+        
           .appendTo(this.wrapper)
           .val(value)
-          .attr("title", "")
-          .addClass("form-control m-b")
+          .attr("title", "") 
+          .addClass("form-control m-b pnumber")
           .autocomplete({
             delay: 0,
             minLength: 0,
             source: $.proxy(this, "_source")
           })
+          
           .tooltip({
             classes: {
               "ui-tooltip": "ui-state-highlight"
             }
           });
+        
+        
 
         this._on(this.input, {
           autocompleteselect: function (event, ui) {
@@ -549,18 +552,23 @@ export class ChannellingComponent implements OnInit {
         var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
         response(this.element.children("option").map(function () {
           var text = $(this).text();
+        
           if (this.value && (!request.term || matcher.test(text)))
             return {
+              
               label: text,
               value: text,
               option: this
             };
         }));
+        
       },
 
       _removeIfInvalid: function (event, ui) {
 
         // Selected an item, nothing to do
+        
+     
         if (ui.item) {
           _this.selectPatientMobileNo(this.input.val().trim());
           return;
@@ -610,7 +618,13 @@ export class ChannellingComponent implements OnInit {
     $("#toggle").on("click", function () {
       $("#combobox").toggle();
     });
-
+    $('.pnumber').keypress(function(event){
+	
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if(keycode == '13'){ 
+        alert('You pressed a "enter" key in textbox'+this.pnoo);	
+      }
+    });
   }
   ngAfterViewInit() {
     this.createDropDown();
@@ -621,53 +635,69 @@ export class ChannellingComponent implements OnInit {
 
   clearForm() {
     this.getDoctors();
-    this.getPatients();
-    this.initCalendar();
-    this.initSelect();
-    this.createDropDown();
+   
     this.appointment.number = 0;
     this.doctor.fee = 0;
     this.patient.name = "";
-    this.patient.contactNo = ""
-    this.appointment.payment_status == "0"
+    this.patient.contactNo = "";
+    this.appointment.patient_intime="00.00";
+    this.doctor.iddoctor_schedule="";
+    this.appointment.payment_status == "Pending";
+    $(".pnumber").val("");
+    $('#pname_old option:eq(0)').prop('selected', true) 
+    // $('#pname_old')
+    // .empty()
+    // .append('<option selected="selected"></option>'); 
+    $('#appno').css('border', '1px solid #e5e6e7');
+    $('#apptime').css('border', '1px solid #e5e6e7');
+  ;
+  }
+
+  validateNull(){
+    if(this.appointment.number==0 || this.doctor.fee==0 || $('.pnumber').val()=='' || $('#pname_old').val()=='0' ||this.appointment.payment_status==''){
+      return true;
+    }else{
+      return false;
+    }
   }
   makeAppointment() {
-    if (this.appointment.pay_now == "yes") {
-      this.channellingService.makePayment(this.appointment).subscribe((data: any) => {
-        console.log(data);
-        $('#printInvoice').click();
-        this.patient.invoice_id = data[0];
-        toastr.info("Payment made successfully!");
-
-      }, (err) => {
-        console.log(err);
-
-        toastr.error("Please try again!");
-      }
-      );
-    } else {
-      this.channellingService.saveAppointment(this.appointment).subscribe((data: any) => {
-        console.log(data);
-
-        if (this.appointment.payment_status == "Paid") {
-          this.patient.invoice_id = data;
+    if(this.validateNull()==true){
+      toastr.error("Please fill required data!");
+    }else{
+      if (this.appointment.pay_now == "yes") {
+        this.channellingService.makePayment(this.appointment).subscribe((data: any) => {
+          console.log(data);
           $('#printInvoice').click();
+          this.patient.invoice_id = data[0];
+          toastr.info("Payment made successfully!");
+  
+        }, (err) => {
+          console.log(err);
+  
+          toastr.error("Please try again!");
         }
-        toastr.info("Appointment made successfully!");
-
-      }, (err) => {
-        console.log(err);
-        toastr.error("Please try again!");
+        );
+      } else {
+        this.channellingService.saveAppointment(this.appointment).subscribe((data: any) => {
+          console.log(data);
+  
+          if (this.appointment.payment_status == "Paid") {
+            this.patient.invoice_id = data;
+            $('#printInvoice').click();
+          }
+          toastr.info("Appointment made successfully!");
+  
+        }, (err) => {
+          console.log(err);
+          toastr.error("Please try again!");
+        }
+        );
       }
-      );
     }
+   
 
   }
-
-  makePayment() {
-
-
-  }
+ 
 
   addIndex(array: any[]) {
     for (let index = 0; index < array.length; index++) {
