@@ -210,6 +210,8 @@ export class ChannellingComponent implements OnInit {
   initCalendar() {
     if (!this.fullCalendar) {
       this.fullCalendar = (<any>$('#calendar')).fullCalendar({
+        timezone : 'local',
+        displayEventTime : false,
         defaultView: 'month',
         height: "auto",
         header: {
@@ -643,6 +645,13 @@ export class ChannellingComponent implements OnInit {
     this.appointment.patient_intime="00.00";
     this.doctor.iddoctor_schedule="";
     this.appointment.payment_status == "Pending";
+
+    //clear doctor
+    $('#dname').val("0").trigger('change');
+
+    //clear calender
+    this.fullCalendar.fullCalendar('getCalendar').removeEvents();
+
     $(".pnumber").val("");
     $('#pname_old option:eq(0)').prop('selected', true) 
     // $('#pname_old')

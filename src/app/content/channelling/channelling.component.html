@@ -110,11 +110,11 @@
 
             <div class="form-group">
               <div class="col-sm-2 col-sm-offset-2">
-                <button class="btn btn-white" type="submit" (click)="clearForm()">Clear All</button>
+                <button class="btn btn-white"  (click)="clearForm()">Clear All</button>
               </div>
               <div class="col-sm-4">
                 <button [disabled]="appointment.hideAppointment" class="btn btn-primary" id="makeappointment"
-                  (click)="makeAppointment()" type="submit">Make
+                  (click)="makeAppointment()" >Make
                   Appointment</button>
               </div>
               <!-- <div class="col-sm-4">
@@ -123,7 +123,7 @@
                         </div> -->
               <div class="col-sm-2 ">
                 <button class="btn btn-primary" (click)="printPatirntInvoice()" id="printInvoice" href="#invoice"
-                  data-toggle="modal" type="submit">Print
+                  data-toggle="modal" >Print
                   Invoice</button>
                 <!-- <button class="btn btn-primary" (click)="print()" id="printInvoice" href="#invoice"  
                             type="submit">Print
