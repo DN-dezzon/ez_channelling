@@ -13,6 +13,7 @@ import { PageFoundComponent } from './page-found/page-found.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './content/home/home.component';
+import { ChannellingComponent } from './content/channelling/channelling.component';
 import { DoctorComponent } from './content/doctor/doctor.component';
 import { TransactionsComponent } from './content/transactions/transactions.component';
 import * as $ from 'jquery';
@@ -33,6 +34,7 @@ import { SettingsComponent } from './content/settings/settings.component';
     LoginComponent,
     RegisterComponent,
     HomeComponent,
+    ChannellingComponent,
     PatientsComponent,
     DoctorComponent,
     TransactionsComponent,

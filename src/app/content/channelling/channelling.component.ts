@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { HomeService } from './home.servie';
+import { ChannellingServie } from './channelling.servie';
 import { Observable } from 'rxjs';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -13,13 +13,13 @@ declare var $: any;
 declare var jquery: any;
 @Component({
 
-  selector: 'home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'channelling',
+  templateUrl: './channelling.component.html',
+  styleUrls: ['./channelling.component.scss'],
   providers: [DatePipe],
 
 })
-export class HomeComponent implements OnInit {
+export class ChannellingComponent implements OnInit {
   elementRef: ElementRef;
   datatable: any;
   doctors: any[];
@@ -100,7 +100,7 @@ export class HomeComponent implements OnInit {
   };
 
   myDate = new Date();
-  constructor(private homeService: HomeService, private datePipe: DatePipe, private databaseService: DatabaseService) {
+  constructor(private channellingService: ChannellingServie, private datePipe: DatePipe, private databaseService: DatabaseService) {
     this.medicalCenter = medicalCenter;
   }
 
@@ -255,7 +255,7 @@ export class HomeComponent implements OnInit {
     if (this.fullCalendar) {
       this.fullCalendar.fullCalendar('getCalendar').removeEvents();
     }
-    this.homeService.getAllDoctorScheduleByDoctor(this.doctor).subscribe((data: any) => {
+    this.channellingService.getAllDoctorScheduleByDoctor(this.doctor).subscribe((data: any) => {
       this.doctorSchedules = data;
       this.addIndex(this.doctorSchedules);
       if (this.fullCalendar) {
@@ -284,7 +284,7 @@ export class HomeComponent implements OnInit {
     alert(value);
     // this.patient.idpatient = value; 
     this.patient.contactNo = value;
-    this.homeService.getPatientbyMobile(this.patient).subscribe((data: any) => {
+    this.channellingService.getPatientbyMobile(this.patient).subscribe((data: any) => {
       alert(data);
       if (data.length > 0) {
         this.patient_data = data;
@@ -321,7 +321,7 @@ export class HomeComponent implements OnInit {
     this.appointmentdata.iddoctor_schedule = this.doctor.iddoctor_schedule;
     this.appointmentdata.idpatient = this.patient.idpatient;
 
-    this.homeService.searchAppointment(this.appointmentdata).subscribe((data: any) => {
+    this.channellingService.searchAppointment(this.appointmentdata).subscribe((data: any) => {
       if (data.length > 0) {
         this.appointment.pay_now = "yes";
         $("#makeappointment").html('Make Payment');
@@ -372,7 +372,7 @@ export class HomeComponent implements OnInit {
   }
 
   getDoctors() {
-    this.homeService.getDoctors().subscribe((data: any) => {
+    this.channellingService.getDoctors().subscribe((data: any) => {
       this.doctors = data;
 
     }, (err) => {
@@ -382,7 +382,7 @@ export class HomeComponent implements OnInit {
   }
   // Load ptient to dropdown
   getPatients() {
-    this.homeService.getPatients().subscribe((data: any) => {
+    this.channellingService.getPatients().subscribe((data: any) => {
 
       this.patients = data;
     }, (err) => {
@@ -392,7 +392,7 @@ export class HomeComponent implements OnInit {
   }
   // Load ptient to dropdown
   getPatientById(patient: any) {
-    this.homeService.getPatientById(patient).subscribe((data: any) => {
+    this.channellingService.getPatientById(patient).subscribe((data: any) => {
 
       this.patient_data = data;
       for (let index = 0; index < this.patient_data.length; index++) {
@@ -409,7 +409,7 @@ export class HomeComponent implements OnInit {
 
   // Load doctor to dropdown
   getDoctorById(did: any) {
-    this.homeService.getDoctorById(did).subscribe((data: any) => {
+    this.channellingService.getDoctorById(did).subscribe((data: any) => {
       this.doctor_data = data;
       for (let index = 0; index < this.doctor_data.length; index++) {
         this.doctor.fee = this.doctor_data[index].fee;
@@ -432,7 +432,7 @@ export class HomeComponent implements OnInit {
   }
   getAppointmentNumber(doctor: any) {
 
-    this.homeService.getAppointMentNumber(doctor).subscribe((data: any) => {
+    this.channellingService.getAppointMentNumber(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       this.appointment.number = this.doctor_appointments.length + 1;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
@@ -447,7 +447,7 @@ export class HomeComponent implements OnInit {
   }
 
   getScheduleId(doctor: any) {
-    this.homeService.getScheduleIdId(doctor).subscribe((data: any) => {
+    this.channellingService.getScheduleIdId(doctor).subscribe((data: any) => {
       this.doctor_appointments = data;
       for (let index = 0; index < this.doctor_appointments.length; index++) {
         this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
@@ -460,7 +460,7 @@ export class HomeComponent implements OnInit {
 
   selectPatientMobileNo(mobileNo) {
     this.patient.contactNo = mobileNo;
-    this.homeService.getPatientByContactNo(this.patient).subscribe((data: any) => {
+    this.channellingService.getPatientByContactNo(this.patient).subscribe((data: any) => {
 
       if (data.length > 0) {
 
@@ -633,7 +633,7 @@ export class HomeComponent implements OnInit {
   }
   makeAppointment() {
     if (this.appointment.pay_now == "yes") {
-      this.homeService.makePayment(this.appointment).subscribe((data: any) => {
+      this.channellingService.makePayment(this.appointment).subscribe((data: any) => {
         console.log(data);
         $('#printInvoice').click();
         this.patient.invoice_id = data[0];
@@ -646,7 +646,7 @@ export class HomeComponent implements OnInit {
       }
       );
     } else {
-      this.homeService.saveAppointment(this.appointment).subscribe((data: any) => {
+      this.channellingService.saveAppointment(this.appointment).subscribe((data: any) => {
         console.log(data);
 
         if (this.appointment.payment_status == "Paid") {
@@ -678,12 +678,12 @@ export class HomeComponent implements OnInit {
 
     this.doctor.datee = this.datePipe.transform(this.myDate, 'yyyy-MM-dd');
 
-    this.homeService.getTodaySchedule(this.doctor).subscribe((data: any) => {
+    this.channellingService.getTodaySchedule(this.doctor).subscribe((data: any) => {
       this.todaySchedule = data;
       this.doctor.tablelength = data.length;
       for (let index = 0; index < this.todaySchedule.length; index++) {
         this.doctor.iddoctor = this.todaySchedule[index].iddoctor;
-        this.homeService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
+        this.channellingService.getAppointMentNumber(this.doctor).subscribe((data: any) => {
           this.doctor_appointments = data;
           this.doctor.totalAppointment = "";
           this.doctor.iddoctor_schedule = this.doctor_appointments[index].iddoctor_schedule;
@@ -710,7 +710,7 @@ export class HomeComponent implements OnInit {
   }
 
   getTodayPatientIncome() {
-    this.homeService.getPatientIncome().subscribe((data: any) => {
+    this.channellingService.getPatientIncome().subscribe((data: any) => {
       this.patient_data = data;
 
       for (let index = 0; index < this.patient_data.length; index++) {
@@ -725,7 +725,7 @@ export class HomeComponent implements OnInit {
   }
 
   getTodayPatientMonthlyIncome() {
-    this.homeService.getPatientIncomeMonthly().subscribe((data: any) => {
+    this.channellingService.getPatientIncomeMonthly().subscribe((data: any) => {
       this.patient_data = data;
 
       for (let index = 0; index < this.patient_data.length; index++) {
