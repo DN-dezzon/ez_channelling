@@ -12,9 +12,9 @@
           <form method="get" class="form-horizontal">
             <div class="form-group"><label class="col-sm-3 control-label">Doctor's Name</label>
               <div class="col-sm-9">
-                <select #searchFee (change)="searchDoctorFee(searchFee.value)" class="select2_demo_3 form-control">
+                <select id="dname"  (change)="searchDoctorFee(searchFee.value)" class="select2_demo_3 form-control">
 
-                  <option value="">Select Doctor</option>
+                  <option value="0">Select Doctor</option>
                   <option *ngFor="let doctor of doctors; index as i" value="{{doctor.iddoctor}}">
                     {{ doctor.name }}
                   </option>
@@ -72,7 +72,7 @@
             </div>
             <div class="form-group"><label class="col-sm-3 control-label">Patient's Mobile</label>
               <div class="col-sm-9">
-                <select #combobox (click)="searchPatientName(combobox.value)" id="combobox" class="form-control m-b">
+                <select   id="combobox" class="form-control m-b">
                   <option *ngFor="let patient of patients" value="{{ patient.idpatient }}">
                     {{patient.contactNo}}
                   </option>
