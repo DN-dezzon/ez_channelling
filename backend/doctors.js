@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');    // pull information from HTML POST (
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 var mysql = require('mysql');
 
+const http = require('http');
 const fs = require('fs');
 const carbone = require('carbone');
 
@@ -762,20 +763,52 @@ var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
 
-
-app.get('/testPrint', function (req, res) {
-    // Data to inject
-    var data = {
-        firstname: 'John',
-        lastname: 'Doe'
-    };
-    
-    carbone.render('./simple.odt', data, printOptions, function (err, result) {
+function print(template,data,res) {
+	    carbone.render('templates/'+template, data, printOptions, function (err, result) {
         if (err){
-            res.send(500, err);
+            if(res) res.send(500, err);
         }else{
-            fs.writeFileSync('result.pdf', result);
-            res.status(200).send("printed");
+            fs.writeFileSync('out.pdf', result);
+            if(res) res.status(200).send("printed");
+		//printing code here
+		fs.unlinkSync('out.pdf')
         }
     });
+} 
+
+function printFromUrl(template,data,res) {
+	
+	const file = fs.createWriteStream("tmp/tmp");
+	const request = http.get("http://localhost/" + template , function(response) {
+	  response.pipe(file);
+	print("tmp/tmp",data,res);
+	
+	});
+    	
+} 
+
+
+var data = {
+        firstname: 'John',
+        lastname: 'Doe',
+	 cars : [
+    {"brand" : "Lumeneo"},
+    {"brand" : "Tesla"  },
+    {"brand" : "Toyota" },
+{"brand" : "Lumeneo"},
+    {"brand" : "Tesla"  },
+    {"brand" : "Toyota" },
+{"brand" : "Lumeneo"},
+    {"brand" : "Tesla"  },
+    {"brand" : "Toyota" }
+  ]
+    };
+
+app.get('/testPrint', function (req, res) {
+
+    print('simple.odt',data,res);
+
 });
+
+
+print('simple.odt',data,null);
