@@ -144,8 +144,11 @@
                     </table>
                   </div>
                 </div>
+                <button class="btn btn-primary"  href="#patient_detail_report"
+                data-toggle="modal" type="submit">Print Appointment list </button>
               </div>
             </div>
+           
           </div>
 
         </div>
@@ -554,6 +557,70 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="patient_detail_report" class="modal fade" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <h3>{{medicalCenter.name}}</h3>
+              <address>
+                {{medicalCenter.no}}<br>
+                {{medicalCenter.city}}<br>
+                <abbr title="Phone">P:</abbr> {{medicalCenter.phone}}
+              </address>
+              <h2><strong>Appointment list</strong></h2>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <h4>Doctor Name: Dr.<label>{{ doctor.name }}</label></h4> 
+              <span>Date: {{schedule.daterange}}</span>
+            </div>
+          </div> 
+          <div class="table-responsive m-t">
+            <div *ngIf="schedulePatients?.length">
+              <table class="table table-striped table-bordered table-hover " id="editable" width="100%">
+                <thead>
+                  <tr>
+                    <th>Number</th>
+                    <th>Patient Name</th>
+                    <th>Phone</th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let patient of schedulePatients; index as i">
+                    <td>{{patient.number}}</td>
+                    <td>{{patient.name}}</td>
+                    <td>{{patient.contactNo}}</td> 
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+<!-- 
+        <div class="panel panel-warning">
+          <div class="">
+            <div class="panel-heading col-sm-12">
+              <div class="col-sm-2">
+                <strong>Action</strong>
+              </div>
+              <div class="col-sm-6"></div>
+              <div class="col-sm-4">
+                <button class="btn btn-xs btn-success">
+                  <strong>Print</strong>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> -->
       </div>
     </div>
   </div>
