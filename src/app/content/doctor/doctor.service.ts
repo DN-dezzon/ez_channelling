@@ -61,9 +61,9 @@ export class DoctorService {
     return this.httpClient.get(environment.apiUrl + '/getNextDoctorInvoiceId');
   }
 
-  // updateDoctorInvoice(doctorInvoice: any) {
-  //   return this.httpClient.post(environment.apiUrl + '/updateDoctorInvoice', doctorInvoice);
-  // }
+  updateDoctorInvoice(doctorInvoice: any) {
+    return this.httpClient.post(environment.apiUrl + '/updateDoctorInvoice', doctorInvoice);
+  }
 
   getDoctrInvoiceByDoctorSchedule(doctorSchedule: any) {
     return this.httpClient.post(environment.apiUrl + '/getDoctrInvoiceByDoctorSchedule', doctorSchedule);
