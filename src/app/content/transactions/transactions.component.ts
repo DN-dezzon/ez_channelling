@@ -33,7 +33,9 @@ export class TransactionsComponent implements OnInit {
     let balance = 0;
     for (let index = array.length - 1; index > -1 ; index--) {
       array[index].index = index + 1;
-      balance += array[index].income - array[index].expense;
+      if(array[index].status == 'Paid'){
+        balance += array[index].income - array[index].expense;
+      }
       array[index].balance = balance;
       array[index].code = "INV-";
       if(array[index].tablee == "doctor_invoice"){
@@ -123,6 +125,9 @@ export class TransactionsComponent implements OnInit {
             data: "code"
           },
           {
+            data: "status"
+          },
+          {
             data: "income"
           },
           {
@@ -131,49 +136,50 @@ export class TransactionsComponent implements OnInit {
             data: "balance"
           },
           {
-            defaultContent: `<button type="button" class="btn btn-xs btn-danger showReportModal">
-                                <span class="glyphicon glyphicon-trash"></span>
+            defaultContent: `
+                            <button type="button" class="btn btn-xs btn-danger showReportModal">
+                                <span class="glyphicon glyphicon-remove"></span>
                             </button>
                             `
           }
         ],
         "columnDefs": [
           {
-            
-            "orderable": false,
-            "targets": [1]
-          },
-          {
-            "className": "text-right text-success",
-            "searchable": false,
-            "orderable": false,
-            "targets": [6]
-          },
-          {
-            "className": "text-center",
-            "searchable": false,
-            "orderable": false,
-            "targets": [7]
-          },
-          {
-            "className": "text-right text-danger",
-            "targets": [5]
-          },
-          {
-            "className": "text-right text-info",
-            "targets": [4]
-          },
-          {
             "className": "text-center",
             "targets": [0]
           },
           {
+            "orderable": false,
             "className": "text-center",
             "targets": [1]
           },
           {
             "className": "text-center",
             "targets": [3]
+          },
+          {
+            "className": "text-center text-warning",
+            "targets": [4]
+          },
+          {
+            "className": "text-right text-info",
+            "targets": [5]
+          },
+          {
+            "className": "text-right text-danger",
+            "targets": [6]
+          },
+          {
+            "className": "text-right text-success",
+            "searchable": false,
+            "orderable": false,
+            "targets": [7]
+          },
+          {
+            "className": "text-center",
+            "searchable": false,
+            "orderable": false,
+            "targets": [8]
           },
         ],
         "order": [[0, 'asc']],
@@ -254,7 +260,7 @@ export class TransactionsComponent implements OnInit {
 
   }
 
-  deleteTransaction(transaction:any){
+  cancelTransaction(transaction:any){
     let _this = this;
     swal({
       title: "Are you sure?",
@@ -266,11 +272,11 @@ export class TransactionsComponent implements OnInit {
     },
       function (isConfirm) {
         if (isConfirm) {
-          _this.transactionsService.deleteTransaction(transaction).subscribe((data: any) => {
+          _this.transactionsService.cancelTransaction(transaction).subscribe((data: any) => {
             _this.getTransactions();
-            toastr.success("Success", "Deleted transaction");
+            toastr.success("Success", "Cancelled transaction");
           }, (err) => {
-            toastr.error('While deleting transaction', 'Data deletion error');
+            toastr.error('While cancelling transaction', 'Data update error');
           }
           );
         }
@@ -294,7 +300,7 @@ export class TransactionsComponent implements OnInit {
       var row = _currClassRef.datatable.row(tr);
       //this of jquery object
       if ($(this).hasClass("showReportModal")) {
-        _currClassRef.deleteTransaction(row.data());
+        _currClassRef.cancelTransaction(row.data());
       }
       else if ($(this).hasClass("showUpdateModal")) {
         //_currClassRef.showUpdateModal(row.data());

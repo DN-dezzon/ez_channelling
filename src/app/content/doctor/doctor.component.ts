@@ -68,6 +68,7 @@ export class DoctorComponent implements OnInit {
     d: "0",
     cal: "",
     paied: false,
+    status: "",
   };
 
   reportRequest = {
@@ -101,6 +102,7 @@ export class DoctorComponent implements OnInit {
     this.doctorInvoice.d = ("0" + d.getDate()).slice(-2);
     this.doctorInvoice.cal = this.getWebDate(this.doctorInvoice);
     this.doctorInvoice.paied = false;
+    this.doctorInvoice.status = "";
   }
 
   getWebDate(obj) {
@@ -781,6 +783,7 @@ export class DoctorComponent implements OnInit {
         this.doctorInvoice.y = data.y;
         this.doctorInvoice.cal = this.getWebDate(data);
         this.doctorInvoice.paied = true;
+        this.doctorInvoice.status = data.status;
       }
     }, (err) => {
       toastr.error('While fetching invoice details', 'Data fetch error');
@@ -804,6 +807,16 @@ export class DoctorComponent implements OnInit {
     }
   }
 
+  clickCancelled(){
+    this.mode = 'cancelledPaymentDocInvoice';
+    this.getCenterFee();
+    this.doctorInvoice.doc_fee = this.doctor.fee;
+    this.doctorInvoice.patient_count = this.schedule.paid_patient_count;
+    if (this.doctorInvoice.iddoctor_invoice != -1) {
+      (<any>$("#docInvoice")).modal();
+    }
+  }
+
   saveDoctorInvoice(print: boolean) {
     // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
@@ -818,11 +831,37 @@ export class DoctorComponent implements OnInit {
       this.getDoctrInvoiceByDoctorSchedule();
       toastr.success("Success", "Invoice saved");
       this.doctorInvoice.paied = true;
+      this.doctorInvoice.status = 'Paid';
       if (print) {
         this.printDoctorInvoice();
       }
     }, (err) => {
       toastr.error('While saving invoice', 'Data saving error');
+    }
+    );
+    // }
+  }
+
+  updateDoctorInvoice(print: boolean) {
+    // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
+
+    // let datee = this.doctorInvoice.cal.split("/");
+    // if (datee.length != 3) {
+    //   toastr.warning('Please select a valid date', 'Date invalid');
+    // } else {
+    //   this.doctorInvoice.datee = datee[2] + "-" + datee[0] + "-" + datee[1];//yyyymmdd
+
+    this.doctorInvoice.status = 'Paid';
+    this.doctorService.updateDoctorInvoice(this.doctorInvoice).subscribe((data: any) => {
+      (<any>$("#docInvoice")).modal('hide');
+      this.getDoctrInvoiceByDoctorSchedule();
+      toastr.success("Success", "GRN updated");
+      this.doctorInvoice.paied = true;
+      if (print) {
+        this.printDoctorInvoice();
+      }
+    }, (err) => {
+      toastr.error('While saving GRN', 'Data saving error');
     }
     );
     // }

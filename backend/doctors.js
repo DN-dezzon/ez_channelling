@@ -623,8 +623,8 @@ app.get('/getNextDoctorInvoiceId', function (req, res) {
 });
 
 app.post('/updateDoctorInvoice', function (req, res) {
-    values = [req.body.datee, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.iddoctor_invoice];
-    db.query("UPDATE doctor_invoice SET datee = ? , patient_count = ?, center_fee = ? , doc_fee = ? WHERE iddoctor_invoice = ? ", values, (err, result) => {
+    values = [req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.status, req.body.iddoctor_invoice];
+    db.query("UPDATE doctor_invoice SET datee = CURRENT_TIMESTAMP , patient_count = ?, center_fee = ? , doc_fee = ? , status = ? WHERE iddoctor_invoice = ? ", values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
@@ -645,7 +645,7 @@ app.post('/getDoctrInvoiceByDoctorSchedule', function (req, res) {
 });
 
 app.post('/saveDoctorInvoice', function (req, res) {
-    query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule) VALUES (?, CURRENT_TIMESTAMP ,?,?,?,?)";
+    query = "INSERT INTO doctor_invoice( iddoctor_invoice , datee , patient_count, center_fee, doc_fee, doctor_schedule_iddoctor_schedule, status) VALUES (?, CURRENT_TIMESTAMP ,?,?,?,?, 'Paid')";
     values = [req.body.iddoctor_invoice, req.body.patient_count, req.body.center_fee, req.body.doc_fee, req.body.doctor_schedule.iddoctor_schedule];
     db.query(query, values, (err, result) => {
         if (err) {
@@ -690,25 +690,27 @@ app.post('/getDoctorReport', function (req, res) {
 
 app.post('/getTransactions', function (req, res) {
     query = `
-    SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , expense , income , tablee
+    SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
         FROM
         (
             SELECT 
                 doctor_invoice.datee as date ,
                 doctor_invoice.iddoctor_invoice as id,
                 doctor.name as name,
+                doctor_invoice.status as status,
                 (doctor_invoice.doc_fee * doctor_invoice.patient_count) as expense,
                 0 as income,
                 "doctor_invoice" as tablee
                 FROM doctor_invoice 
                 left join doctor_schedule on doctor_schedule.iddoctor_schedule = doctor_invoice.doctor_schedule_iddoctor_schedule
                 left join doctor on doctor.iddoctor = doctor_schedule.doctor_iddoctor 
-                WHERE doctor_invoice.datee BETWEEN ? AND ?
+                WHERE DATE(doctor_invoice.datee) BETWEEN ? AND ?
             UNION
             SELECT 
                 patient_invoice.issued_datetime as date ,
                 patient_invoice.idpatient_invoice as id ,
                 patient.name as name ,
+                appointment.payment_status as status,
                 0 as expense,
                 patient_invoice.amount as income,
                 "patient_invoice" as tablee
@@ -717,6 +719,7 @@ app.post('/getTransactions', function (req, res) {
                 LEFT JOIN patient ON patient.idpatient = appointment.patient_idpatient
                 WHERE DATE(patient_invoice.issued_datetime) BETWEEN ? AND ?
         )    as t1
+        where status in ('Paid','Cancelled')
         order by date desc
     `;
     values = [req.body.from_datee, req.body.to_datee, req.body.from_datee, req.body.to_datee];
@@ -733,6 +736,21 @@ app.post('/deleteTransaction', function (req, res) {
     query = "DELETE FROM patient_invoice  WHERE idpatient_invoice = ? ";
     if (req.body.tablee == "doctor_invoice") {
         query = "DELETE FROM doctor_invoice WHERE iddoctor_invoice = ?";
+    }
+    values = [req.body.id];
+    db.query(query, values, (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result.affectedRows);
+        }
+    });
+});
+
+app.post('/cancelTransaction', function (req, res) {
+    query = "update appointment set payment_status = 'Cancelled' WHERE idappointment =     (SELECT idappointment from patient_invoice where idpatient_invoice = ?)";
+    if (req.body.tablee == "doctor_invoice") {
+        query = "UPDATE doctor_invoice SET status = 'Cancelled' WHERE iddoctor_invoice = ?";
     }
     values = [req.body.id];
     db.query(query, values, (err, result) => {

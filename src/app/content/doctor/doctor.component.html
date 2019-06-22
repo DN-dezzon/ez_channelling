@@ -99,24 +99,33 @@
 
 
                 <div class="ibox-tools">
-                  <button *ngIf="(doctorInvoice.iddoctor_invoice == -1 || !doctorInvoice.paied) && schedule.paid_patient_count"
+                  <button
+                    *ngIf="(doctorInvoice.iddoctor_invoice == -1 || !doctorInvoice.paied) && schedule.paid_patient_count"
                     class="btn btn-xs btn-success" (click)="clickPay()"><span class="glyphicon glyphicon-usd"></span>
                     Pay</button>
-                  <button *ngIf="doctorInvoice.iddoctor_invoice > 0 && doctorInvoice.paied" class="btn btn-xs btn-primary"
-                    (click)="clickPaied()"><span class="glyphicon glyphicon-ok"></span> Paied</button>
+                  <button
+                    *ngIf="doctorInvoice.iddoctor_invoice > 0 && doctorInvoice.paied && doctorInvoice.status == 'Paid'"
+                    class="btn btn-xs btn-primary" (click)="clickPaied()"><span class="glyphicon glyphicon-ok"></span>
+                    Paied</button>
+                  <button
+                    *ngIf="doctorInvoice.iddoctor_invoice > 0 && doctorInvoice.paied && doctorInvoice.status == 'Cancelled'"
+                    class="btn btn-xs btn-danger" (click)="clickCancelled()"><span
+                      class="glyphicon glyphicon-remove"></span>
+                    Cancelled</button>
                   &nbsp;
-                  <button *ngIf="(!doctorInvoice.paied)" type="button" class="btn btn-xs btn-warning" (click)="showUpdateScheduleModal($event)">
+                  <button *ngIf="(!doctorInvoice.paied)" type="button" class="btn btn-xs btn-warning"
+                    (click)="showUpdateScheduleModal($event)">
                     <span class="glyphicon glyphicon-edit"></span> Edit
                   </button>
                 </div>
               </div>
               <div class="ibox-content">
                 <h1>
-                <span class="badge badge-success">Paied Patients: {{schedule.paid_patient_count}}</span>
-                &nbsp;
-                <span class="badge badge-default">Pending Patients: {{schedule.pending_patient_count}}</span>
-                &nbsp;
-                <span class="badge badge-danger">Cancelled Patients: {{schedule.cancelled_patient_count}}</span></h1>
+                  <span class="badge badge-success">Paied Patients: {{schedule.paid_patient_count}}</span>
+                  &nbsp;
+                  <span class="badge badge-default">Pending Patients: {{schedule.pending_patient_count}}</span>
+                  &nbsp;
+                  <span class="badge badge-danger">Cancelled Patients: {{schedule.cancelled_patient_count}}</span></h1>
                 <br>
                 <div class="scroll_content">
                   <div *ngIf="schedulePatients?.length">
@@ -136,9 +145,13 @@
                           <td>{{patient.contactNo}}</td>
 
                           <td *ngIf="patient.payment_status=='Paid'"> <span class="badge badge-success">Paid</span></td>
-                          <td *ngIf="patient.payment_status=='Cancelled'">  <span class="badge badge-danger">Cancelled</span> </td>
-                          <td *ngIf="patient.payment_status=='Pending'">  <span class="badge badge-default">Pending</span> </td>
-                          <td *ngIf="patient.payment_status!='Paid' && patient.payment_status!='Cancelled' && patient.payment_status!='Pending'">{{patient.payment_status || '--'}}</td>
+                          <td *ngIf="patient.payment_status=='Cancelled'"> <span
+                              class="badge badge-danger">Cancelled</span> </td>
+                          <td *ngIf="patient.payment_status=='Pending'"> <span
+                              class="badge badge-default">Pending</span> </td>
+                          <td
+                            *ngIf="patient.payment_status!='Paid' && patient.payment_status!='Cancelled' && patient.payment_status!='Pending'">
+                            {{patient.payment_status || '--'}}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -471,6 +484,11 @@
                       (click)="updateDoctorInvoice()"><strong>Update</strong></button> -->
                     <button *ngIf="mode == 'editDocInvoice'" class="btn btn-xs btn-success"
                       (click)="printDoctorInvoice()"><strong>Print</strong></button>
+
+                    <button *ngIf="mode == 'cancelledPaymentDocInvoice'" class="btn btn-xs btn-primary"
+                      (click)="updateDoctorInvoice(false)"><strong>Save</strong></button>
+                    <button *ngIf="mode == 'cancelledPaymentDocInvoice'" class="btn btn-xs btn-success"
+                      (click)="updateDoctorInvoice(true)"><strong>& Print</strong></button>
                   </div>
                 </div>
               </div>

@@ -13,7 +13,7 @@ export class TransactionsService {
     return this.httpClient.post(environment.apiUrl + '/getTransactions',transactionsRequest);
   }
   
-  deleteTransaction(transaction: any) {
-    return this.httpClient.post(environment.apiUrl + '/deleteTransaction', transaction);
+  cancelTransaction(transaction: any) {
+    return this.httpClient.post(environment.apiUrl + '/cancelTransaction', transaction);
   }
 }
