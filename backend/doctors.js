@@ -701,7 +701,10 @@ app.post('/getDoctorReport', function (req, res) {
 });
 
 app.post('/getTransactions', function (req, res) {
-    query = `
+    query = "";
+
+    if(req.body.income && req.body.expenses){
+        query = `
     SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
         FROM
         (
@@ -734,6 +737,51 @@ app.post('/getTransactions', function (req, res) {
         where status in ('Paid','Cancelled')
         order by date desc
     `;
+    }else if(req.body.income){
+        query = `
+    SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
+        FROM
+        (
+            SELECT 
+                patient_invoice.issued_datetime as date ,
+                patient_invoice.idpatient_invoice as id ,
+                patient.name as name ,
+                appointment.payment_status as status,
+                0 as expense,
+                patient_invoice.amount as income,
+                "patient_invoice" as tablee
+                FROM patient_invoice 
+                LEFT JOIN appointment ON appointment.idappointment = patient_invoice.idappointment 
+                LEFT JOIN patient ON patient.idpatient = appointment.patient_idpatient
+                WHERE DATE(patient_invoice.issued_datetime) BETWEEN ? AND ?
+        )    as t1
+        where status in ('Paid','Cancelled')
+        order by date desc
+    `;
+    }else if(req.body.expenses){
+        query = `
+    SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
+        FROM
+        (
+            SELECT 
+                doctor_invoice.datee as date ,
+                doctor_invoice.iddoctor_invoice as id,
+                doctor.name as name,
+                doctor_invoice.status as status,
+                (doctor_invoice.doc_fee * doctor_invoice.patient_count) as expense,
+                0 as income,
+                "doctor_invoice" as tablee
+                FROM doctor_invoice 
+                left join doctor_schedule on doctor_schedule.iddoctor_schedule = doctor_invoice.doctor_schedule_iddoctor_schedule
+                left join doctor on doctor.iddoctor = doctor_schedule.doctor_iddoctor 
+                WHERE DATE(doctor_invoice.datee) BETWEEN ? AND ?
+        )    as t1
+        where status in ('Paid','Cancelled')
+        order by date desc
+    `;
+    }
+
+
     values = [req.body.from_datee, req.body.to_datee, req.body.from_datee, req.body.to_datee];
     db.query(query, values, (err, result) => {
         if (err) {
