@@ -13,12 +13,12 @@ declare let toastr: any;
 export class TransactionsComponent implements OnInit {
 
   datatable: any;
-  datatable_report: any;
-  datatable_income: any;
-  datatable_expence: any;
+  // datatable_report: any;
+  // datatable_income: any;
+  // datatable_expence: any;
   transactions: any[];
-  income: any[];
-  expences: any[];
+  // income: any[];
+  // expences: any[];
   medicalCenter: any;
   transactionsRequest = {
     daterange: "",
@@ -89,10 +89,6 @@ export class TransactionsComponent implements OnInit {
           this.datatable.clear();
           this.datatable.rows.add(this.transactions);
           this.datatable.draw();
-
-          this.datatable_report.clear();
-          this.datatable_report.rows.add(this.transactions);
-          this.datatable_report.draw();
           toastr.error('While fetching transactions details', 'Data fetch error');
         }
         );
