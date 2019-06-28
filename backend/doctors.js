@@ -1005,6 +1005,27 @@ app.post('/printInvoice', function (req, res) {
         fee:req.body.user.name
   
     };
-    print('inv.odt',inv,res);
+    print('patient_invoice.odt',inv,res);
+ 
+});
+
+app.post('/printReport', function (req, res) {
+    
+    var d = new Date();
+    var report = {
+        firstname: 'John',
+        lastname: 'Doe',
+	 datarow : [
+    {"date" :req.body.date },
+    {"issued_to" : req.body.name},
+    {"code" : "INV"+req.body.code },
+    {"status" : req.body.status},
+    {"income" : req.body.income },
+    {"expenses" : req.body.expense },
+    {"balance" : req.body.balance}
+  ]
+  
+    };
+    print('income_outcome.odt',report,res);
  
 });

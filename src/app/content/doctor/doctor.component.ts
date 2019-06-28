@@ -81,6 +81,13 @@ export class DoctorComponent implements OnInit {
     to_datee: "",
   };
 
+  doctor_report={
+    doctor_r:this.doctor,
+    patient_r:this.schedulePatients,
+    schedule_r:this.schedule
+    
+  }
+
   clearReportRequest() {
     this.reportRequest.patient_count = 0;
     this.reportRequest.doc_fee = 0;
@@ -947,6 +954,20 @@ export class DoctorComponent implements OnInit {
       toastr.error('While fetching doctor report', 'Data fetch error');
     }
     );
+  }
+
+  printPatient_report(){
+  
+    console.log(this.schedulePatients);
+    this.doctorService.printPatient_report(this.doctor_report).subscribe((data: any) => {
+      console.log(data);
+ 
+      toastr.info("Printing.....!");
+    }, (err) => {
+      console.log(err);
+      toastr.error("Please try again!");
+    }); 
+    
   }
 
   // getPendingPatientCountBySchedule() {
