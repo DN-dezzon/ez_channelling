@@ -946,27 +946,29 @@ var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
 
-function print(file,data,res) {
-	    carbone.render(file, data, printOptions, function (err, result) {
-	        console.log(data);
+function print(template,data,res) {
+	    carbone.render('templates/'+template, data, printOptions, function (err, result) {
         if (err){
             if(res) res.send(500, err);
         }else{
             fs.writeFileSync('out.pdf', result);
             if(res) res.status(200).send("printed");
 		//printing code here
-		//fs.unlinkSync('out.pdf')
+		fs.unlinkSync('out.pdf')
         }
     });
-}
+} 
 
 function printFromUrl(template,data,res) {
+	
 	const file = fs.createWriteStream("tmp/tmp");
-	const request = http.get("http://localhost:4200/assets/templates/" + template , function(response) {
+	const request = http.get("http://localhost/" + template , function(response) {
 	  response.pipe(file);
 	print("tmp/tmp",data,res);
+	
 	});
-}
+    	
+} 
 
 var pdata = {
     medicalCenter : {
@@ -996,10 +998,6 @@ var pdata = {
         copyright: "2019-2020",
     }
 }
-
-//init headless printing service
-printFromUrl("init.odt",pdata,null);
-
 var data = {
         firstname: 'John',
         lastname: 'Doe',
@@ -1056,5 +1054,23 @@ app.post('/printReport', function (req, res) {
   
     };
     print('income_outcome.odt',report,res);
+ 
+});
+
+
+app.post('/printPatient_report', function (req, res) {
+    
+    var d = new Date();
+    var report = {
+        doctor_name: req.body.doctor_r.name ,
+        date:  req.body.schedule_r_daterange,
+	 datarow : [
+    {"number" :req.body.patient_r.number },
+    {"p_name" : req.body.patient_r.name},
+    {"phone" : req.body.patient_r.contactNo }
+  ]
+  
+    };
+    print('appointments.odt',report,res);
  
 });
