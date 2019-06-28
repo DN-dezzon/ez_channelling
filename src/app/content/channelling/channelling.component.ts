@@ -89,6 +89,7 @@ export class ChannellingComponent implements OnInit {
     doctor_schedule: this.schedule,
     paient: this.patient,
     patient_idpatient: -1,
+    user:this.user,
     issued_datetime: "",
     today: new Date(),
     pay_now: "no",
@@ -155,7 +156,17 @@ export class ChannellingComponent implements OnInit {
   }
 
   printPatirntInvoice() {
-    this.print();
+    this.channellingService.printInvoice(this.appointment).subscribe((data: any) => {
+      console.log(data);
+ 
+      toastr.info("Printing.....!");
+
+    }, (err) => {
+      console.log(err);
+      toastr.error("Please try again!");
+    }
+    );
+    // this.print();
   }
   ImagetoPrint(source) {
     return "<html><head><style>" +
