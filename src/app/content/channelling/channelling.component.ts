@@ -63,7 +63,7 @@ export class ChannellingComponent implements OnInit {
     amount: "",
     monthly_income: "",
     newpatient: "",
-    invoice_id: 0
+    invoice_id: 10
   };
 
   schedule = {
@@ -156,9 +156,9 @@ export class ChannellingComponent implements OnInit {
   }
 
   printPatirntInvoice() {
+    console.log(this.appointment);
     this.channellingService.printInvoice(this.appointment).subscribe((data: any) => {
-      console.log(data);
- 
+    
       toastr.info("Printing.....!");
 
     }, (err) => {

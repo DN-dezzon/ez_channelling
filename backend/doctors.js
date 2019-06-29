@@ -1102,16 +1102,17 @@ app.get('/testPrint', function (req, res) {
 
 });
 app.post('/printInvoice', function (req, res) {
-    var d = new Date();
+    var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    console.log(req.body.patient);
     var inv = {
-        invoice_id: req.body.patient.invoice_id,
+        invoice_id: req.body.paient.invoice_id,
         inv_date: d,
-        doctor_name: req.body.doctor.name,
+        doctor_name: req.body.doctor.name, 
         appointment: req.body.number,
         appointment_date: req.body.doctor.datee,
         patient_name: req.body.paient.name,
         username: req.body.user.name,
-        fee: req.body.user.name
+        fee:req.body.doctor.fee
 
     };
     printFromUrl('patient_invoice.odt', inv, res);
@@ -1122,7 +1123,7 @@ app.post('/printReport', function (req, res) {
 
 
     if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
-        var d = new Date();
+        var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         var report = {
             title_r: "Income & Expences",
             from: req.body.transactionsRequest_r.from_datee,
@@ -1184,8 +1185,8 @@ app.post('/printReport', function (req, res) {
 
 
 app.post('/printPatient_report', function (req, res) {
-
-    var d = new Date();
+    var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    // var d = new Date();
     var report = {
         doctor_name: req.body.doctor_r.name,
         date: req.body.schedule_r_daterange,
