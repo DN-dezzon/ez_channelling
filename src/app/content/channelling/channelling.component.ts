@@ -698,7 +698,7 @@ export class ChannellingComponent implements OnInit {
           $('#printInvoice').click();
           this.patient.invoice_id = data[0];
           toastr.info("Payment made successfully!");
-
+          this.clearForm();
         }, (err) => {
           console.log(err);
 
@@ -714,7 +714,7 @@ export class ChannellingComponent implements OnInit {
             $('#printInvoice').click();
           }
           toastr.info("Appointment made successfully!");
-
+          this.clearForm();
         }, (err) => {
           console.log(err);
           toastr.error("Please try again!");
