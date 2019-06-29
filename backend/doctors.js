@@ -939,6 +939,86 @@ app.post('/updatePrinterName', function (req, res) {
 
 
 
+//
+// ////////////////////////////
+//
+// var printOptions = {
+//     convertTo: 'pdf', //can be docx, txt, ...
+// };
+//
+// function print(template, data, res) {
+//     carbone.render('templates/' + template, data, printOptions, function (err, result) {
+//         if (err) {
+//             if (res) res.send(500, err);
+//         } else {
+//             fs.writeFileSync('out.pdf', result);
+//             if (res) res.status(200).send("printed");
+//             //printing code here
+//             fs.unlinkSync('out.pdf')
+//         }
+//     });
+// }
+//
+// function printFromUrl(template, data, res) {
+//
+//     const file = fs.createWriteStream("tmp/tmp");
+//     const request = http.get("http://localhost/" + template, function (response) {
+//         response.pipe(file);
+//         print("tmp/tmp", data, res);
+//
+//     });
+//
+// }
+//
+// var pdata = {
+//     medicalCenter: {
+//         name: "Shanthi Medical Home",
+//         phone: "(031) 2256525",
+//         no: "No. 600/10",
+//         street: "",
+//         city: "Katana",
+//         email: "",
+//     },
+//
+//     product: {
+//         name: "EZ Channeling",
+//         tech: "EZ_Channeling",
+//         short: "EZ+",
+//         version: "1.0.0",
+//         description: "Perfectly designed and precisely prepared electronic channelling system.",
+//     },
+//
+//     company: {
+//         name: "iNAC",
+//         phone: "12345678",
+//         no: "456/140",
+//         street: "jabeer rd",
+//         cirty: "colombo",
+//         email: "hello.inac@gmail.com",
+//         copyright: "2019-2020",
+//     }
+// }
+// var data = {
+//     firstname: 'John',
+//     lastname: 'Doe',
+//     cars: [
+//         { "brand": "Lumeneo" },
+//         { "brand": "Tesla" },
+//         { "brand": "Toyota" },
+//         { "brand": "Lumeneo" },
+//         { "brand": "Tesla" },
+//         { "brand": "Toyota" },
+//         { "brand": "Lumeneo" },
+//         { "brand": "Tesla" },
+//         { "brand": "Toyota" }
+//     ]
+// };
+//
+// app.get('/testPrint', function (req, res) {
+//
+//     print('simple.odt', data, res);
+//
+// });
 
 ////////////////////////////
 
@@ -946,32 +1026,30 @@ var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
 
-function print(template, data, res) {
-    carbone.render('templates/' + template, data, printOptions, function (err, result) {
-        if (err) {
-            if (res) res.send(500, err);
-        } else {
+function print(file,data,res) {
+    carbone.render(file, data, printOptions, function (err, result) {
+        console.log(data);
+        if (err){
+            if(res) res.send(500, err);
+        }else{
             fs.writeFileSync('out.pdf', result);
-            if (res) res.status(200).send("printed");
+            if(res) res.status(200).send("printed");
             //printing code here
-            fs.unlinkSync('out.pdf')
+            //fs.unlinkSync('out.pdf')
         }
     });
 }
 
-function printFromUrl(template, data, res) {
-
+function printFromUrl(template,data,res) {
     const file = fs.createWriteStream("tmp/tmp");
-    const request = http.get("http://localhost/" + template, function (response) {
+    const request = http.get("http://localhost:4200/assets/templates/" + template , function(response) {
         response.pipe(file);
-        print("tmp/tmp", data, res);
-
+        print("tmp/tmp",data,res);
     });
-
 }
 
 var pdata = {
-    medicalCenter: {
+    medicalCenter : {
         name: "Shanthi Medical Home",
         phone: "(031) 2256525",
         no: "No. 600/10",
@@ -980,7 +1058,7 @@ var pdata = {
         email: "",
     },
 
-    product: {
+    product : {
         name: "EZ Channeling",
         tech: "EZ_Channeling",
         short: "EZ+",
@@ -988,7 +1066,7 @@ var pdata = {
         description: "Perfectly designed and precisely prepared electronic channelling system.",
     },
 
-    company: {
+    company : {
         name: "iNAC",
         phone: "12345678",
         no: "456/140",
@@ -998,25 +1076,29 @@ var pdata = {
         copyright: "2019-2020",
     }
 }
+
+//init headless printing service
+printFromUrl("init.odt",pdata,null);
+
 var data = {
     firstname: 'John',
     lastname: 'Doe',
-    cars: [
-        { "brand": "Lumeneo" },
-        { "brand": "Tesla" },
-        { "brand": "Toyota" },
-        { "brand": "Lumeneo" },
-        { "brand": "Tesla" },
-        { "brand": "Toyota" },
-        { "brand": "Lumeneo" },
-        { "brand": "Tesla" },
-        { "brand": "Toyota" }
+    cars : [
+        {"brand" : "Lumeneo"},
+        {"brand" : "Tesla"  },
+        {"brand" : "Toyota" },
+        {"brand" : "Lumeneo"},
+        {"brand" : "Tesla"  },
+        {"brand" : "Toyota" },
+        {"brand" : "Lumeneo"},
+        {"brand" : "Tesla"  },
+        {"brand" : "Toyota" }
     ]
 };
 
 app.get('/testPrint', function (req, res) {
 
-    print('simple.odt', data, res);
+    printFromUrl('simple.odt',data,res);
 
 });
 app.post('/printInvoice', function (req, res) {
