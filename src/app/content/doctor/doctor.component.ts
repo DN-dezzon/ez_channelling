@@ -958,7 +958,14 @@ export class DoctorComponent implements OnInit {
 
   printPatient_report(){
   
-    console.log(this.schedulePatients);
+    
+    this.doctor_report={
+      doctor_r:this.doctor,
+      patient_r:this.schedulePatients,
+      schedule_r:this.schedule 
+    }
+    console.log(this.doctor_report);
+
     this.doctorService.printPatient_report(this.doctor_report).subscribe((data: any) => {
       console.log(data);
  

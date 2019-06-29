@@ -545,8 +545,12 @@ export class TransactionsComponent implements OnInit {
   }
 
   printIncome_Outcome(){
-    console.log(this.transactions);
-    this.transactionsService.printReport(this.transactions).subscribe((data: any) => {
+    this.transactions_report={
+      transactions_r:this.transactions,
+      transactionsRequest_r:this.transactionsRequest
+    };
+    console.log(this.transactions_report);
+    this.transactionsService.printReport(this.transactions_report).subscribe((data: any) => {
       console.log(data);
  
       toastr.info("Printing.....!");
