@@ -1021,4 +1021,19 @@ app.get('/testPrint', function (req, res) {
     print('simple.odt',data,res);
 
 });
-
+app.post('/printInvoice', function (req, res) {
+    var d = new Date();
+    var inv = {
+        invoice_id: req.body.patient.invoice_id,
+        inv_date: d,
+        doctor_name:req.body.doctor.name,
+        appointment:req.body.number,
+        appointment_date:req.body.doctor.datee,
+        patient_name:req.body.paient.name,
+        username:req.body.user.name,
+        fee:req.body.user.name
+  
+    };
+    print('inv.odt',inv,res);
+ 
+});

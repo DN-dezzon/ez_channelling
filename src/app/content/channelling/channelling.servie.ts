@@ -45,6 +45,10 @@ export class ChannellingServie {
     return this.httpClient.post(environment.apiUrl + '/saveAppointment',appointment);
   } 
 
+  printInvoice(appointment:any){
+    
+    return this.httpClient.post(environment.apiUrl + '/printInvoice',appointment);
+  } 
   makePayment(appointment:any){
     
     return this.httpClient.post(environment.apiUrl + '/makePayment',appointment);
