@@ -1114,11 +1114,12 @@ app.post('/printInvoice', function (req, res) {
         fee: req.body.user.name
 
     };
-    print('patient_invoice.odt', inv, res);
+    printFromUrl('patient_invoice.odt', inv, res);
 
 });
 
 app.post('/printReport', function (req, res) {
+
 
     if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
         var d = new Date();
@@ -1137,7 +1138,8 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        print('income_outcome.odt', report, res);
+        console.log(report);
+        printFromUrl('income_outcome.odt', report, res);
     } else if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == false) {
         var d = new Date();
         var report = {
@@ -1154,7 +1156,8 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        print('outcome.odt', report, res);
+        console.log(report);
+        printFromUrl('outcome.odt', report, res);
     } else {
         var d = new Date();
         var report = {
@@ -1171,7 +1174,8 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        print('income.odt', report, res);
+        console.log(report);
+        printFromUrl('income.odt', report, res);
     }
 
 
@@ -1192,6 +1196,6 @@ app.post('/printPatient_report', function (req, res) {
         ]
 
     };
-    print('appointments.odt', report, res);
+    printFromUrl('appointments.odt', report, res);
 
 });
