@@ -10,6 +10,8 @@ const http = require('http');
 const fs = require('fs');
 const carbone = require('carbone');
 
+const { exec } = require('child_process');
+
 // configuration =================
 const db = mysql.createPool({
     connectionLimit: 100,
@@ -1026,25 +1028,47 @@ var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
 
-function print(file,data,res) {
+function print(file,data,res,sendToPrinter) {
     carbone.render(file, data, printOptions, function (err, result) {
         console.log(data);
         if (err){
             if(res) res.send(500, err);
         }else{
             fs.writeFileSync('out.pdf', result);
-            if(res) res.status(200).send("printed");
+
+            if(sendToPrinter) {
+
+                db.query("SELECT valuee as name FROM configuration WHERE keyy = 'printer'", (err, result) => {
+                    if (err) {
+                        res.send(500, err);
+                    } else {
+                        exec('soffice --pt ' + result[0].name + ' out.pdf', (err, stdout, stderr) => {
+                            if (err || stderr) {
+                                // node couldn't execute the command
+                                res.send(500, err);
+                                return;
+                            }
+
+                            // the *entire* stdout and stderr (buffered)
+                            console.log(`stdout: ${stdout}`);
+                            console.log(`stderr: ${stderr}`);
+                        });
+
+                        if (res) res.json("printed");
+                    }
+                });
+            }
             //printing code here
             //fs.unlinkSync('out.pdf')
         }
     });
 }
 
-function printFromUrl(template,data,res) {
+function printFromUrl(template,data,res,sendToPrinter) {
     const file = fs.createWriteStream("tmp/tmp");
     const request = http.get("http://localhost:4200/assets/templates/" + template , function(response) {
         response.pipe(file);
-        print("tmp/tmp",data,res);
+        print("tmp/tmp",data,res,sendToPrinter);
     });
 }
 
@@ -1068,7 +1092,7 @@ var pdata = {
 
     company : {
         name: "iNAC",
-        phone: "12345678",
+        phone: "(071) 2660899",
         no: "456/140",
         street: "jabeer rd",
         cirty: "colombo",
@@ -1078,7 +1102,7 @@ var pdata = {
 }
 
 //init headless printing service
-printFromUrl("init.odt",pdata,null);
+printFromUrl("init.odt",pdata,null,false);
 
 var data = {
     firstname: 'John',
@@ -1134,13 +1158,11 @@ app.post('/printInvoice', function (req, res) {
         fee:req.body.doctor.fee
 
     };
-    printFromUrl('patient_invoice.odt', inv, res);
+    printFromUrl('patient_invoice.odt', inv, res,true);
 
 });
 
 app.post('/printReport', function (req, res) {
-
-
     if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
         var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         var report = {
@@ -1156,10 +1178,8 @@ app.post('/printReport', function (req, res) {
                 { "expenses": req.body.transactions_r.expense },
                 { "balance": req.body.transactions_r.balance }
             ]
-
         };
-        console.log(report);
-        printFromUrl('income_outcome.odt', report, res);
+        printFromUrl('income_outcome.odt', report, res,false);
     } else if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == false) {
         var d = new Date();
         var report = {
@@ -1176,8 +1196,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        console.log(report);
-        printFromUrl('outcome.odt', report, res);
+        printFromUrl('outcome.odt', report, res,false);
     } else {
         var d = new Date();
         var report = {
@@ -1194,8 +1213,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        console.log(report);
-        printFromUrl('income.odt', report, res);
+        printFromUrl('income.odt', report, res,false);
     }
 
 
@@ -1216,6 +1234,6 @@ app.post('/printPatient_report', function (req, res) {
         ]
 
     };
-    printFromUrl('appointments.odt', report, res);
+    printFromUrl('appointments.odt', report, res,false);
 
 });

@@ -163,7 +163,7 @@ export class ChannellingComponent implements OnInit {
 
     }, (err) => {
       console.log(err);
-      toastr.error("Please try again!");
+      toastr.error("Error while printing","Please try again!");
     }
     );
     // this.print();
