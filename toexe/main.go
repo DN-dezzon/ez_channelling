@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var appPath = "./app"
@@ -38,13 +39,13 @@ func main() {
 
 			pathRune := []rune(path)
 			path = string(pathRune[(len(appPath) - 1):len(path)])
-
+            path = strings.Replace(path, "\\", "/", -1)
 			encodedUrl := hex.EncodeToString([]byte("/" + path))
 			encodedContent := hex.EncodeToString(buf.Bytes())
 
 			//decoded, err := hex.DecodeString(encodedContent)
 
-			//fmt.Print(string(decoded))
+			fmt.Println("/" + path)
 			//fmt.Print(Url)
 
 			buffer.WriteString(`"` + encodedUrl + `": "` + encodedContent + `",`)

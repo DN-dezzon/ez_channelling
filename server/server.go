@@ -10,7 +10,7 @@ import (
 	"github.com/denisbrodbeck/machineid"
 )
 
-var port = ":8888"
+var port = ":4200"
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
 	id, err := machineid.ID()
@@ -21,7 +21,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 	encodedUrl := hex.EncodeToString([]byte(req.URL.Path))
 
-	if err != nil || id != "16e34ff8f0a144ea8cc01bf6c671f676" {
+	if err != nil || id != "633c8664-f229-4706-aeea-4498965bef24" {
 		encodedUrl = hex.EncodeToString([]byte("/assets/unregistered.html"))
 	}
 
