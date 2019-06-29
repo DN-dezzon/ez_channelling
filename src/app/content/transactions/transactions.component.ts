@@ -17,6 +17,7 @@ export class TransactionsComponent implements OnInit {
   // datatable_income: any;
   // datatable_expence: any;
   transactions: any[];
+ 
   // income: any[];
   // expences: any[];
   medicalCenter: any;
@@ -27,7 +28,11 @@ export class TransactionsComponent implements OnInit {
     income:true,
     expenses:true,
   };
-
+  
+  transactions_report={
+    transactions_r:this.transactions,
+    transactionsRequest_r:this.transactionsRequest
+  };
   constructor(private transactionsService:TransactionsService,private databaseService: DatabaseService) { 
     this.medicalCenter = medicalCenter;
   }
@@ -56,7 +61,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   getTransactions() {
-    this.transactions = [];
+    this.transactions = []; 
     if(this.datatable){
       this.datatable.clear();
     }
@@ -76,7 +81,7 @@ export class TransactionsComponent implements OnInit {
         this.transactionsRequest.to_datee = to[2] + "-" + to[0] + "-" + to[1];//yyyymmdd
         
         this.transactionsService.getTransactions(this.transactionsRequest).subscribe((data: any) => {
-          this.transactions = data;
+          this.transactions = data; 
           this.postProcessData(this.transactions);
           this.datatable.clear();
           this.datatable.rows.add(this.transactions);
@@ -537,5 +542,22 @@ export class TransactionsComponent implements OnInit {
     document.getElementById("transactionsAll").className = "btn btn-sm btn-default";
     document.getElementById("transactionsIncome").className = "btn btn-sm btn-default";
     document.getElementById("transactionsExpenses").className = "btn btn-sm btn-default";
+  }
+
+  printIncome_Outcome(){
+    this.transactions_report={
+      transactions_r:this.transactions,
+      transactionsRequest_r:this.transactionsRequest
+    };
+    console.log(this.transactions_report);
+    this.transactionsService.printReport(this.transactions_report).subscribe((data: any) => {
+      console.log(data);
+ 
+      toastr.info("Printing.....!");
+    }, (err) => {
+      console.log(err);
+      toastr.error("Please try again!");
+    }); 
+    
   }
 }

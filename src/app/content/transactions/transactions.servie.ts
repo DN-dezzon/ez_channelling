@@ -20,6 +20,11 @@ export class TransactionsService {
     return this.httpClient.post(environment.apiUrl + '/getExpenses',transactionsRequest);
   }
 
+  printReport(transactions_report:any){
+    
+    return this.httpClient.post(environment.apiUrl + '/printReport',transactions_report);
+  } 
+
   cancelTransaction(transaction: any) {
     return this.httpClient.post(environment.apiUrl + '/cancelTransaction', transaction);
   }

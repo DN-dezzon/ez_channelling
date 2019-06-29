@@ -250,14 +250,21 @@ export class PatientsComponent implements OnInit {
   }
   // load patient history table
   getPatientHistory(patient: any) {
-    this.patientService.getPatientHistory(patient).subscribe((data: any) => {
-
+    this.patientService.getPatientHistory(patient).subscribe((data: any) => { 
+      if(data.length > 0){
       this.all_patientHistory = data;
 
       this.addIndex(this.all_patientHistory);
       this.datatable_history.clear();
       this.datatable_history.rows.add(this.all_patientHistory);
       this.datatable_history.draw();
+      }else if(data.length == 0){ 
+        toastr.info("No Patient history");
+        this.all_patientHistory=[];
+        this.datatable_history.clear();
+        this.datatable_history.draw(); 
+       
+      }
       // this.resetTableListners();
     }, (err) => {
       console.log(err);

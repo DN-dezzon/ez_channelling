@@ -273,7 +273,7 @@ app.post('/saveAppointment', function (req, res) {
 
                         // Make an appointment
                         query2 = "INSERT INTO appointment(number,patient_intime, payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
-                        values = [req.body.number,req.body.patient_intime, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
+                        values = [req.body.number, req.body.patient_intime, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, p_id, d];
 
                         db.query(query2, values, (err, result) => {
                             if (err) {
@@ -304,7 +304,7 @@ app.post('/saveAppointment', function (req, res) {
         // Make an appointment
 
         query2 = "INSERT INTO appointment(number, patient_intime,payment_status,iddoctor_schedule,patient_idpatient,issued_datetime) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)";
-        values = [req.body.number, req.body.patient_intime,req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
+        values = [req.body.number, req.body.patient_intime, req.body.payment_status, req.body.doctor_schedule.iddoctor_schedule, req.body.paient.idpatient, d];
 
         db.query(query2, values, (err, result) => {
             if (err) {
@@ -424,12 +424,12 @@ app.get('/getNextDoctorId', function (req, res) {
     });
 });
 
-function tConvert (timeString) {
+function tConvert(timeString) {
     var H = +timeString.substr(0, 2);
     var h = H % 12 || 12;
     var ampm = (H < 12 || H === 24) ? "AM" : "PM";
     return h + timeString.substr(2, 3) + ampm;
-  }
+}
 
 app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
     values = [req.body.iddoctor];
@@ -703,7 +703,7 @@ app.post('/getDoctorReport', function (req, res) {
 app.post('/getTransactions', function (req, res) {
     query = "";
 
-    if(req.body.income && req.body.expenses){
+    if (req.body.income && req.body.expenses) {
         query = `
     SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
         FROM
@@ -737,7 +737,7 @@ app.post('/getTransactions', function (req, res) {
         where status in ('Paid','Cancelled')
         order by date desc
     `;
-    }else if(req.body.income){
+    } else if (req.body.income) {
         query = `
     SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
         FROM
@@ -758,7 +758,7 @@ app.post('/getTransactions', function (req, res) {
         where status in ('Paid','Cancelled')
         order by date desc
     `;
-    }else if(req.body.expenses){
+    } else if (req.body.expenses) {
         query = `
     SELECT  DATE_FORMAT(date, '%m/%d/%Y') as date , id , name , status , expense , income , tablee
         FROM
@@ -946,30 +946,32 @@ var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
 
-function print(file,data,res) {
-	    carbone.render(file, data, printOptions, function (err, result) {
-	        console.log(data);
-        if (err){
-            if(res) res.send(500, err);
-        }else{
+function print(template, data, res) {
+    carbone.render('templates/' + template, data, printOptions, function (err, result) {
+        if (err) {
+            if (res) res.send(500, err);
+        } else {
             fs.writeFileSync('out.pdf', result);
-            if(res) res.status(200).send("printed");
-		//printing code here
-		//fs.unlinkSync('out.pdf')
+            if (res) res.status(200).send("printed");
+            //printing code here
+            fs.unlinkSync('out.pdf')
         }
     });
 }
 
-function printFromUrl(template,data,res) {
-	const file = fs.createWriteStream("tmp/tmp");
-	const request = http.get("http://localhost:4200/assets/templates/" + template , function(response) {
-	  response.pipe(file);
-	print("tmp/tmp",data,res);
-	});
+function printFromUrl(template, data, res) {
+
+    const file = fs.createWriteStream("tmp/tmp");
+    const request = http.get("http://localhost/" + template, function (response) {
+        response.pipe(file);
+        print("tmp/tmp", data, res);
+
+    });
+
 }
 
 var pdata = {
-    medicalCenter : {
+    medicalCenter: {
         name: "Shanthi Medical Home",
         phone: "(031) 2256525",
         no: "No. 600/10",
@@ -978,7 +980,7 @@ var pdata = {
         email: "",
     },
 
-    product : {
+    product: {
         name: "EZ Channeling",
         tech: "EZ_Channeling",
         short: "EZ+",
@@ -986,7 +988,7 @@ var pdata = {
         description: "Perfectly designed and precisely prepared electronic channelling system.",
     },
 
-    company : {
+    company: {
         name: "iNAC",
         phone: "12345678",
         no: "456/140",
@@ -996,29 +998,25 @@ var pdata = {
         copyright: "2019-2020",
     }
 }
-
-//init headless printing service
-printFromUrl("init.odt",pdata,null);
-
 var data = {
-        firstname: 'John',
-        lastname: 'Doe',
-	 cars : [
-    {"brand" : "Lumeneo"},
-    {"brand" : "Tesla"  },
-    {"brand" : "Toyota" },
-{"brand" : "Lumeneo"},
-    {"brand" : "Tesla"  },
-    {"brand" : "Toyota" },
-{"brand" : "Lumeneo"},
-    {"brand" : "Tesla"  },
-    {"brand" : "Toyota" }
-  ]
-    };
+    firstname: 'John',
+    lastname: 'Doe',
+    cars: [
+        { "brand": "Lumeneo" },
+        { "brand": "Tesla" },
+        { "brand": "Toyota" },
+        { "brand": "Lumeneo" },
+        { "brand": "Tesla" },
+        { "brand": "Toyota" },
+        { "brand": "Lumeneo" },
+        { "brand": "Tesla" },
+        { "brand": "Toyota" }
+    ]
+};
 
 app.get('/testPrint', function (req, res) {
 
-    print('simple.odt',data,res);
+    print('simple.odt', data, res);
 
 });
 app.post('/printInvoice', function (req, res) {
@@ -1026,14 +1024,92 @@ app.post('/printInvoice', function (req, res) {
     var inv = {
         invoice_id: req.body.patient.invoice_id,
         inv_date: d,
-        doctor_name:req.body.doctor.name,
-        appointment:req.body.number,
-        appointment_date:req.body.doctor.datee,
-        patient_name:req.body.paient.name,
-        username:req.body.user.name,
-        fee:req.body.user.name
-  
+        doctor_name: req.body.doctor.name,
+        appointment: req.body.number,
+        appointment_date: req.body.doctor.datee,
+        patient_name: req.body.paient.name,
+        username: req.body.user.name,
+        fee: req.body.user.name
+
     };
-    print('inv.odt',inv,res);
- 
+    print('patient_invoice.odt', inv, res);
+
+});
+
+app.post('/printReport', function (req, res) {
+
+    if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
+        var d = new Date();
+        var report = {
+            title_r: "Income & Expences",
+            from: req.body.transactionsRequest_r.from_datee,
+            to: req.body.transactionsRequest_r.to_datee,
+            datarow: [
+                { "date": req.body.transactions_r.date },
+                { "issued_to": req.body.transactions_r.name },
+                { "code": "INV" + req.body.transactions_r.code },
+                { "status": req.body.transactions_r.status },
+                { "income": req.body.transactions_r.income },
+                { "expenses": req.body.transactions_r.expense },
+                { "balance": req.body.transactions_r.balance }
+            ]
+
+        };
+        print('income_outcome.odt', report, res);
+    } else if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == false) {
+        var d = new Date();
+        var report = {
+            title_r: "Expences",
+            from: req.body.transactionsRequest_r.from_datee,
+            to: req.body.transactionsRequest_r.to_datee,
+            datarow: [
+                { "date": req.body.transactions_r.date },
+                { "issued_to": req.body.transactions_r.name },
+                { "code": "INV" + req.body.transactions_r.code },
+                { "status": req.body.transactions_r.status },
+                { "expenses": req.body.transactions_r.expense },
+                { "balance": req.body.transactions_r.balance }
+            ]
+
+        };
+        print('outcome.odt', report, res);
+    } else {
+        var d = new Date();
+        var report = {
+            title_r: "Income",
+            from: req.body.transactionsRequest_r.from_datee,
+            to: req.body.transactionsRequest_r.to_datee,
+            datarow: [
+                { "date": req.body.transactions_r.date },
+                { "issued_to": req.body.transactions_r.name },
+                { "code": "INV" + req.body.transactions_r.code },
+                { "status": req.body.transactions_r.status },
+                { "income": req.body.transactions_r.income },
+                { "balance": req.body.transactions_r.balance }
+            ]
+
+        };
+        print('income.odt', report, res);
+    }
+
+
+
+});
+
+
+app.post('/printPatient_report', function (req, res) {
+
+    var d = new Date();
+    var report = {
+        doctor_name: req.body.doctor_r.name,
+        date: req.body.schedule_r_daterange,
+        datarow: [
+            { "number": req.body.patient_r.number },
+            { "p_name": req.body.patient_r.name },
+            { "phone": req.body.patient_r.contactNo }
+        ]
+
+    };
+    print('appointments.odt', report, res);
+
 });
