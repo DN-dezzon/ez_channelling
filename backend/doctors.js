@@ -1120,6 +1120,7 @@ app.post('/printInvoice', function (req, res) {
 
 app.post('/printReport', function (req, res) {
 
+
     if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
         var d = new Date();
         var report = {
@@ -1137,6 +1138,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
+        console.log(report);
         printFromUrl('income_outcome.odt', report, res);
     } else if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == false) {
         var d = new Date();
@@ -1154,6 +1156,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
+        console.log(report);
         printFromUrl('outcome.odt', report, res);
     } else {
         var d = new Date();
@@ -1171,6 +1174,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
+        console.log(report);
         printFromUrl('income.odt', report, res);
     }
 
