@@ -63,7 +63,7 @@ export class ChannellingComponent implements OnInit {
     amount: "",
     monthly_income: "",
     newpatient: "",
-    invoice_id: 10
+    invoice_id: 0
   };
 
   schedule = {
@@ -110,7 +110,7 @@ export class ChannellingComponent implements OnInit {
     this.user.name = this.databaseService.user.name;
     this.appointment.today = new Date();
     this.appointment.hideAppointment = true;
-    // $('#printInvoice').hide(); 
+    $('#printInvoice').hide(); 
     $('#pname_new').hide();
     $('#channeling_date').datepicker({
       todayBtn: "linked",
@@ -695,7 +695,7 @@ export class ChannellingComponent implements OnInit {
       if (this.appointment.pay_now == "yes") {
         this.channellingService.makePayment(this.appointment).subscribe((data: any) => {
           console.log(data);
-        //  $('#printInvoice').click();
+         $('#printInvoice').click();
           this.patient.invoice_id = data[0];
           toastr.info("Payment made successfully!");
           this.clearForm();
@@ -711,7 +711,7 @@ export class ChannellingComponent implements OnInit {
 
           if (this.appointment.payment_status == "Paid") {
             this.patient.invoice_id = data;
-            // $('#printInvoice').click();
+            $('#printInvoice').click();
           }
           toastr.info("Appointment made successfully!");
           this.clearForm();

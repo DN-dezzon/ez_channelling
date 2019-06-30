@@ -256,7 +256,6 @@ app.post('/getScheduleIdId', function (req, res) {
 });
 app.post('/saveAppointment', function (req, res) {
     var d = new Date();
-    console.log(req.body);
     if (req.body.paient.newpatient == "yes") {
         var p_id = "0";
         query_p_count = "SELECT * from patient";
@@ -460,7 +459,6 @@ app.post('/getAllDoctorScheduleByDoctor', function (req, res) {
 app.post('/saveDoctorSchedule', function (req, res) {
     query = "INSERT INTO doctor_schedule(iddoctor_schedule, doctor_iddoctor, datee, doctor_in, doctor_out) VALUES (?,?,?,?,?)";
     values = [req.body.iddoctor_schedule, req.body.doctor.iddoctor, req.body.datee, req.body.doctor_in, req.body.doctor_out];
-    console.log(values);
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
@@ -1030,7 +1028,6 @@ var printOptions = {
 
 function print(file,data,res,sendToPrinter) {
     carbone.render(file, data, printOptions, function (err, result) {
-        console.log(data);
         if (err){
             if(res) res.send(500, err);
         }else{
@@ -1127,12 +1124,12 @@ app.get('/testPrint', function (req, res) {
 });
 
 app.post('/printDoctorInvoice', function (req, res) {
-    console.log(req.body);
-    var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''); 
+    var d =new Date().toLocaleTimeString().replace(/T/, ' ').replace(/\..+/, '');
+    var d2 =new Date().toLocaleDateString().replace(/T/, ' ').replace(/\..+/, '');
     var tot= req.body.doctorInvoice_r.doc_fee *  req.body.doctorInvoice_r.patient_count;
     var grn = {
         grn_id: req.body.doctorInvoice_r.iddoctor_invoice,
-        inv_date: d,
+        inv_date: d2+" "+d,
         doctor_name: req.body.doctor_r.name, 
         pcount: req.body.doctorInvoice_r.patient_count,
         appointment_date: req.body.doctorInvoice_r.cal,
@@ -1145,11 +1142,11 @@ app.post('/printDoctorInvoice', function (req, res) {
 
 
 app.post('/printInvoice', function (req, res) {
-    var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-    console.log(req.body.patient);
+    var d =new Date().toLocaleTimeString().replace(/T/, ' ').replace(/\..+/, '');
+    var d2 =new Date().toLocaleDateString().replace(/T/, ' ').replace(/\..+/, '');
     var inv = {
         invoice_id: req.body.paient.invoice_id,
-        inv_date: d,
+        inv_date: d2+" "+d,
         doctor_name: req.body.doctor.name, 
         appointment: req.body.number,
         appointment_date: req.body.doctor.datee,
@@ -1162,6 +1159,7 @@ app.post('/printInvoice', function (req, res) {
 });
 
 app.post('/printReport', function (req, res) {
+    
     if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
         var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         var report = {
