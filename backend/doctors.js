@@ -1075,9 +1075,9 @@ function printFromUrl(template,data,res,sendToPrinter) {
 var pdata = {
     medicalCenter : {
         name: "Shanthi Medical Home",
-        phone: "(031) 2256525",
-        no: "No. 600/10",
-        street: "",
+        phone: "(031) 2241836",
+        no: "No. 210/1/C",
+        street: "Negombo Rd",
         city: "Katana",
         email: "",
     },
@@ -1127,6 +1127,7 @@ app.get('/testPrint', function (req, res) {
 });
 
 app.post('/printDoctorInvoice', function (req, res) {
+    console.log(req.body);
     var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''); 
     var tot= req.body.doctorInvoice_r.doc_fee *  req.body.doctorInvoice_r.patient_count;
     var grn = {
@@ -1135,12 +1136,11 @@ app.post('/printDoctorInvoice', function (req, res) {
         doctor_name: req.body.doctor_r.name, 
         pcount: req.body.doctorInvoice_r.patient_count,
         appointment_date: req.body.doctorInvoice_r.cal,
-        fee: req.body0doctorInvoice_r.doc_fee,
+        fee: req.body.doctorInvoice_r.doc_fee,
         username: req.body.user.name,
         total:tot
     };
-    printFromUrl('doctor_invoice.odt', grn, res);
-
+    printFromUrl('doctor_invoice.odt', grn, res,true);
 });
 
 
@@ -1159,7 +1159,6 @@ app.post('/printInvoice', function (req, res) {
 
     };
     printFromUrl('patient_invoice.odt', inv, res,true);
-
 });
 
 app.post('/printReport', function (req, res) {

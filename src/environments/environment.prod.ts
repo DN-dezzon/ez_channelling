@@ -5,11 +5,11 @@ export const environment = {
  
 export const medicalCenter = {
   name: "Shanthi Medical Home",
-  phone: "(031) 2256525",
-  no: "No. 600/10",
-  street: "",
-  city:"Katana",
-  email:"",
+  phone: "(031) 2241836",
+  no: "No. 210/1/C",
+  street: "Negombo Rd",
+  city: "Katana",
+  email: "",
 };
 
 export const product = {
@@ -22,10 +22,10 @@ export const product = {
 
 export const company = {
   name: "iNAC",
-  phone: "12345678",
+  phone: "(071) 2660899",
   no: "456/140",
   street: "jabeer rd",
-  cirty:"colombo",
-  email:"hello.inac@gmail.com",
+  cirty: "colombo",
+  email: "hello.inac@gmail.com",
   copyright: "2019-2020",
 }

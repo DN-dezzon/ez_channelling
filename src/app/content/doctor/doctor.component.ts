@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DoctorService } from './doctor.service';
 import { company, product, medicalCenter } from 'src/environments/environment.prod';
+import { DatabaseService } from 'src/app/database.service';
 
 declare let swal: any;
 declare let toastr: any;
@@ -22,6 +23,14 @@ export class DoctorComponent implements OnInit {
   medicalCenter: any;
 
   mode = "";
+
+  user = {
+    iduser: "",
+    name: "",
+    designation: "",
+    type: "",
+    password:"",
+  };
 
   doctor = {
     iddoctor: -1,
@@ -89,7 +98,8 @@ export class DoctorComponent implements OnInit {
   }
 doctor_invoice_report={
   doctor_r:this.doctor,
-  doctorInvoice_r:this.doctorInvoice
+  doctorInvoice_r:this.doctorInvoice,
+  user:this.user,
 }
   clearReportRequest() {
     this.reportRequest.patient_count = 0;
@@ -123,7 +133,7 @@ doctor_invoice_report={
     return ret;
   }
 
-  constructor(private doctorService: DoctorService) {
+  constructor(private doctorService: DoctorService,private databaseService : DatabaseService) {
     this.company = company;
     this.product = product;
     this.medicalCenter = medicalCenter;
@@ -134,6 +144,11 @@ doctor_invoice_report={
 
   ngOnInit() {
     this.getDoctors();
+    this.user.iduser = this.databaseService.user.iduser;
+    this.user.name = this.databaseService.user.name;
+    this.user.designation = this.databaseService.user.designation;
+    this.user.type = this.databaseService.user.type;
+    this.user.password=this.databaseService.user.password;
   }
 
   ngAfterViewInit() {
@@ -904,17 +919,8 @@ doctor_invoice_report={
   }
 
   printDoctorInvoice() {
-<<<<<<< HEAD
-    alert("printing");
-    console.log(this.doctorInvoice);
-=======
     // alert("printing");
-    this.doctor_invoice_report={
-      doctor_r:this.doctor,
-      doctorInvoice_r:this.doctorInvoice
-    }
-console.log(this.doctor_invoice_report);
-    this.doctorService.printInvoice(this.doctorInvoice).subscribe((data: any) => {
+    this.doctorService.printInvoice(this.doctor_invoice_report).subscribe((data: any) => {
        
       toastr.info("Printing......!");
     }, (err) => {
@@ -922,7 +928,6 @@ console.log(this.doctor_invoice_report);
     }
     );
 
->>>>>>> d71e0d49786a0d0b732035220313440d890c34e5
     // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
     // let datee = this.doctorInvoice.cal.split("/");
