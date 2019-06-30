@@ -5,6 +5,7 @@
       <li class="active"><a data-toggle="tab" href="#tab-1">Channelling Center</a></li>
       <li class=""><a data-toggle="tab" href="#tab-2" >Printer</a></li>
       <li class=""><a data-toggle="tab" href="#tab-3" >User</a></li>
+      <li class=""><a data-toggle="tab" href="#tab-4" >SMS</a></li>
     </ul>
     <div class="tab-content">
       <div id="tab-1" class="tab-pane active">
@@ -81,6 +82,26 @@
                  
                 </div>
             </div>
+        </div>
+      </div>
+      <div id="tab-4" class="tab-pane">
+        <div class="panel-body">
+          <div class="row">
+            <form role="form" method="post" enctype="multipart/form-data" method="post">
+              <div class="col-sm-6">
+                <div class="form-group"><label class="col-sm-3 control-label">Message</label>
+                  <div class="col-sm-9">
+                    <textarea type="text" placeholder="Type sms" [(ngModel)]="sms.message" class="form-control"
+                      [ngModelOptions]="{standalone: true}" required></textarea></div>
+                </div> 
+                <div class="form-group">
+                  <div class="col-sm-3">
+                    <button class="btn btn-primary" (click)="sendSMS()"><strong>Send</strong></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

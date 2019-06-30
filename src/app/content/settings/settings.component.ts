@@ -33,6 +33,9 @@ export class SettingsComponent implements OnInit {
     type: "",
     passwd: ""
   };
+  sms = {
+    message: ""
+  };
 
   center = {
     fee: ""
@@ -146,5 +149,11 @@ export class SettingsComponent implements OnInit {
       toastr.error('While fetching user details', 'Data fetch error');
     }
     );
+  }
+  sendSMS() {
+    var message = this.sms.message;
+    message = encodeURIComponent(message.trim());
+    console.log(message);
+    window.open("https://wa.me/?text=" + message + "%0ASend By Shanthi Medical Home%0ANo. 210/1/c,%0ANegombo Rd,%0AKatana%0ATel:%20031-2241836");
   }
 }
