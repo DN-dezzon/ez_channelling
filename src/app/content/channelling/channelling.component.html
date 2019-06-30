@@ -122,7 +122,7 @@
                             Payment</button>
                         </div> -->
               <div class="col-sm-2 ">
-                <button class="btn btn-primary" (click)="printPatirntInvoice()" id="printInvoice" href="#"
+                <button [disabled]="appointment.printInvoicee" class="btn btn-primary" (click)="printPatirntInvoice()" id="printInvoice" href="#"
                   >Print
                   Invoice</button>
                 <!-- <button class="btn btn-primary" (click)="print()" id="printInvoice" href="#invoice"  

@@ -81,6 +81,7 @@ export class ChannellingComponent implements OnInit {
 
   appointment = {
     hideAppointment: true,
+    printInvoicee:true,
     doctor: this.doctor,
     idappointment: -1,
     number: 0,
@@ -110,7 +111,8 @@ export class ChannellingComponent implements OnInit {
     this.user.name = this.databaseService.user.name;
     this.appointment.today = new Date();
     this.appointment.hideAppointment = true;
-    $('#printInvoice').hide(); 
+    this.appointment.printInvoicee = true;
+    // $('#printInvoice').hide(); 
     $('#pname_new').hide();
     $('#channeling_date').datepicker({
       todayBtn: "linked",
@@ -356,9 +358,13 @@ export class ChannellingComponent implements OnInit {
             toastr.info("Payment already made!");
             $('#pstatus').prop('disabled', true);
             this.appointment.hideAppointment = true;
+            this.appointment.printInvoicee = false;
+
           } else {
             $('#pstatus').prop('disabled', false);
             this.appointment.hideAppointment = false;
+            this.appointment.printInvoicee = false;
+
           }
         }
 
@@ -373,6 +379,8 @@ export class ChannellingComponent implements OnInit {
         // $('#makeappointment').show();
         // $('#makepayment').hide();
         this.appointment.hideAppointment = false;
+        this.appointment.printInvoicee = false;
+
       }
     }, (err) => {
       console.log(err);
@@ -383,6 +391,8 @@ export class ChannellingComponent implements OnInit {
 
   activatePrint(value) {
     this.appointment.hideAppointment = false;
+    this.appointment.printInvoicee = false;
+
   }
 
   getDoctors() {
