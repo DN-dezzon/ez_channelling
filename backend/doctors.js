@@ -1126,6 +1126,24 @@ app.get('/testPrint', function (req, res) {
 
 });
 
+app.post('/printDoctorInvoice', function (req, res) {
+    var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''); 
+    var tot= req.body.doctorInvoice_r.doc_fee *  req.body.doctorInvoice_r.patient_count;
+    var grn = {
+        grn_id: req.body.doctorInvoice_r.iddoctor_invoice,
+        inv_date: d,
+        doctor_name: req.body.doctor_r.name, 
+        pcount: req.body.doctorInvoice_r.patient_count,
+        appointment_date: req.body.doctorInvoice_r.cal,
+        fee: req.body0doctorInvoice_r.doc_fee,
+        username: req.body.user.name,
+        total:tot
+    };
+    printFromUrl('doctor_invoice.odt', grn, res);
+
+});
+
+
 app.post('/printInvoice', function (req, res) {
     var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
     console.log(req.body.patient);

@@ -87,7 +87,10 @@ export class DoctorComponent implements OnInit {
     schedule_r:this.schedule
     
   }
-
+doctor_invoice_report={
+  doctor_r:this.doctor,
+  doctorInvoice_r:this.doctorInvoice
+}
   clearReportRequest() {
     this.reportRequest.patient_count = 0;
     this.reportRequest.doc_fee = 0;
@@ -901,8 +904,25 @@ export class DoctorComponent implements OnInit {
   }
 
   printDoctorInvoice() {
+<<<<<<< HEAD
     alert("printing");
     console.log(this.doctorInvoice);
+=======
+    // alert("printing");
+    this.doctor_invoice_report={
+      doctor_r:this.doctor,
+      doctorInvoice_r:this.doctorInvoice
+    }
+console.log(this.doctor_invoice_report);
+    this.doctorService.printInvoice(this.doctorInvoice).subscribe((data: any) => {
+       
+      toastr.info("Printing......!");
+    }, (err) => {
+      toastr.error('Please try again');
+    }
+    );
+
+>>>>>>> d71e0d49786a0d0b732035220313440d890c34e5
     // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
     // let datee = this.doctorInvoice.cal.split("/");

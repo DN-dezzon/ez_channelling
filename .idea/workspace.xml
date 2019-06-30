@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09ac4604-59ad-4409-b6fc-dcfd4aadee9d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/out.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/templates/doctor_invoice.odt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/templates/~$ctor_invoice.odt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/templates/~$tient_invoice.odt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/tmp.odt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/doctors.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/doctors.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/content/doctor/doctor.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content/doctor/doctor.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/content/doctor/doctor.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/content/doctor/doctor.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/templates/patient_invoice.odt" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/templates/patient_invoice.odt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp/tmp" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/tmp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,11 +50,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/app/content/doctor/doctor.component.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="904" column="37" lean-forward="true" selection-start-line="904" selection-start-column="37" selection-end-line="904" selection-end-column="37" />
+            <state relative-caret-position="325">
+              <caret line="917" column="7" lean-forward="true" selection-start-line="917" selection-start-column="7" selection-end-line="917" selection-end-column="7" />
               <folding>
                 <element signature="e#0#61#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/app/content/doctor/doctor.component.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="110">
+              <caret line="485" column="49" selection-start-line="485" selection-start-column="31" selection-end-line="485" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -67,6 +86,8 @@
       <find>getpri</find>
       <find>getSc</find>
       <find>printInvoice</find>
+      <find>printdoc</find>
+      <find>printDoctorInvoice</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -232,11 +253,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11233000" />
+    <option name="totallyTimeSpent" value="11881000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15582451" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -247,7 +267,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3289689" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3289689" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -256,7 +276,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3289689" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="TypeScript" order="10" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.2749591" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.19148937" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -346,10 +366,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/app/content/doctor/doctor.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="485" column="49" selection-start-line="485" selection-start-column="31" selection-end-line="485" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/app/content/doctor/doctor.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="904" column="37" lean-forward="true" selection-start-line="904" selection-start-column="37" selection-end-line="904" selection-end-column="37" />
+        <state relative-caret-position="325">
+          <caret line="917" column="7" lean-forward="true" selection-start-line="917" selection-start-column="7" selection-end-line="917" selection-end-column="7" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
           </folding>

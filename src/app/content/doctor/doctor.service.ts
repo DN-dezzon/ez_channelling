@@ -84,6 +84,9 @@ export class DoctorService {
     
     return this.httpClient.post(environment.apiUrl + '/printPatient_report',transaction);
   } 
+  printInvoice(doctorInvoice:any){
+    return this.httpClient.post(environment.apiUrl + '/printDoctorInvoice',doctorInvoice);
+  }
 
   getPendingPatientCountBySchedule(doctorSchedule: any) {
     return this.httpClient.post(environment.apiUrl + '/getPendingPatientCountBySchedule', doctorSchedule);
