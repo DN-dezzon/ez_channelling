@@ -12,7 +12,19 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+ng build --prod --aot <br>
+cd ./toexe <br>
+rm -R .app/* & <br>
+mv ./../dist/fec* ./app/ <br>
+go run main.go <br>
+cd ../server <br>
+change unique device id in server.go<br>
+go build <br>
+move server.exe to NW.js folder <br>
+
+cd backend <br>
+nexe backend.js <br>
+move backend.exe and node_modules to NW.js folder <br>
 
 ## Running unit tests
 

@@ -15,10 +15,10 @@ const { exec } = require('child_process');
 // configuration =================
 const db = mysql.createPool({
     connectionLimit: 100,
-    host: 'remotemysql.com',
-    user: 'Rr6RfuQQAh',
-    password: '7cA4hntkbd',
-    database: 'Rr6RfuQQAh',
+    host: 'localhost',
+    user: 'root',
+    password: 'aelo',
+    database: 'shanthi',
     port: '3306'
     // host: 'localhost',
     // user: 'root',

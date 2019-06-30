@@ -1,0 +1,237 @@
+CREATE DATABASE shanthi;
+USE shanthi;
+
+CREATE TABLE `appointment` (
+  `idappointment` int(11) NOT NULL,
+  `number` int(11) DEFAULT NULL,
+  `patient_intime` time DEFAULT '00:00:00',
+  `payment_status` varchar(45) DEFAULT NULL,
+  `iddoctor_schedule` int(11) NOT NULL,
+  `patient_idpatient` int(11) NOT NULL,
+  `issued_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `bck` (
+  `id` int(11) NOT NULL,
+  `qry` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dte` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `configuration` (
+  `idconfiguration` int(11) NOT NULL,
+  `keyy` varchar(45) DEFAULT NULL,
+  `valuee` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `doctor` (
+  `iddoctor` int(11) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `contactNo` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `fee` double DEFAULT NULL,
+  `base_hospital` varchar(45) DEFAULT NULL,
+  `specialization` varchar(45) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `con_period` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `doctor_invoice` (
+  `iddoctor_invoice` int(11) NOT NULL,
+  `datee` datetime DEFAULT NULL,
+  `patient_count` int(11) DEFAULT NULL,
+  `center_fee` double DEFAULT NULL,
+  `doc_fee` double DEFAULT NULL,
+  `doctor_schedule_iddoctor_schedule` int(11) NOT NULL,
+  `status` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `doctor_schedule` (
+  `iddoctor_schedule` int(11) NOT NULL,
+  `doctor_iddoctor` int(11) NOT NULL,
+  `datee` date NOT NULL,
+  `doctor_in` time NOT NULL,
+  `doctor_out` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `patient` (
+  `idpatient` int(11) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `contactNo` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `patient_invoice` (
+  `idpatient_invoice` int(11) NOT NULL,
+  `doctor_fee` double DEFAULT '0',
+  `center_fee` double DEFAULT '0',
+  `amount` double DEFAULT NULL,
+  `idappointment` int(11) NOT NULL,
+  `issued_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user` (
+  `iduser` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `designation` varchar(45) DEFAULT NULL,
+  `iduser_type` int(11) NOT NULL,
+  `passwd` varchar(45) DEFAULT NULL,
+  `uname` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_type` (
+  `iduser_type` int(11) NOT NULL,
+  `type` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `appointment`
+--
+ALTER TABLE `appointment`
+  ADD PRIMARY KEY (`idappointment`),
+  ADD KEY `fk_appointment_doctor_schedule1_idx` (`iddoctor_schedule`),
+  ADD KEY `fk_appointment_patient1_idx` (`patient_idpatient`);
+
+--
+-- Indexes for table `bck`
+--
+ALTER TABLE `bck`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `configuration`
+--
+ALTER TABLE `configuration`
+  ADD PRIMARY KEY (`idconfiguration`);
+
+--
+-- Indexes for table `doctor`
+--
+ALTER TABLE `doctor`
+  ADD PRIMARY KEY (`iddoctor`);
+
+--
+-- Indexes for table `doctor_invoice`
+--
+ALTER TABLE `doctor_invoice`
+  ADD PRIMARY KEY (`iddoctor_invoice`),
+  ADD KEY `fk_doctor_invoice_doctor1_idx` (`doctor_schedule_iddoctor_schedule`);
+
+--
+-- Indexes for table `doctor_schedule`
+--
+ALTER TABLE `doctor_schedule`
+  ADD PRIMARY KEY (`iddoctor_schedule`),
+  ADD KEY `doctor_iddoctor_idx` (`doctor_iddoctor`);
+
+--
+-- Indexes for table `patient`
+--
+ALTER TABLE `patient`
+  ADD PRIMARY KEY (`idpatient`);
+
+--
+-- Indexes for table `patient_invoice`
+--
+ALTER TABLE `patient_invoice`
+  ADD PRIMARY KEY (`idpatient_invoice`),
+  ADD KEY `fk_patient_invoice_appointment1_idx` (`idappointment`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`iduser`),
+  ADD KEY `fk_user_user_type1_idx` (`iduser_type`);
+
+--
+-- Indexes for table `user_type`
+--
+ALTER TABLE `user_type`
+  ADD PRIMARY KEY (`iduser_type`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `appointment`
+--
+ALTER TABLE `appointment`
+  MODIFY `idappointment` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+
+--
+-- AUTO_INCREMENT for table `bck`
+--
+ALTER TABLE `bck`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `doctor`
+--
+ALTER TABLE `doctor`
+  MODIFY `iddoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `doctor_invoice`
+--
+ALTER TABLE `doctor_invoice`
+  MODIFY `iddoctor_invoice` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `patient_invoice`
+--
+ALTER TABLE `patient_invoice`
+  MODIFY `idpatient_invoice` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `appointment`
+--
+ALTER TABLE `appointment`
+  ADD CONSTRAINT `fk_appointment_doctor_schedule1` FOREIGN KEY (`iddoctor_schedule`) REFERENCES `doctor_schedule` (`iddoctor_schedule`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_appointment_patient1` FOREIGN KEY (`patient_idpatient`) REFERENCES `patient` (`idpatient`);
+
+--
+-- Constraints for table `doctor_invoice`
+--
+ALTER TABLE `doctor_invoice`
+  ADD CONSTRAINT `fk_doctor_invoice_doctor1` FOREIGN KEY (`doctor_schedule_iddoctor_schedule`) REFERENCES `doctor_schedule` (`iddoctor_schedule`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `doctor_schedule`
+--
+ALTER TABLE `doctor_schedule`
+  ADD CONSTRAINT `doctor_iddoctor` FOREIGN KEY (`doctor_iddoctor`) REFERENCES `doctor` (`iddoctor`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `patient_invoice`
+--
+ALTER TABLE `patient_invoice`
+  ADD CONSTRAINT `fk_patient_invoice_appointment1` FOREIGN KEY (`idappointment`) REFERENCES `appointment` (`idappointment`);
+
+--
+-- Constraints for table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `fk_user_user_type1` FOREIGN KEY (`iduser_type`) REFERENCES `user_type` (`iduser_type`);
+
+
+
+INSERT INTO `user_type` (`iduser_type`, `type`) VALUES
+(1, 'admin');
+
+
+INSERT INTO `configuration` (`idconfiguration`, `keyy`, `valuee`) VALUES
+(1, 'fee', '5000'),
+(2, 'printer', 'testPrinter');
+
+
+INSERT INTO `user` (`iduser`, `name`, `designation`, `iduser_type`, `passwd`, `uname`) VALUES
+(1, 'Madhava', 'Administrator', 1, 'admin', 'admin');
+COMMIT;

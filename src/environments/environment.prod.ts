@@ -22,7 +22,7 @@ export const product = {
 
 export const company = {
   name: "iNAC",
-  phone: "(071) 2660899",
+  phone: "(071) 2660899 , (077)4457794",
   no: "456/140",
   street: "jabeer rd",
   cirty: "colombo",
