@@ -902,6 +902,7 @@ export class DoctorComponent implements OnInit {
 
   printDoctorInvoice() {
     alert("printing");
+    console.log(this.doctorInvoice);
     // this.doctorInvoice.cal = (<HTMLInputElement>document.getElementById("selectDateDoctorInvoice")).value;
 
     // let datee = this.doctorInvoice.cal.split("/");
