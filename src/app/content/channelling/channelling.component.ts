@@ -682,7 +682,7 @@ export class ChannellingComponent implements OnInit {
   }
 
   validateNull() {
-    if (this.appointment.number == 0 || this.doctor.fee == 0 || $('.pnumber').val() == '' || $('#pname_old').val() == '0' || this.appointment.payment_status == '') {
+    if (this.appointment.number == 0 || this.doctor.fee == 0 || $('.pnumber').val() == ''  || this.appointment.payment_status == '') {
       return true;
     } else {
       return false;
