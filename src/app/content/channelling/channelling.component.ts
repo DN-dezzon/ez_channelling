@@ -48,6 +48,8 @@ export class ChannellingComponent implements OnInit {
     base_hospital: "",
     contactNo: "",
     fee: 0.0,
+    center_fee:0.0,
+
     description: "",
     datee: "",
     timee: "",
@@ -55,7 +57,7 @@ export class ChannellingComponent implements OnInit {
     totalAppointment: "",
     todayPatientVisits: 0,
   };
-
+centerFee:0.0;
   patient = {
     idpatient: -1,
     name: "",
@@ -125,11 +127,20 @@ export class ChannellingComponent implements OnInit {
     this.getDoctors();
     this.getPatients();
     this.initCalendar();
-
+    this.getCenterFee();
 
   }
 
+  getCenterFee(){
+    this.channellingService.getCenterFee().subscribe((data: any) => { 
+      this.centerFee=data[0].valuee;
 
+    }, (err) => {
+      console.log(err);
+      // toastr.error("Error while printing","Please try again!");
+    }
+    );
+  }
   print() {
     var data = document.getElementById('invoicee');
 
@@ -325,10 +336,14 @@ export class ChannellingComponent implements OnInit {
   }
 
   searchDoctorFee(value) {
-    this.doctor.iddoctor = value;
+ 
+    this.doctor.iddoctor = value; 
     this.getDoctorById(this.doctor);
+   
     this.getSchedules();
     this.clearSchedule();
+  
+   
   }
 
   searchAppointment(value) {
@@ -397,8 +412,9 @@ export class ChannellingComponent implements OnInit {
 
   getDoctors() {
     this.channellingService.getDoctors().subscribe((data: any) => {
-      this.doctors = data;
-
+      this.doctors = data; 
+    
+      
     }, (err) => {
       console.log(err);
     }
@@ -439,6 +455,8 @@ export class ChannellingComponent implements OnInit {
         this.doctor.fee = this.doctor_data[index].fee;
         this.doctor.iddoctor = this.doctor_data[index].iddoctor;
         this.doctor.name = this.doctor_data[index].name;
+        this.doctor.fee=Number(this.doctor.fee)+Number(this.centerFee);
+        
       }
     }, (err) => {
       console.log(err);

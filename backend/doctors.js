@@ -20,16 +20,16 @@ const db = mysql.createPool({
     // password: 'aelo',
     // database: 'shanthi',
     // port: '3306'
-    host: 'remotemysql.com',
-    user: 'Rr6RfuQQAh',
-    password: '7cA4hntkbd',
-    database: 'Rr6RfuQQAh',
+    // host: 'remotemysql.com',
+    // user: 'Rr6RfuQQAh',
+    // password: '7cA4hntkbd',
+    // database: 'Rr6RfuQQAh',
+    // port: '3306'
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'shanthi',
     port: '3306'
-    // host: 'localhost',
-    // user: 'root',
-    // password: '',
-    // database: 'shanthi_medical',
-    // port: '3307'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
@@ -585,6 +585,7 @@ app.post('/updateCenterFee', function (req, res) {
         if (err) {
             res.send(500, err);
         } else {
+            
             res.json(result.affectedRows);
         }
     });
@@ -937,8 +938,17 @@ app.post('/updatePrinterName', function (req, res) {
     });
 });
 
+app.get('/getCenterFee', function (req, res) {
+    db.query("SELECT valuee FROM configuration WHERE keyy = 'fee'", (err, result) => {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.json(result);
+        }
+    });
+});
 
-
+ 
 
 
 

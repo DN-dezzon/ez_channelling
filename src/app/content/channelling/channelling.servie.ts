@@ -44,6 +44,9 @@ export class ChannellingServie {
     
     return this.httpClient.post(environment.apiUrl + '/saveAppointment',appointment);
   } 
+  getCenterFee(){ 
+    return this.httpClient.get(environment.apiUrl + '/getCenterFee');
+  }
 
   printInvoice(appointment:any){
     
