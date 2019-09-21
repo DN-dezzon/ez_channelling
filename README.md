@@ -23,7 +23,7 @@ go build <br>
 move server.exe to NW.js folder <br>
 
 cd backend <br>
-nexe backend.js <br>
+nexe doctors.js <br>
 move backend.exe and node_modules to NW.js folder <br>
 
 ## Running unit tests

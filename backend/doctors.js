@@ -571,14 +571,14 @@ app.post('/getCancelledPatientCountBySchedule', function (req, res) {
     });
 });
 
-app.options('/getUser', function (req, res) {
+app.post('/getUser', function (req, res) {
     values = [req.body.uname, req.body.passwd];
     query = "SELECT * FROM user LEFT JOIN user_type ON user.iduser_type = user_type.iduser_type WHERE user.uname = ? AND user.passwd = ?";
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
-            res.json("Ok");
+            res.json(result);
         }
     });
 });
