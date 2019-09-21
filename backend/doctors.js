@@ -15,21 +15,21 @@ const { exec } = require('child_process');
 // configuration =================
 const db = mysql.createPool({
     connectionLimit: 100,
-    // host: 'localhost',
-    // user: 'root',
-    // password: 'pakaya0777334494',
-    // database: 'shanthi',
-    // port: '3306'
-    // host: 'remotemysql.com',
-    // user: 'Rr6RfuQQAh',
-    // password: '7cA4hntkbd',
-    // database: 'Rr6RfuQQAh',
-    // port: '3306'
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'shanthi',
     port: '3306'
+    // host: 'remotemysql.com',
+    // user: 'Rr6RfuQQAh',
+    // password: '7cA4hntkbd',
+    // database: 'Rr6RfuQQAh',
+    // port: '3306'
+    // host: 'localhost',
+    // user: 'root',
+    // password: 'pakaya0777334494',
+    // database: 'shanthi',
+    // port: '3306'
 });
 
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
