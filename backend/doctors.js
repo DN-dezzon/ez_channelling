@@ -25,9 +25,10 @@ const db = mysql.createPool({
     // password: '7cA4hntkbd',
     // database: 'Rr6RfuQQAh',
     // port: '3306'
-    host: 'localhost',
-    user: 'root',
-    password: '',
+    //host: 'devmysql.cbq5miudf693.us-east-2.rds.amazonaws.com',
+    host: '172.31.9.117',
+    user: 'k123456789123456',
+    password: 'qwertyui',
     database: 'shanthi',
     port: '3306'
 });

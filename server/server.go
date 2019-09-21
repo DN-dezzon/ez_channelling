@@ -20,8 +20,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	encodedUrl := hex.EncodeToString([]byte(req.URL.Path))
-
-	if err != nil || id != "a25e75ed-eac1-4678-a511-8425c38b6c41" {
+	//cloud 5e5208c5cf4f4c6194b3ee19c41440ba
+	if err != nil || id != "5e5208c5cf4f4c6194b3ee19c41440ba" {
 		encodedUrl = hex.EncodeToString([]byte("/assets/unregistered.html"))
 	}
 
