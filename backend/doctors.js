@@ -282,15 +282,20 @@ app.post('/saveAppointment', function (req, res) {
     var d = new Date();
     if (req.body.paient.newpatient == "yes") {
         var p_id = "0";
-        query_p_count = "SELECT * from patient";
+        query_p_count = "SELECT MAX(idpatient) as pid from patient";
 
         db.query(query_p_count, (err, result) => {
             if (err) {
                 res.send(500, err);
             } else {
-                p_id = result.length;
+                // [ RowDataPacket
+                //      { pid: 45 }
+                //      ]
+                // result[2].address  
+                p_id =(result[0].pid) + 1; 
                 query = "INSERT INTO patient( idpatient,name, contactNo) VALUES (?,?,?)";
                 values = [p_id, req.body.paient.name, req.body.paient.contactNo];
+
                 db.query(query, values, (err, result) => {
                     if (err) {
                         res.send(500, err);
@@ -566,14 +571,14 @@ app.post('/getCancelledPatientCountBySchedule', function (req, res) {
     });
 });
 
-app.post('/getUser', function (req, res) {
+app.options('/getUser', function (req, res) {
     values = [req.body.uname, req.body.passwd];
     query = "SELECT * FROM user LEFT JOIN user_type ON user.iduser_type = user_type.iduser_type WHERE user.uname = ? AND user.passwd = ?";
     db.query(query, values, (err, result) => {
         if (err) {
             res.send(500, err);
         } else {
-            res.json(result);
+            res.json("Ok");
         }
     });
 });
@@ -604,7 +609,7 @@ app.post('/updateCenterFee', function (req, res) {
         if (err) {
             res.send(500, err);
         } else {
-            
+
             res.json(result.affectedRows);
         }
     });
@@ -967,7 +972,7 @@ app.get('/getCenterFee', function (req, res) {
     });
 });
 
- 
+
 
 
 
@@ -1060,14 +1065,14 @@ var printOptions = {
     convertTo: 'pdf', //can be docx, txt, ...
 };
 
-function print(file,data,res,sendToPrinter) {
+function print(file, data, res, sendToPrinter) {
     carbone.render(file, data, printOptions, function (err, result) {
-        if (err){
-            if(res) res.send(500, err);
-        }else{
+        if (err) {
+            if (res) res.send(500, err);
+        } else {
             fs.writeFileSync('out.pdf', result);
 
-            if(sendToPrinter) {
+            if (sendToPrinter) {
 
                 db.query("SELECT valuee as name FROM configuration WHERE keyy = 'printer'", (err, result) => {
                     if (err) {
@@ -1095,16 +1100,16 @@ function print(file,data,res,sendToPrinter) {
     });
 }
 
-function printFromUrl(template,data,res,sendToPrinter) {
+function printFromUrl(template, data, res, sendToPrinter) {
     const file = fs.createWriteStream("tmp/tmp");
-    const request = http.get("http://localhost:4200/assets/templates/" + template , function(response) {
+    const request = http.get("http://localhost:4200/assets/templates/" + template, function (response) {
         response.pipe(file);
-        print("tmp/tmp",data,res,sendToPrinter);
+        print("tmp/tmp", data, res, sendToPrinter);
     });
 }
 
 var pdata = {
-    medicalCenter : {
+    medicalCenter: {
         name: "Shanthi Medical Home",
         phone: "(031) 2241836",
         no: "No. 210/1/C",
@@ -1113,7 +1118,7 @@ var pdata = {
         email: "",
     },
 
-    product : {
+    product: {
         name: "EZ Channeling",
         tech: "EZ_Channeling",
         short: "EZ+",
@@ -1121,7 +1126,7 @@ var pdata = {
         description: "Perfectly designed and precisely prepared electronic channelling system.",
     },
 
-    company : {
+    company: {
         name: "iNAC",
         phone: "(071) 2660899",
         no: "456/140",
@@ -1133,69 +1138,69 @@ var pdata = {
 }
 
 //init headless printing service
-printFromUrl("init.odt",pdata,null,false);
+printFromUrl("init.odt", pdata, null, false);
 
 var data = {
     firstname: 'John',
     lastname: 'Doe',
-    cars : [
-        {"brand" : "Lumeneo"},
-        {"brand" : "Tesla"  },
-        {"brand" : "Toyota" },
-        {"brand" : "Lumeneo"},
-        {"brand" : "Tesla"  },
-        {"brand" : "Toyota" },
-        {"brand" : "Lumeneo"},
-        {"brand" : "Tesla"  },
-        {"brand" : "Toyota" }
+    cars: [
+        { "brand": "Lumeneo" },
+        { "brand": "Tesla" },
+        { "brand": "Toyota" },
+        { "brand": "Lumeneo" },
+        { "brand": "Tesla" },
+        { "brand": "Toyota" },
+        { "brand": "Lumeneo" },
+        { "brand": "Tesla" },
+        { "brand": "Toyota" }
     ]
 };
 
 app.get('/testPrint', function (req, res) {
 
-    printFromUrl('simple.odt',data,res);
+    printFromUrl('simple.odt', data, res);
 
 });
 
 app.post('/printDoctorInvoice', function (req, res) {
-    var d =new Date().toLocaleTimeString().replace(/T/, ' ').replace(/\..+/, '');
-    var d2 =new Date().toLocaleDateString().replace(/T/, ' ').replace(/\..+/, '');
-    var tot= req.body.doctorInvoice_r.doc_fee *  req.body.doctorInvoice_r.patient_count;
+    var d = new Date().toLocaleTimeString().replace(/T/, ' ').replace(/\..+/, '');
+    var d2 = new Date().toLocaleDateString().replace(/T/, ' ').replace(/\..+/, '');
+    var tot = req.body.doctorInvoice_r.doc_fee * req.body.doctorInvoice_r.patient_count;
     var grn = {
         grn_id: req.body.doctorInvoice_r.iddoctor_invoice,
-        inv_date: d2+" "+d,
-        doctor_name: req.body.doctor_r.name, 
+        inv_date: d2 + " " + d,
+        doctor_name: req.body.doctor_r.name,
         pcount: req.body.doctorInvoice_r.patient_count,
         appointment_date: req.body.doctorInvoice_r.cal,
         fee: req.body.doctorInvoice_r.doc_fee,
         username: req.body.user.name,
-        total:tot
+        total: tot
     };
-    printFromUrl('doctor_invoice.odt', grn, res,true);
+    printFromUrl('doctor_invoice.odt', grn, res, true);
 });
 
 
 app.post('/printInvoice', function (req, res) {
-    var d =new Date().toLocaleTimeString().replace(/T/, ' ').replace(/\..+/, '');
-    var d2 =new Date().toLocaleDateString().replace(/T/, ' ').replace(/\..+/, '');
+    var d = new Date().toLocaleTimeString().replace(/T/, ' ').replace(/\..+/, '');
+    var d2 = new Date().toLocaleDateString().replace(/T/, ' ').replace(/\..+/, '');
     var inv = {
         invoice_id: req.body.paient.invoice_id,
-        inv_date: d2+" "+d,
-        doctor_name: req.body.doctor.name, 
+        inv_date: d2 + " " + d,
+        doctor_name: req.body.doctor.name,
         appointment: req.body.number,
         appointment_date: req.body.doctor.datee,
         patient_name: req.body.paient.name,
         username: req.body.user.name,
-        fee:req.body.doctor.fee
+        fee: req.body.doctor.fee
 
     };
-    printFromUrl('patient_invoice.odt', inv, res,true);
+    printFromUrl('patient_invoice.odt', inv, res, true);
 });
 
 app.post('/printReport', function (req, res) {
-    
+
     if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == true) {
-        var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        var d = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         var report = {
             title_r: "Income & Expences",
             from: req.body.transactionsRequest_r.from_datee,
@@ -1210,7 +1215,7 @@ app.post('/printReport', function (req, res) {
                 { "balance": req.body.transactions_r.balance }
             ]
         };
-        printFromUrl('income_outcome.odt', report, res,false);
+        printFromUrl('income_outcome.odt', report, res, false);
     } else if (req.body.transactionsRequest_r.expenses == true && req.body.transactionsRequest_r.income == false) {
         var d = new Date();
         var report = {
@@ -1227,7 +1232,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        printFromUrl('outcome.odt', report, res,false);
+        printFromUrl('outcome.odt', report, res, false);
     } else {
         var d = new Date();
         var report = {
@@ -1244,7 +1249,7 @@ app.post('/printReport', function (req, res) {
             ]
 
         };
-        printFromUrl('income.odt', report, res,false);
+        printFromUrl('income.odt', report, res, false);
     }
 
 
@@ -1253,7 +1258,7 @@ app.post('/printReport', function (req, res) {
 
 
 app.post('/printPatient_report', function (req, res) {
-    var d =new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    var d = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
     // var d = new Date();
     var report = {
         doctor_name: req.body.doctor_r.name,
@@ -1265,6 +1270,6 @@ app.post('/printPatient_report', function (req, res) {
         ]
 
     };
-    printFromUrl('appointments.odt', report, res,false);
+    printFromUrl('appointments.odt', report, res, false);
 
 });
