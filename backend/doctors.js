@@ -26,9 +26,19 @@ const db = mysql.createPool({
     // database: 'Rr6RfuQQAh',
     // port: '3306'
     //host: 'devmysql.cbq5miudf693.us-east-2.rds.amazonaws.com',
-    host: '172.31.9.117',
-    user: 'k123456789123456',
-    password: 'qwertyui',
+    // host: '172.31.9.117',
+    // user: 'k123456789123456',
+    // password: 'qwertyui',
+    // database: 'shanthi',
+    // port: '3306'
+    // host: 'remotemysql.com',
+    // user: 'Rr6RfuQQAh',
+    // password: '7cA4hntkbd',
+    // database: 'Rr6RfuQQAh',
+    // port: '3306'
+    host: 'localhost',
+    user: 'root',
+    password: 'pakaya0777334494',
     database: 'shanthi',
     port: '3306'
 });
@@ -44,7 +54,15 @@ app.use(methodOverride());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
+    //intercepts OPTIONS method
+    if ('OPTIONS' === req.method) {
+        //respond with 200
+        res.send(200);
+    }
+    else {
+        //move on
+        next();
+    }
 });
 
 app.listen(8080);

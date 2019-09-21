@@ -173,7 +173,7 @@ centerFee:0.0;
     this.channellingService.printInvoice(this.appointment).subscribe((data: any) => {
     
       toastr.info("Printing.....!");
-
+      this.clearForm();
     }, (err) => {
       console.log(err);
       toastr.error("Error while printing","Please try again!");

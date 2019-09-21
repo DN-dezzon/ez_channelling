@@ -542,7 +542,7 @@ doctor_invoice_report={
           }, (err) => {
             toastr.error('While deleting schedule', 'Data deletion error');
           }
-          );
+          ); 
         } else {
           (<any>$("#newSchedule")).modal('hide');
         }
