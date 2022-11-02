@@ -31,7 +31,7 @@
     "html2canvas": "^1.0.0-rc.3",
     "jquery": "^3.4.0",
     "jquery-editable-select": "^2.2.5",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.5.1",
     "moment": "^2.24.0",
     "ngx-bootstrap": "^4.0.1",
     "open-iconic": "^1.1.1",
